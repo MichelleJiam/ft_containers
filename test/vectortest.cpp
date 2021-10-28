@@ -1,0 +1,150 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   vectortest.cpp                                     :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/10/26 15:15:28 by mjiam         #+#    #+#                 */
+/*   Updated: 2021/10/28 16:35:57 by mjiam         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include <vector>
+#include <iostream>
+#include <exception>
+#include <iterator>
+
+#define size_type std::size_t
+
+// namespace   ft {
+
+// template < class T, class Alloc = std::allocator<T> >
+// class vector : public std::vector<T, Allocator> {
+// 	public:
+//     iterator	erase (iterator position) {
+//         return this.erase(position, position + 1);
+//     }
+
+// 		// Erases a range of elements [first,last].
+// 		iterator	erase (iterator first, iterator last) {
+//             size_type	n_to_erase = std::distance(first, last);
+//             size_type	start = std::distance(std::vector::begin(), first);
+//             size_type	end;
+            
+//             if (n_to_erase == 0)
+//                 return last;
+//             for (end = 0; end < n_to_erase; end++)
+//                 _alloc.destroy(_array[start + end]);
+//             for (size_type j = 0; end + j < _size; j++) {
+//                 _alloc.construct(_array[start + j], _array[end + j]);
+//                 _alloc.destroy(_array[end + j]);
+//             }
+//             this->_size -= n_to_erase;
+//             if (end >= _size)
+//                 return std::vector::end();
+//             else
+//                 return (std::vector::begin() + start + end);
+//         }
+
+// 	private:
+// 		allocator_type	_alloc;
+// 		size_type		_size;
+// 		size_type		_capacity;
+// 		pointer			_array;
+// };
+
+// } // ft namespace
+
+using namespace std;
+
+template <class T, class A>
+void    vector_print(vector<T,A> vec, char const* name)
+{
+    cout << name << " contains:\t";
+    for (unsigned i = 0; i < vec.size(); ++i)
+        cout << ' ' << vec[i];
+    cout << '\n';
+}
+
+template <class T, class A>
+typename vector<T,A>::iterator	erase(vector<T,A> &vec,
+    typename vector<T,A>::iterator first, typename vector<T,A>::iterator last) {
+    size_type	n_to_erase = std::distance(first, last);
+    size_type	start = std::distance(vec.begin(), first);
+    size_type	end;
+    
+    if (n_to_erase == 0)
+        return last;
+    // std::cout << "start is at " << start << endl;
+    for (end = start; end < start + n_to_erase; end++)
+        vec.get_allocator().destroy(&vec.data()[end]);
+    // std::cout << "end is at " << end << endl;
+    // std::cout << "size after destroying elements: " << vec.size() << endl;
+    for (size_type j = 0; end + j < vec.size(); j++) {
+        vec.get_allocator().construct(&vec.data()[start + j], vec.data()[end + j]);
+        vec.get_allocator().destroy(&vec.data()[end + j]);
+    }
+    size_type new_size = vec.size() - n_to_erase;
+    vec.resize(new_size);
+    // cout << "new size: " << new_size << endl;
+    if (end >= vec.size())
+        return vec.end();
+    else
+        return (last - n_to_erase);
+}
+
+template <class T, class A>
+typename vector<T,A>::iterator	erase1 (vector<T,A> &vec,
+    typename vector<T,A>::iterator position) {
+	return erase(vec, position, position + 1);
+}
+
+int main() {
+    vector<int>     myvector;
+    vector<int>     stdvector;
+    // std::cout << vec.max_size() << std::endl; // testing what max_size of vector is
+
+	// set some values (from 1 to 10)
+    for (int i = 1; i <= 10; i++){
+        myvector.push_back(i);
+        stdvector.push_back(i);
+    }
+    vector_print(myvector, "myvector");
+    vector_print(stdvector, "stdvector");
+
+    // erase the 6th element
+    vector<int>::iterator myit;
+    vector<int>::iterator stdit;
+    myit = erase(myvector, myvector.begin() + 5, myvector.begin() + 6);
+    stdit = stdvector.erase(stdvector.begin() + 5, stdvector.begin() + 6);
+    vector_print(myvector, "myvector");
+    vector_print(stdvector, "stdvector");
+    cout << "myiterator is at " << *myit << endl;
+    cout << "stditerator is at " << *stdit << endl;
+
+    // erase the first 3 elements:
+    myit = erase(myvector, myvector.begin(), myvector.begin() + 3);
+    stdit = stdvector.erase(stdvector.begin(), stdvector.begin() + 3);
+    vector_print(myvector, "myvector");
+    vector_print(stdvector, "stdvector");
+    cout << "myiterator is at " << *myit << endl;
+    cout << "stditerator is at " << *stdit << endl;
+
+    // erase last 2 elements:
+    myit = erase(myvector, myvector.end() - 2, myvector.end());
+    stdit = stdvector.erase(stdvector.end() - 2, stdvector.end());
+    vector_print(myvector, "myvector");
+    vector_print(stdvector, "stdvector");
+    cout << "myiterator is at " << *myit << endl;
+    cout << "stditerator is at " << *stdit << endl;
+
+    // myit = erase1(myvector, myvector.end());
+    stdit = stdvector.erase(stdvector.end());
+    vector_print(myvector, "myvector");
+    // vector_print(stdvector, "stdvector");
+    // cout << "myiterator is at " << *myit << endl;
+    // cout << "stditerator is at " << *stdit << endl;
+
+    return 0;
+}

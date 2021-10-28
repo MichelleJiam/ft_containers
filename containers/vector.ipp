@@ -6,13 +6,13 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/10/20 16:11:35 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/10/28 17:42:16 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 // DEFAULT CONSTRUCTOR
-template <class T, class Alloc>
-ft::vector<T,Alloc>::vector(allocator_type const& alloc)
+template <class T, class Allocator>
+ft::vector<T,Allocator>::vector(Allocator const& alloc)
 		: _alloc(alloc), _size(0), _capacity(0), _array(NULL) {
 }
 
@@ -21,16 +21,16 @@ ft::vector<T,Alloc>::vector(allocator_type const& alloc)
 // allocator::allocate may throw bad alloc;
 // allocator::construct calls value_type's copy constructor, which
 // 	may throw bad_alloc if value_type is class like map/vector/string.
-template <class T, class Alloc>
-ft::vector<T,Alloc>::vector(size_type count, value_type const& val,
-							allocator_type const& alloc)
+template <class T, class Allocator>
+ft::vector<T,Allocator>::vector(size_type count, T const& value,
+							Allocator const& alloc)
 		:	_alloc(alloc),
 			_size(count),
 			_capacity(count),
 			_array(alloc.allocate(count)) {
 	try {
 		for (size_type i = 0; i < count; i++) {
-			_alloc.construct(&_array[i], val);
+			_alloc.construct(&_array[i], value);
 		}
 	}
 	catch (...) {
@@ -44,10 +44,10 @@ ft::vector<T,Alloc>::vector(size_type count, value_type const& val,
 // std::distance may throw if arithmetical operations performed on the 
 // 	iterators throw;
 // allocator::allocate & allocator:construct may throw bad_alloc.
-template <class T, class Alloc>
+template <class T, class Allocator>
 template <class InputIterator>
-ft::vector<T,Alloc>::vector(InputIterator first, InputIterator last,
-							allocator_type const& alloc)
+ft::vector<T,Allocator>::vector(InputIterator first, InputIterator last,
+							Allocator const& alloc)
 		:	_alloc(alloc),
 			_size = std::distance(first, last),
 			_capacity = _size, // TODO: 
@@ -64,8 +64,8 @@ ft::vector<T,Alloc>::vector(InputIterator first, InputIterator last,
 }
 
 // COPY CONSTRUCTOR
-template <class T, class Alloc>
-ft::vector<T,Alloc>::vector(vector const& other)
+template <class T, class Allocator>
+ft::vector<T,Allocator>::vector(vector const& other)
 		: _alloc(other._alloc)  {
 	// *this = other;
 	// copyRange
@@ -83,8 +83,9 @@ ft::vector<T,Alloc>::vector(vector const& other)
 }
 
 // ASSIGNMENT OPERATOR
-template <class T, class Alloc>
-vector&	ft::vector<T,Alloc>::operator=(vector const& other) {
+template <class T, class Allocator>
+ft::vector<T,Allocator>&	ft::vector<T,Allocator>::operator=(
+		vector const& other) {
 	if (this != &other) {
 		// assign (which both clears and constructs)
 	}
@@ -92,35 +93,68 @@ vector&	ft::vector<T,Alloc>::operator=(vector const& other) {
 }
 
 // DESTRUCTOR
-template <class T, class Alloc>
-ft::vector<T,Alloc>::~vector(void) {
+template <class T, class Allocator>
+ft::vector<T,Allocator>::~vector(void) {
 	// clear
 	_alloc.deallocate(_array, _capacity);
 }
 
-template <class T, class Alloc>
-size_type	ft::vector<T,Alloc>::size(void) const {
+template <class T, class Allocator>
+void	ft::vector<T,Allocator>::assign(size_type count, const T& value) {
+	
+}
+
+template <class T, class Allocator>
+template <class InputIterator>
+void	ft::vector<T,Allocator>::assign (InputIterator first,
+										InputIterator last) {
 
 }
 
-template <class T, class Alloc>
-size_type	ft::vector<T,Alloc>::max_size(void) const {
+template <class T, class Allocator>
+allocator_type ft::vector<T,Allocator>::get_allocator() const {
 
+}
+
+// CAPACITY FUNCTIONS
+// Exceptions: never throws
+template <class T, class Allocator>
+size_type	ft::vector<T,Allocator>::size(void) const {
+	return this->_size;
+}
+
+template <class T, class Allocator>
+size_type	ft::vector<T,Allocator>::max_size(void) const {
+	return _alloc->max_size();
 }
 
 // Changes only the number of elements in the container, not its capacity.
-template <class T, class Alloc>
-void		ft::vector<T,Alloc>::resize (size_type n, value_type val) {
+// Exceptions: throws length_error if resized above max_size
+template <class T, class Allocator>
+void		ft::vector<T,Allocator>::resize(size_type n, value_type val) {
+	if (n > this.max_size())
+		throw std::length_error("vector::resize - n exceeds vector max_size");
+	else if (n < this->_size) {
+		for (size_type i = _size; i > n; i--)
+			_alloc.destroy(_array[i]);
+	}
+	else {
+
+	}
+}
+
+template <class T, class Allocator>
+size_type	ft::vector<T,Allocator>::capacity(void) const {
 
 }
 
-template <class T, class Alloc>
-size_type	ft::vector<T,Alloc>::capacity(void) const {
+template <class T, class Allocator>
+bool		ft::vector<T,Allocator>::empty(void) const {
 
 }
 
-template <class T, class Alloc>
-bool		ft::vector<T,Alloc>::empty(void) const {
+template <class T, class Allocator>
+void		ft::vector<T,Allocator>::reserve(size_type n) {
 
 }
 
@@ -128,9 +162,32 @@ bool		ft::vector<T,Alloc>::empty(void) const {
 // in positions other than the vector end causes the container to relocate 
 // all the elements after the segment erased to their new positions.
 // No-throw guarantee if removed elements include last element.
-template <class T, class Alloc>
-iterator	ft::vector<T,Alloc>::erase (iterator position) {
+// Returns: iterator following last removed element.
+// 			If operation erased last element, end() is returned.
+template <class T, class Allocator>
+iterator	ft::vector<T,Allocator>::erase (iterator position) {
+	return this.erase(position, position + 1);
+}
 
+template <class T, class Allocator>
+iterator	ft::vector<T,Allocator>::erase (iterator first, iterator last) {
+	size_type	n_to_erase = std::distance(first, last);
+	size_type	start = std::distance(begin(), first);
+	size_type	end;
+	
+	if (n_to_erase == 0)
+		return last;
+	for (end = start; end < start + n_to_erase; end++)
+		_alloc.destroy(&_array[end]);
+	for (size_type j = 0; end + j < _size; j++) {
+		_alloc.construct(&_array[start + j], _array[end + j]);
+		_alloc.destroy(&_array[end + j]);
+	}
+	this->_size -= n_to_erase;
+	if (end >= _size)
+		return end();
+	else
+		return (last - n_to_erase);
 }
 
 // Only reallocates storage, increasing capacity to n or greater,
@@ -138,7 +195,7 @@ iterator	ft::vector<T,Alloc>::erase (iterator position) {
 // Exceptions:
 // If size requested > vector::max_size, throws length_error exception;
 // If reallocating, allocator may throw bad_alloc.
-template <class T, class Alloc>
-void		ft::vector<T,Alloc>::reserve (size_type n) {
+template <class T, class Allocator>
+void		ft::vector<T,Allocator>::reserve (size_type n) {
 
 }
