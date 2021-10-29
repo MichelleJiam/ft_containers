@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/10/28 17:47:38 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/10/29 18:01:12 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,10 @@ class vector {
 		typedef typename Allocator::const_reference	const_reference;
 		typedef typename Allocator::pointer			pointer;
 		typedef typename Allocator::const_pointer	const_pointer;
-		typedef std::random_access_iterator<value_type>	iterator; // TODO: change to ft
-		typedef std::random_access_iterator<value_type const>	const_iterator; // TODO: change to ft
-		typedef std::reverse_iterator<iterator>	reverse_iterator;
-		typedef std::reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef typename std::vector<T,Allocator>::iterator	iterator; // TODO: change to ft
+		typedef typename std::vector<T,Allocator>::const_iterator	const_iterator; // TODO: change to ft
+		typedef std::reverse_iterator<iterator>	reverse_iterator; // TODO: change to ft
+		typedef std::reverse_iterator<const_iterator>	const_reverse_iterator; // TODO: change to ft
 
 		// CONSTRUCTORS & ASSIGNMENT OPERATORS
 		// default: empty container
@@ -156,6 +156,7 @@ class vector {
 		pointer			_array;
 };
 
+
 // NON-MEMBER FUNCTION OVERLOADS
 template <class T, class Allocator>
 bool operator== (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
@@ -177,8 +178,7 @@ bool operator>= (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs)
 template <class T, class Allocator>
 void swap (vector<T,Allocator>& x, vector<T,Allocator>& y);
 
-} // ft namespace
+} // namespace ft
 
 #include "vector.ipp"
-
 #endif
