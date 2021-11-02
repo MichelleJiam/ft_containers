@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/10/29 18:01:12 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/02 18:16:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ class vector {
 		// CONSTRUCTORS & ASSIGNMENT OPERATORS
 		// default: empty container
 		explicit vector(Allocator const& alloc);
-		// fill: container with n elements, each a copy of val
+		// fill: container with `count` elements, each a copy of `value`
 		explicit vector(size_type count, T const& value = T(),
 						Allocator const& alloc = Allocator());
 		// range: container with first-last elements
 		template <class InputIterator>
 		vector(InputIterator first, InputIterator last,
 				Allocator const& alloc = Allocator());
-		// copy: container with copies of each element in x
+		// copy: container with copies of each element in `other`
 		vector(vector const& other);
 		// assignment operator
 		vector&	operator=(vector const& other);
@@ -66,9 +66,9 @@ class vector {
 		reverse_iterator		rend(void);
 		const_reverse_iterator	rend(void) const;
 
-		// Replaces current contents with `n` elements, each initialized
-		// to a copy of `val`.
-		void		assign (size_type count, const T& value);
+		// Replaces current contents with `count` elements, each initialized
+		// to a copy of `value`.
+		void		assign (size_type count, T const& value);
 
 		// Replaces current contents with elements constructed from
 		// elements in range [first,last] in the same order.
@@ -76,7 +76,7 @@ class vector {
   		void		assign (InputIterator first, InputIterator last);
 
 		// Returns a copy of the allocator object associated with vector.
-		allocator_type get_allocator() const;
+		allocator_type get_allocator(void) const;
 
 		// ELEMENT ACCESS FUNCTIONS
 		reference		operator[] (size_type pos);
@@ -98,9 +98,9 @@ class vector {
 		// Returns max number of elements that the vector can hold.
 		size_type	max_size(void) const;
 
-		// Requests enough space for at least `n` elements,
-		// only reallocating if capacity is less than `n`.
-		void		reserve (size_type n);
+		// Requests enough space for at least `new_cap` elements,
+		// only reallocating if capacity is less than `new_cap`.
+		void		reserve (size_type new_cap);
 
 		// Returns number of elements container can have before reallocation
 		// is necessary (done automatically by container).
@@ -115,18 +115,18 @@ class vector {
 		//		vector<T>().swap(x);
 		void		clear(void);
 
-		// Insert single element at specified `position`, increasing size by 1.
-		iterator	insert (iterator position, const T& val);
+		// Insert single element at specified `pos`, increasing size by 1.
+		iterator	insert (iterator pos, T const& value);
 
-		// Inserts `n` elements iniitalized to a copy of `val`.
-		void		insert (iterator position, size_type n, const T& val);
+		// Inserts `count` elements iniitalized to a copy of `value`.
+		void		insert (iterator pos, size_type count, T const& value);
 
-		// Inserts elements in range [first,last] at `position` in same order.
+		// Inserts elements in range [first,last] at `pos` in same order.
 		template <class InputIterator>
-		void		insert (iterator position, InputIterator first, InputIterator last);
+		void		insert (iterator pos, InputIterator first, InputIterator last);
 
-		// Erases (destroys) single element at `position`, reducing size by 1.
-		iterator	erase (iterator position);
+		// Erases (destroys) single element at `pos`, reducing size by 1.
+		iterator	erase (iterator pos);
 
 		// Erases a range of elements [first,last].
 		iterator	erase (iterator first, iterator last);
@@ -134,20 +134,21 @@ class vector {
 		// Adds new element to end of vector, copying/moving content of val
 		// to it. Increases size by 1. Automatic reallocation is only triggered
 		// if new size surpasses current capacity.
-		void		push_back (const T& val);
+		void		push_back (T const& value);
 
 		// Removes (and destroys) last element, reducing size by 1.
 		void		pop_back(void);
 
-		// Resizes container to contain n elements. If container size > `n`,
-		// container is reduced to `n`. If `n` > size, container is 
-		// expanded to size `n`. If `val` is specified, new elements 
-		// are initialized as copies of `val`.
-		void		resize (size_type n, T val = T());
+		// Resizes container to contain n elements. 
+		// If container size > `count`, container is reduced to `count`.
+		// If `count` > size, container is expanded to size `count`.
+		// If `value` is specified, new elements are initialized
+		// as copies of `value`.
+		void		resize (size_type count, T value = T());
 
-		// Swaps content of container by content of `x` (same type).
+		// Swaps content of container by content of `other` (same type).
 		// Sizes may differ. All iterators, references, pointers remain valid.
-		void		swap (vector& x);
+		void		swap (vector& other);
 
 	private:
 		allocator_type	_alloc;
@@ -159,17 +160,17 @@ class vector {
 
 // NON-MEMBER FUNCTION OVERLOADS
 template <class T, class Allocator>
-bool operator== (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+bool operator== (vector<T,Allocator> const& lhs,vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator!= (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+bool operator!= (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator<  (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+bool operator<  (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator<= (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+bool operator<= (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator>  (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+bool operator>  (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator>= (const vector<T,Allocator>& lhs, const vector<T,Allocator>& rhs);
+bool operator>= (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 
 // Overload of member function `swap` hat improves its performance by
 // mutually transferring ownership over their assets to the other container

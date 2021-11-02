@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/10/29 19:01:15 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/02 21:03:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,24 +106,42 @@ vector<T,Allocator>::~vector(void) {
 	_alloc.deallocate(_array, _capacity);
 }
 
+// Destroys current elements and replaces with newly constructed ones.
+// Automatically reallcoates if new size > current capacity.
 template <class T, class Allocator>
 void	vector<T,Allocator>::assign(size_type count, const T& value) {
-	
+	this->clear();
+	if (count == 0)
+		return ;
+	this->reserve(count);
+	this->insert(begin(), count, value);
 }
 
 template <class T, class Allocator>
 template <class InputIterator>
 void	vector<T,Allocator>::assign (InputIterator first,
 										InputIterator last) {
-
+	size_type	count = std::distance(first, last);
+	
+	this->clear();
+	if (count == 0)
+		return ;
+	this->reserve(count);
+	this->insert(begin(), first, last);
 }
 
 template <class T, class Allocator>
-typename vector<T,Allocator>::allocator_type vector<T,Allocator>::get_allocator() const {
+typename vector<T,Allocator>::allocator_type vector<T,Allocator>::get_allocator(void) const {
 
 }
 
+// ELEMENT ACCESS FUNCTIONS
+
 // CAPACITY FUNCTIONS
+template <class T, class Allocator>
+bool		vector<T,Allocator>::empty(void) const {
+
+}
 // Exceptions: never throws
 template <class T, class Allocator>
 typename vector<T,Allocator>::size_type	vector<T,Allocator>::size(void) const {
@@ -135,19 +153,14 @@ typename vector<T,Allocator>::size_type	vector<T,Allocator>::max_size(void) cons
 	return _alloc->max_size();
 }
 
-// Changes only the number of elements in the container, not its capacity.
-// Exceptions: throws length_error if resized above max_size
+// Only reallocates storage, increasing capacity to n or greater,
+// 	if `n` > current capacity. Has no effect on current size.
+// Exceptions:
+// If size requested > vector::max_size, throws length_error exception;
+// If reallocating, allocator may throw bad_alloc.
 template <class T, class Allocator>
-void		vector<T,Allocator>::resize(size_type n, value_type val) {
-	if (n > this.max_size())
-		throw std::length_error("vector::resize - n exceeds vector max_size");
-	else if (n < this->_size) {
-		for (size_type i = _size; i > n; i--)
-			_alloc.destroy(_array[i]);
-	}
-	else {
+void		vector<T,Allocator>::reserve (size_type new_cap) {
 
-	}
 }
 
 template <class T, class Allocator>
@@ -156,29 +169,52 @@ typename vector<T,Allocator>::size_type	vector<T,Allocator>::capacity(void) cons
 }
 
 template <class T, class Allocator>
-bool		vector<T,Allocator>::empty(void) const {
+void	vector<T,Allocator>::clear(void) {
 
+}
+
+template <class T, class Allocator>
+typename vector<T,Allocator>::iterator	vector<T,Allocator>::insert(
+		iterator pos, T const& value) {
+	this->insert(pos, 1, value);
+	return (pos);
+}
+
+template <class T, class Allocator>
+void	vector<T,Allocator>::insert(iterator pos, size_type count,
+									T const& value) {
+	
+}
+
+template <class T, class Allocator>
+template <class InputIterator>
+void	vector<T,Allocator>::insert(iterator pos, InputIterator first,
+									InputIterator last) {
+	
 }
 
 // Because vectors use an array as their underlying storage, erasing elements
 // in positions other than the vector end causes the container to relocate 
-// all the elements after the segment erased to their new positions.
+// all the elements after the segment erased to their new poss.
 // No-throw guarantee if removed elements include last element.
 // Returns: iterator following last removed element.
 // 			If operation erased last element, end() is returned.
 template <class T, class Allocator>
-typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase (iterator position) {
-	return erase(position, position + 1);
+typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(iterator pos) {
+	if (pos == this->end())
+		return pos;
+	return erase(pos, pos + 1);
 }
 
 template <class T, class Allocator>
-typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase (iterator first, iterator last) {
+typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(
+		iterator first, iterator last) {
 	size_type	n_to_erase = std::distance(first, last);
-	size_type	start = std::distance(begin(), first);
+	size_type	start = std::distance(this->begin(), first);
 	size_type	end;
 	
-	if (n_to_erase == 0)
-		return last;
+	if (n_to_erase == 0 || first == this->end() || first > last)
+		return first;
 	for (end = start; end < start + n_to_erase; end++)
 		_alloc.destroy(&_array[end]);
 	for (size_type j = 0; end + j < _size; j++) {
@@ -187,20 +223,41 @@ typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase (iterator firs
 	}
 	this->_size -= n_to_erase;
 	if (end >= _size)
-		return end();
+		return this->end();
 	else
 		return (last - n_to_erase);
 }
 
-// Only reallocates storage, increasing capacity to n or greater,
-// 	if `n` > current capacity. Has no effect on current size.
-// Exceptions:
-// If size requested > vector::max_size, throws length_error exception;
-// If reallocating, allocator may throw bad_alloc.
 template <class T, class Allocator>
-void		vector<T,Allocator>::reserve (size_type n) {
-
+void	vector<T,Allocator>::push_back(T const& value) {
+	
 }
+
+template <class T, class Allocator>
+void	vector<T,Allocator>::pop_back(void) {
+	
+}
+
+// Changes only the number of elements in the container, not its capacity.
+// Exceptions: throws length_error if resized above max_size
+template <class T, class Allocator>
+void		vector<T,Allocator>::resize(size_type count, T value) {
+	if (count > this->max_size())
+		throw std::length_error("vector::resize - n exceeds vector max_size");
+	else if (count < this->_size) {
+		for (size_type i = _size; i > count; i--)
+			_alloc.destroy(_array[i]);
+	}
+	else {
+
+	}
+}
+
+template <class T, class Allocator>
+void	vector<T,Allocator>::swap(vector& other) {
+	
+}
+
 
 } // namespace ft
 

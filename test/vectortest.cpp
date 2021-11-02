@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/26 15:15:28 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/10/28 16:35:57 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/02 20:52:01 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ using namespace std;
 template <class T, class A>
 void    vector_print(vector<T,A> vec, char const* name)
 {
-    cout << name << " contains:\t";
+    cout << name << " contains " << vec.size() << " elements:\t";
     for (unsigned i = 0; i < vec.size(); ++i)
         cout << ' ' << vec[i];
     cout << '\n';
@@ -74,8 +74,8 @@ typename vector<T,A>::iterator	erase(vector<T,A> &vec,
     size_type	start = std::distance(vec.begin(), first);
     size_type	end;
     
-    if (n_to_erase == 0)
-        return last;
+    if (n_to_erase == 0 || first == vec.end() || first > last)
+        return first;
     // std::cout << "start is at " << start << endl;
     for (end = start; end < start + n_to_erase; end++)
         vec.get_allocator().destroy(&vec.data()[end]);
@@ -97,6 +97,8 @@ typename vector<T,A>::iterator	erase(vector<T,A> &vec,
 template <class T, class A>
 typename vector<T,A>::iterator	erase1 (vector<T,A> &vec,
     typename vector<T,A>::iterator position) {
+    if (position == vec.end())
+		return position;
 	return erase(vec, position, position + 1);
 }
 
@@ -118,6 +120,7 @@ int main() {
     vector<int>::iterator stdit;
     myit = erase(myvector, myvector.begin() + 5, myvector.begin() + 6);
     stdit = stdvector.erase(stdvector.begin() + 5, stdvector.begin() + 6);
+    cout << "erasing 6th element\n";
     vector_print(myvector, "myvector");
     vector_print(stdvector, "stdvector");
     cout << "myiterator is at " << *myit << endl;
@@ -126,6 +129,7 @@ int main() {
     // erase the first 3 elements:
     myit = erase(myvector, myvector.begin(), myvector.begin() + 3);
     stdit = stdvector.erase(stdvector.begin(), stdvector.begin() + 3);
+    cout << "erasing first 3 elements\n";
     vector_print(myvector, "myvector");
     vector_print(stdvector, "stdvector");
     cout << "myiterator is at " << *myit << endl;
@@ -134,17 +138,27 @@ int main() {
     // erase last 2 elements:
     myit = erase(myvector, myvector.end() - 2, myvector.end());
     stdit = stdvector.erase(stdvector.end() - 2, stdvector.end());
+    cout << "erasing last 2 elements\n";
     vector_print(myvector, "myvector");
     vector_print(stdvector, "stdvector");
     cout << "myiterator is at " << *myit << endl;
     cout << "stditerator is at " << *stdit << endl;
 
-    // myit = erase1(myvector, myvector.end());
-    stdit = stdvector.erase(stdvector.end());
+    myit = erase1(myvector, myvector.end()); // segfaults because end is not valid dereferencable iterator
+    // stdit = stdvector.erase(stdvector.end());
     vector_print(myvector, "myvector");
     // vector_print(stdvector, "stdvector");
-    // cout << "myiterator is at " << *myit << endl;
+    cout << "myiterator is at " << *myit << endl;
     // cout << "stditerator is at " << *stdit << endl;
 
+    // myit = erase(myvector, myvector.end() - 1, myvector.end() - 2); // no-op due to invalid range, lib erase hangs
+   // vector_print(myvector, "myvector");
+    // cout << "myiterator is at " << *myit << endl;
+
+    // cout << "distance returns " << std::distance(stdvector.end(), stdvector.end() + 1) << endl;
+    // cout << "distance returns " << std::distance(stdvector.end() - 2, stdvector.end() - 1) << endl;
+    stdvector.assign(0, 42);
+    cout << "assign with count 0\n";
+    vector_print(stdvector, "stdvector");
     return 0;
 }
