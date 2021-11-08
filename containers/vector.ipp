@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/02 21:03:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/08 17:29:08 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ vector<T,Allocator>&	vector<T,Allocator>::operator=(
 // DESTRUCTOR
 template <class T, class Allocator>
 vector<T,Allocator>::~vector(void) {
-	// clear
+	this->clear();
 	_alloc.deallocate(_array, _capacity);
 }
 
@@ -142,7 +142,8 @@ template <class T, class Allocator>
 bool		vector<T,Allocator>::empty(void) const {
 
 }
-// Exceptions: never throws
+
+// No-throw guarantee
 template <class T, class Allocator>
 typename vector<T,Allocator>::size_type	vector<T,Allocator>::size(void) const {
 	return this->_size;
@@ -168,9 +169,15 @@ typename vector<T,Allocator>::size_type	vector<T,Allocator>::capacity(void) cons
 
 }
 
+// After this call, size() returns 0. Leaves capacity unchanged.
+// Invalidates all refs, ptrs, and iterators referring to contained elements.
+// No-throw guarantee
 template <class T, class Allocator>
 void	vector<T,Allocator>::clear(void) {
-
+	for (size_type i = 0; i < this->_size; i++) {
+		_alloc->destroy(_array[i]);
+	}
+	this->_size = 0;
 }
 
 template <class T, class Allocator>
@@ -235,7 +242,8 @@ void	vector<T,Allocator>::push_back(T const& value) {
 
 template <class T, class Allocator>
 void	vector<T,Allocator>::pop_back(void) {
-	
+	_alloc.destroy(_array[_size - 1]);
+	this->_size =- 1;
 }
 
 // Changes only the number of elements in the container, not its capacity.
@@ -244,10 +252,8 @@ template <class T, class Allocator>
 void		vector<T,Allocator>::resize(size_type count, T value) {
 	if (count > this->max_size())
 		throw std::length_error("vector::resize - n exceeds vector max_size");
-	else if (count < this->_size) {
-		for (size_type i = _size; i > count; i--)
-			_alloc.destroy(_array[i]);
-	}
+	else if (count < this->_size)
+		this->_destroy_til_end(_array[count]);
 	else {
 
 	}
@@ -258,6 +264,20 @@ void	vector<T,Allocator>::swap(vector& other) {
 	
 }
 
+// Destroys elements past `new_end` and adjusts _size.
+// If `new_end` exceeds current end, doesn't do anything.
+template <class T, class Allocator>
+void	vector<T,Allocator>::_destroy_til_end(pointer new_end) {
+	pointer	end_ptr = _array[_size];
+
+	if (end_ptr < new_end)
+		return ;
+	while(end_ptr != new_end) {
+		_alloc.destroy(_array[end_ptr]);
+		end_ptr--;
+		this->_size -= 1;
+	}
+}
 
 } // namespace ft
 

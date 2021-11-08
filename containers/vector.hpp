@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/02 18:16:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/08 17:17:44 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,21 +68,21 @@ class vector {
 
 		// Replaces current contents with `count` elements, each initialized
 		// to a copy of `value`.
-		void		assign (size_type count, T const& value);
+		void	assign(size_type count, T const& value);
 
 		// Replaces current contents with elements constructed from
 		// elements in range [first,last] in the same order.
 		template <class InputIterator>
-  		void		assign (InputIterator first, InputIterator last);
+  		void	assign(InputIterator first, InputIterator last);
 
 		// Returns a copy of the allocator object associated with vector.
-		allocator_type get_allocator(void) const;
+		allocator_type	get_allocator(void) const;
 
 		// ELEMENT ACCESS FUNCTIONS
-		reference		operator[] (size_type pos);
-		const_reference	operator[] (size_type pos) const;
-		reference		at (size_type pos);
-		const_reference	at (size_type pos) const;
+		reference		operator[](size_type pos);
+		const_reference	operator[](size_type pos) const;
+		reference		at(size_type pos);
+		const_reference	at(size_type pos) const;
 		reference		front(void);
 		const_reference	front(void) const;
 		reference		back(void);
@@ -90,7 +90,7 @@ class vector {
 
 		// CAPACITY FUNCTIONS
 		// Returns whether vector is empty (= size is 0).
-		bool		empty(void) const;
+		bool	empty(void) const;
 
 		// Returns current number of elements.
 		size_type	size(void) const;
@@ -100,7 +100,7 @@ class vector {
 
 		// Requests enough space for at least `new_cap` elements,
 		// only reallocating if capacity is less than `new_cap`.
-		void		reserve (size_type new_cap);
+		void	reserve(size_type new_cap);
 
 		// Returns number of elements container can have before reallocation
 		// is necessary (done automatically by container).
@@ -113,71 +113,73 @@ class vector {
 		// to change.
 		// Typical alternative that forces reallocation:
 		//		vector<T>().swap(x);
-		void		clear(void);
+		void	clear(void);
 
 		// Insert single element at specified `pos`, increasing size by 1.
-		iterator	insert (iterator pos, T const& value);
+		iterator	insert(iterator pos, T const& value);
 
 		// Inserts `count` elements iniitalized to a copy of `value`.
-		void		insert (iterator pos, size_type count, T const& value);
+		void	insert(iterator pos, size_type count, T const& value);
 
 		// Inserts elements in range [first,last] at `pos` in same order.
 		template <class InputIterator>
-		void		insert (iterator pos, InputIterator first, InputIterator last);
+		void	insert(iterator pos, InputIterator first, InputIterator last);
 
 		// Erases (destroys) single element at `pos`, reducing size by 1.
-		iterator	erase (iterator pos);
+		iterator	erase(iterator pos);
 
 		// Erases a range of elements [first,last].
-		iterator	erase (iterator first, iterator last);
+		iterator	erase(iterator first, iterator last);
 
 		// Adds new element to end of vector, copying/moving content of val
 		// to it. Increases size by 1. Automatic reallocation is only triggered
 		// if new size surpasses current capacity.
-		void		push_back (T const& value);
+		void	push_back(T const& value);
 
 		// Removes (and destroys) last element, reducing size by 1.
-		void		pop_back(void);
+		void	pop_back(void);
 
 		// Resizes container to contain n elements. 
 		// If container size > `count`, container is reduced to `count`.
 		// If `count` > size, container is expanded to size `count`.
 		// If `value` is specified, new elements are initialized
 		// as copies of `value`.
-		void		resize (size_type count, T value = T());
+		void	resize(size_type count, T value = T());
 
 		// Swaps content of container by content of `other` (same type).
 		// Sizes may differ. All iterators, references, pointers remain valid.
-		void		swap (vector& other);
+		void	swap(vector& other);
 
 	private:
 		allocator_type	_alloc;
 		size_type		_size;
 		size_type		_capacity;
 		pointer			_array;
+
+		void	_destroy_til_end(pointer new_end);
 };
 
 
 // NON-MEMBER FUNCTION OVERLOADS
 template <class T, class Allocator>
-bool operator== (vector<T,Allocator> const& lhs,vector<T,Allocator> const& rhs);
+bool operator==(vector<T,Allocator> const& lhs,vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator!= (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+bool operator!=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator<  (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+bool operator<(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator<= (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+bool operator<=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator>  (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+bool operator>(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 template <class T, class Allocator>
-bool operator>= (vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+bool operator>=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 
 // Overload of member function `swap` hat improves its performance by
 // mutually transferring ownership over their assets to the other container
 // (i.e., the containers exchange references to their data, without actually
 // performing any element copy or movement).
 template <class T, class Allocator>
-void swap (vector<T,Allocator>& x, vector<T,Allocator>& y);
+void swap(vector<T,Allocator>& x, vector<T,Allocator>& y);
 
 } // namespace ft
 
