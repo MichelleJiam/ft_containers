@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/08 17:29:08 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/09 21:28:40 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,25 +203,31 @@ void	vector<T,Allocator>::insert(iterator pos, InputIterator first,
 // Because vectors use an array as their underlying storage, erasing elements
 // in positions other than the vector end causes the container to relocate 
 // all the elements after the segment erased to their new poss.
+// `pos` must be dereferencable. User has responsibility to pass valid input.
+// `end()` is not valid and causes undefined behaviour.
 // No-throw guarantee if removed elements include last element.
 // Returns: iterator following last removed element.
 // 			If operation erased last element, end() is returned.
 template <class T, class Allocator>
 typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(iterator pos) {
-	if (pos == this->end())
-		return pos;
+	assert(position != this->end());
 	return erase(pos, pos + 1);
 }
 
+// If invalid range or empty or first==end()
 template <class T, class Allocator>
 typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(
 		iterator first, iterator last) {
+	assert(first <= last && first != this->end());
 	size_type	n_to_erase = std::distance(first, last);
 	size_type	start = std::distance(this->begin(), first);
 	size_type	end;
 	
-	if (n_to_erase == 0 || first == this->end() || first > last)
+	if (n_to_erase == 0)
+		return last;
+	|| first == this->end() || first > last)
 		return first;
+	this->_destroy_until_end()
 	for (end = start; end < start + n_to_erase; end++)
 		_alloc.destroy(&_array[end]);
 	for (size_type j = 0; end + j < _size; j++) {
@@ -253,7 +259,7 @@ void		vector<T,Allocator>::resize(size_type count, T value) {
 	if (count > this->max_size())
 		throw std::length_error("vector::resize - n exceeds vector max_size");
 	else if (count < this->_size)
-		this->_destroy_til_end(_array[count]);
+		this->_destroy_until_end(_array[count]);
 	else {
 
 	}
@@ -267,7 +273,7 @@ void	vector<T,Allocator>::swap(vector& other) {
 // Destroys elements past `new_end` and adjusts _size.
 // If `new_end` exceeds current end, doesn't do anything.
 template <class T, class Allocator>
-void	vector<T,Allocator>::_destroy_til_end(pointer new_end) {
+void	vector<T,Allocator>::_destroy_until_end(pointer new_end) {
 	pointer	end_ptr = _array[_size];
 
 	if (end_ptr < new_end)

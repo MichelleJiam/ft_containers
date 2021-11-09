@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/08 17:17:44 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/09 21:05:43 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ class vector {
 		size_type		_capacity;
 		pointer			_array;
 
-		void	_destroy_til_end(pointer new_end);
+		void	_destroy_until_end(pointer new_end);
 };
 
 
