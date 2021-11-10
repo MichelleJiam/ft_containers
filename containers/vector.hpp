@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/09 21:05:43 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/10 21:24:15 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,6 +157,8 @@ class vector {
 		pointer			_array;
 
 		void	_destroy_until_end(pointer new_end);
+		void	_range_initialize(iterator first, iterator last,
+									Allocator const& alloc);
 };
 
 

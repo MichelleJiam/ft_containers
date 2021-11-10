@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/09 21:28:40 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/10 21:47:50 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,17 +17,19 @@
 
 namespace ft {
 
-// DEFAULT CONSTRUCTOR
+//	DEFAULT CONSTRUCTOR
 template <class T, class Allocator>
 vector<T,Allocator>::vector(Allocator const& alloc)
 		: _alloc(alloc), _size(0), _capacity(0), _array(NULL) {
 }
 
-// FILL CONSTRUCTOR
-// Exceptions:
-// allocator::allocate may throw bad alloc;
-// allocator::construct calls value_type's copy constructor, which
+//	FILL CONSTRUCTOR
+//	Exceptions:
+//	allocator::allocate may throw bad alloc;
+//	allocator::construct calls value_type's copy constructor, which
 // 	may throw bad_alloc if value_type is class like map/vector/string.
+//	Note: if constructors throw, destructor is not called, so clean up
+//			is done on this level before throw.
 template <class T, class Allocator>
 vector<T,Allocator>::vector(size_type count, T const& value,
 							Allocator const& alloc)
@@ -43,53 +45,39 @@ vector<T,Allocator>::vector(size_type count, T const& value,
 	catch (...) {
 		_alloc.deallocate(_array, count);
 		throw;
-	} // TODO: replace with assign
+	}
 }
 
-// RANGE CONSTRUCTOR
-// Exceptions:
-// std::distance may throw if arithmetical operations performed on the 
-// 	iterators throw;
-// allocator::allocate & allocator:construct may throw bad_alloc.
+//	RANGE CONSTRUCTOR
+//	Exceptions:
+//	std::distance may throw if arithmetical operations performed on the 
+//	iterators throw;
+//	allocator::allocate & allocator:construct may throw bad_alloc.
 template <class T, class Allocator>
 template <class InputIterator>
 vector<T,Allocator>::vector(InputIterator first, InputIterator last,
 							Allocator const& alloc)
 		:	_alloc(alloc),
-			_size(distance(first,last)),
-			_capacity(_size), // TODO: 
+			_size(std::distance(first, last)),
+			_capacity(_size), // TODO: use reserve?
 			_array(alloc.allocate(_size)) {
-	try {
-		for (size_type i = 0; i < _size; i++) {
-			_alloc.construct(&_array[i], *(first + i));
-		}
-	}
-	catch (...) {
-		_alloc.deallocate(_array, _size);
-		throw;
-	} // TODO: replace with assign
+	_range_initialize(this->begin(), first, last, alloc);
+			// _alloc.construct(&_array[i], *(first + i));
 }
 
-// COPY CONSTRUCTOR
+//	COPY CONSTRUCTOR
 template <class T, class Allocator>
 vector<T,Allocator>::vector(vector const& other)
-		: _alloc(other._alloc)  {
+		:	_alloc(other._alloc),
+			_size(other._size),
+			_capacity(other._capacity),
+			_array(_alloc.allocate(_capacity)) {
 	// *this = other;
-	// copyRange
-	_size = other._size;
-	_capacity = other._capacity;
-	_array = _alloc.allocate(other._capacity);
-	try {
-		for (size_type i = 0; i < _size; i++)
-			_alloc.construct(&_array[i], other._array[i]);
-	}
-	catch (...) {
-		_alloc.deallocate(_array, _size);
-		throw;
-	} // TODO: replace with assign
+	_range_initialize(this->begin(), other.begin(), other.end(), _alloc);
+			// _alloc.construct(&_array[i], other._array[i]);
 }
 
-// ASSIGNMENT OPERATOR
+//	ASSIGNMENT OPERATOR
 template <class T, class Allocator>
 vector<T,Allocator>&	vector<T,Allocator>::operator=(
 		vector const& other) {
@@ -99,15 +87,15 @@ vector<T,Allocator>&	vector<T,Allocator>::operator=(
 	return *this;
 }
 
-// DESTRUCTOR
+//	DESTRUCTOR
 template <class T, class Allocator>
 vector<T,Allocator>::~vector(void) {
 	this->clear();
 	_alloc.deallocate(_array, _capacity);
 }
 
-// Destroys current elements and replaces with newly constructed ones.
-// Automatically reallcoates if new size > current capacity.
+//	Destroys current elements and replaces with newly constructed ones.
+//	Automatically reallcoates if new size > current capacity.
 template <class T, class Allocator>
 void	vector<T,Allocator>::assign(size_type count, const T& value) {
 	this->clear();
@@ -135,15 +123,15 @@ typename vector<T,Allocator>::allocator_type vector<T,Allocator>::get_allocator(
 
 }
 
-// ELEMENT ACCESS FUNCTIONS
+//	ELEMENT ACCESS FUNCTIONS
 
-// CAPACITY FUNCTIONS
+//	CAPACITY FUNCTIONS
 template <class T, class Allocator>
 bool		vector<T,Allocator>::empty(void) const {
 
 }
 
-// No-throw guarantee
+//	No-throw guarantee
 template <class T, class Allocator>
 typename vector<T,Allocator>::size_type	vector<T,Allocator>::size(void) const {
 	return this->_size;
@@ -154,11 +142,11 @@ typename vector<T,Allocator>::size_type	vector<T,Allocator>::max_size(void) cons
 	return _alloc->max_size();
 }
 
-// Only reallocates storage, increasing capacity to n or greater,
-// 	if `n` > current capacity. Has no effect on current size.
-// Exceptions:
-// If size requested > vector::max_size, throws length_error exception;
-// If reallocating, allocator may throw bad_alloc.
+//	Only reallocates storage, increasing capacity to n or greater,
+//	if `n` > current capacity. Has no effect on current size.
+//	Exceptions:
+//	If size requested > vector::max_size, throws length_error exception;
+//	If reallocating, allocator may throw bad_alloc.
 template <class T, class Allocator>
 void		vector<T,Allocator>::reserve (size_type new_cap) {
 
@@ -169,9 +157,9 @@ typename vector<T,Allocator>::size_type	vector<T,Allocator>::capacity(void) cons
 
 }
 
-// After this call, size() returns 0. Leaves capacity unchanged.
-// Invalidates all refs, ptrs, and iterators referring to contained elements.
-// No-throw guarantee
+//	After this call, size() returns 0. Leaves capacity unchanged.
+//	Invalidates all refs, ptrs, and iterators referring to contained elements.
+//	No-throw guarantee
 template <class T, class Allocator>
 void	vector<T,Allocator>::clear(void) {
 	for (size_type i = 0; i < this->_size; i++) {
@@ -200,17 +188,17 @@ void	vector<T,Allocator>::insert(iterator pos, InputIterator first,
 	
 }
 
-// Because vectors use an array as their underlying storage, erasing elements
-// in positions other than the vector end causes the container to relocate 
-// all the elements after the segment erased to their new poss.
-// `pos` must be dereferencable. User has responsibility to pass valid input.
-// `end()` is not valid and causes undefined behaviour.
-// No-throw guarantee if removed elements include last element.
-// Returns: iterator following last removed element.
+//	Because vectors use an array as their underlying storage, erasing elements
+//	in positions other than the vector end causes the container to relocate 
+//	all the elements after the segment erased to their new poss.
+//	`pos` must be dereferencable. User has responsibility to pass valid input.
+//	`end()` is not valid and causes undefined behaviour.
+//	Exceptions: does not throw unless exception is thrown by the assignment
+//				operator of T.
+//	Returns: iterator following last removed element.
 // 			If operation erased last element, end() is returned.
 template <class T, class Allocator>
 typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(iterator pos) {
-	assert(position != this->end());
 	return erase(pos, pos + 1);
 }
 
@@ -218,7 +206,6 @@ typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(iterator pos) 
 template <class T, class Allocator>
 typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(
 		iterator first, iterator last) {
-	assert(first <= last && first != this->end());
 	size_type	n_to_erase = std::distance(first, last);
 	size_type	start = std::distance(this->begin(), first);
 	size_type	end;
@@ -230,10 +217,13 @@ typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(
 	this->_destroy_until_end()
 	for (end = start; end < start + n_to_erase; end++)
 		_alloc.destroy(&_array[end]);
-	for (size_type j = 0; end + j < _size; j++) {
-		_alloc.construct(&_array[start + j], _array[end + j]);
-		_alloc.destroy(&_array[end + j]);
+	try {
+		for (size_type j = 0; end + j < _size; j++) {
+			_alloc.construct(&_array[start + j], _array[end + j]);
+			_alloc.destroy(&_array[end + j]);
+		}
 	}
+
 	this->_size -= n_to_erase;
 	if (end >= _size)
 		return this->end();
@@ -282,6 +272,23 @@ void	vector<T,Allocator>::_destroy_until_end(pointer new_end) {
 		_alloc.destroy(_array[end_ptr]);
 		end_ptr--;
 		this->_size -= 1;
+	}
+}
+
+template <class T, class Allocator>
+void	vector<T,Allocator>::_range_initialize(iterator start,
+												iterator first,
+												iterator last,
+												Allocator const& alloc) {
+	iterator	cur = start;
+
+	try {
+		for (; first != last; first++, cur++)
+			alloc.construct(&*cur, *first);
+	}
+	catch (...) {
+		alloc.deallocate(&*start, _size);
+		throw;
 	}
 }
 
