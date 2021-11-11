@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/26 15:15:28 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/09 21:26:34 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/11 16:24:44 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,11 @@ int main() {
     // stdit = stdvector.erase(stdvector.end() - 1, stdvector.end() - 2); // no-op due to invalid range, lib erase hangs
     // vector_print(stdvector, "stdvector");
     // cout << "stditerator is at " << *stdit << endl;
+
+    cout << "- testing erase empty range -\n";
+    stdit = stdvector.erase(stdvector.end(), stdvector.end()); // no-op due to invalid range, lib erase hangs
+    vector_print(stdvector, "stdvector");
+    cout << "stditerator is at " << *stdit << endl;
 
     // cout << "distance returns " << std::distance(stdvector.end(), stdvector.end() + 1) << endl;
     // cout << "distance returns " << std::distance(stdvector.end() - 2, stdvector.end() - 1) << endl;
