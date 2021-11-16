@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/26 15:15:28 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/11 16:24:44 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/16 21:34:19 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,13 +69,106 @@ void    vector_print(vector<T,A> vec, char const* name)
 }
 
 template <class T, class A>
+void	_range_copy(vector<T,A> &vec, typename vector<T,A>::iterator pos, typename vector<T,A>::iterator first,
+					typename vector<T,A>::iterator last) {
+
+    // cout << "_range_copy received: pos (" << *pos << "), first (" << *first << "), last (" << *last << ")\n";
+    size_type   to_copy = last - first;
+    // cout << "to_copy: " << to_copy << endl;
+    try {
+		for (size_type i = to_copy; i; i--){
+            // cout << "constructing " <<*(first + i - 1) << " at place of " << *(pos + i - 1) << endl;
+			vec.get_allocator().construct(&*(pos + i - 1), *(first + i - 1));
+            // cout << "vec[" << i - 1 << "] is " << vec[i - 1] << endl;
+            // vector_print(vec, "myvector in range_copy");
+        }
+	}
+	catch (...) {
+		for (size_type i = 0; i < to_copy; i++)
+			vec.get_allocator().destroy(&*(pos + i));
+		throw;
+	}
+    // vector_print(vec, "myvector after range");
+}
+
+//	Internal fn called by fill constructor and insert (fill version).
+//	Inserts `count` elements with value `value` at `pos`.
+template <class T, class A>
+void	_fill_insert(vector<T,A> &vec, typename vector<T,A>::iterator pos, size_type count,
+											T const& value) {
+	size_type constructed = 0;
+	
+	try {
+		for (; constructed < count; constructed++) {
+			vec.get_allocator().construct(&*(pos + constructed), value);
+		}
+	}
+	catch (...) {
+		for (size_type i = 0; i < constructed; i++)
+			vec.get_allocator().destroy(&*(pos + i));
+		throw;
+	}
+}
+
+template <class T, class A>
+void	insert(vector<T,A> &vec, typename vector<T,A>::iterator pos,
+                        size_type count, T const& value) {
+	size_type	old_cap = vec.capacity();
+    size_type   old_size = vec.size();
+
+	try {
+		vec.reserve(vec.size() + count);
+        vec.resize(vec.size() + count);
+        // cout << "capacity: " << vec.capacity() << " old_cap: " << old_cap << endl;
+		if (pos < vec.end() - 1){
+            // cout << "_range_copy required: pos (" << *pos << ") < end - 1 (" << *(vec.end() - 1) << ")\n";
+			_range_copy(vec, pos + count, pos, vec.end());
+            }
+        // vector_print(vec, "myvector after range_copy");
+		_fill_insert(vec, pos, count, value);
+	}
+	catch (...) {
+		if (old_cap < vec.capacity())
+			vec.get_allocator().deallocate(&*pos, vec.capacity() - old_cap);
+        if (old_size < vec.size())
+            vec.resize(old_size);
+		throw;
+	}
+}
+
+template <class T, class A>
+void	insert(vector<T,A> &vec, typename vector<T,A>::iterator pos,
+    typename vector<T,A>::iterator first, typename vector<T,A>::iterator last){
+    // typename iterator_traits<I>::type* = NULL) {
+	size_type	old_cap = vec.capacity();
+    size_type   old_size = vec.size();
+	size_type	count = last - first;
+
+	try {
+		vec.reserve(vec.size() + count);
+        vec.resize(vec.size() + count);
+		if (pos < vec.end() - 1)
+			_range_copy(vec, pos + count, pos, vec.end());
+		_range_copy(vec, pos, first, last);
+	}
+	catch (...) {
+		if (old_cap < vec.capacity())
+			vec.get_allocator().deallocate(&*pos, vec.capacity() - old_cap);
+        if (old_size < vec.size())
+            vec.resize(old_size);
+		throw;
+	}
+}
+
+template <class T, class A>
 typename vector<T,A>::iterator	erase(vector<T,A> &vec,
     typename vector<T,A>::iterator first, typename vector<T,A>::iterator last) {
-    size_type	n_to_erase = std::distance(first, last);
-    size_type	start = std::distance(vec.begin(), first);
+    // size_type	n_to_erase = std::distance(first, last);
+    size_type	n_to_erase = last - first;
+    size_type	start = first - vec.begin();
     size_type	end;
     
-    if (n_to_erase == 0)
+    if (n_to_erase < 1)
         return last;
     if (first == vec.end() || first > last)
         return first;
@@ -146,24 +239,24 @@ int main() {
     cout << "myiterator is at " << *myit << endl;
     cout << "stditerator is at " << *stdit << endl;
 
-    cout << "- erasing end() -\n";
-    try {
-        myit = erase1(myvector, myvector.end()); // segfaults because end is not valid dereferencable iterator
-        // stdit = stdvector.erase(stdvector.end());
-    }
-    catch (const std::exception& e) {
-        std::cerr << e.what();
-    }
-    vector_print(myvector, "myvector");
-    // vector_print(stdvector, "stdvector");
-    cout << "myiterator is at " << *myit << endl;
+    // cout << "- erasing end() -\n";
+    // try {
+    //     myit = erase1(myvector, myvector.end()); // segfaults because end is not valid dereferencable iterator
+    //     // stdit = stdvector.erase(stdvector.end());
+    // }
+    // catch (const std::exception& e) {
+    //     std::cerr << e.what();
+    // }
+    // vector_print(myvector, "myvector");
+    // // vector_print(stdvector, "stdvector");
+    // cout << "myiterator is at " << *myit << endl;
     // cout << "stditerator is at " << *stdit << endl;
 
-    cout << "- testing erase invalid range -\n";
-    myit = erase(myvector, myvector.end() - 1, myvector.end() - 2); // no-op due to invalid range, lib erase hangs
-   vector_print(myvector, "myvector");
-    cout << "myiterator is at " << *myit << endl;
-    // stdit = stdvector.erase(stdvector.end() - 1, stdvector.end() - 2); // no-op due to invalid range, lib erase hangs
+//     cout << "- testing erase invalid range -\n";
+//     myit = erase(myvector, myvector.end() - 1, myvector.end() - 2); // no-op due to invalid range, lib erase hangs
+//    vector_print(myvector, "myvector");
+//     cout << "myiterator is at " << *myit << endl;
+    // stdit = stdvector.erase(stdvector.end() - 1, stdvector.end() - 2); // hangs
     // vector_print(stdvector, "stdvector");
     // cout << "stditerator is at " << *stdit << endl;
 
@@ -171,6 +264,9 @@ int main() {
     stdit = stdvector.erase(stdvector.end(), stdvector.end()); // no-op due to invalid range, lib erase hangs
     vector_print(stdvector, "stdvector");
     cout << "stditerator is at " << *stdit << endl;
+    myit = erase(myvector, myvector.end(), myvector.end()); // no-op due to invalid range, lib erase hangs
+   vector_print(myvector, "myvector");
+    cout << "myiterator is at " << *myit << endl;
 
     // cout << "distance returns " << std::distance(stdvector.end(), stdvector.end() + 1) << endl;
     // cout << "distance returns " << std::distance(stdvector.end() - 2, stdvector.end() - 1) << endl;
@@ -180,13 +276,25 @@ int main() {
     // vector_print(stdvector, "stdvector");
 
     cout << "- inserting same value at begin as end to test == comparison -\n";
-    stdvector.insert(stdvector.end()-4, 9);
+    stdvector.insert(stdvector.end()-4, 1, 9);
     vector_print(stdvector, "stdvector");
-    cout << "begin() returns " << *(stdvector.begin()) << endl;
-    if (stdvector.begin() == stdvector.end())
-        cout << "begin is same as end\n";
-    else
-        cout << "begin NOT same as end\n";
+    insert(myvector, myvector.end()-4, 1, 9);
+    vector_print(myvector, "myvector");
+    // cout << "begin() returns " << *(stdvector.begin()) << endl;
+
+    cout << "- inserting range -\n";
+    // int myarray[3] = { 42, 13, 100 }; // doesn't work until iterator traits implemented
+    stdvector.insert(stdvector.end() - 2, myvector.begin(), myvector.end() - 3);
+    vector_print(stdvector, "stdvector");
+    insert(myvector, myvector.end() - 2, stdvector.begin(), stdvector.end() - 5);
+    vector_print(myvector, "myvector");
+
+    cout << "- testing _range_copy -\n";
+    vector<int> copyvector;
+    copyvector.reserve(myvector.size());
+    copyvector.resize(myvector.size());
+    _range_copy(copyvector, copyvector.begin(), myvector.begin(), myvector.end());
+    vector_print(copyvector, "copyvector");
     
     cout << "- testing iterator arithmetic -\n";
     vector<int>::iterator it = stdvector.begin();

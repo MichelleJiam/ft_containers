@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/11 17:41:11 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/16 21:40:45 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,7 @@ vector<T,Allocator>::vector(size_type count, T const& value,
 			_capacity(count),
 			_array(alloc.allocate(count)) {
 	try {
-		for (size_type i = 0; i < count; i++) {
-			_alloc.construct(&_array[i], value);
-		}
+		_fill_insert(this->begin(), count, value);
 	}
 	catch (...) {
 		_alloc.deallocate(_array, count);
@@ -62,7 +60,7 @@ vector<T,Allocator>::vector(InputIterator first, InputIterator last,
 			_capacity(_size), //	TODO: use reserve?
 			_array(alloc.allocate(_size)) {
 	try {
-		_range_copy(this->begin(), first, last, alloc);
+		_range_copy(this->begin(), first, last);
 	}
 	catch (...) {
 		_alloc.deallocate(_array, _size);
@@ -80,12 +78,13 @@ vector<T,Allocator>::vector(vector const& other)
 			_capacity(_size),
 			_array(_alloc.allocate(_size)) {
 	try {
-		_range_copy(this->begin(), other.begin(), other.end(), _alloc);
+		_range_copy(this->begin(), other.begin(), other.end());
 	}
 	catch (...) {
 		_alloc.deallocate(_array, _size);
 	}
 			//	_alloc.construct(&_array[i], other._array[i]);
+	// TODO: check if resize has to be called before range_copy
 }
 
 //	ASSIGNMENT OPERATOR
@@ -93,7 +92,7 @@ template <class T, class Allocator>
 vector<T,Allocator>&	vector<T,Allocator>::operator=(
 		vector const& other) {
 	if (this != &other) {
-		//	assign (which both clears and constructs)
+		this->assign(other.begin(), other.end());
 	}
 	return *this;
 }
@@ -197,36 +196,42 @@ template <class T, class Allocator>
 void	vector<T,Allocator>::insert(iterator pos, size_type count,
 									T const& value) {
 	size_type	old_cap = this->capacity();
-	size_type	inserted = 0;
 
-	// if (this->capacity - this->size() >= count) {
-
-	// }
-	// else {
-		try {
-			this->reserve(this->size + count);
-			if (pos < this->end())
-				_range_copy(this->end() - 1, pos, this->end(), _alloc);
-			for (; inserted < count; inserted++) {
-				
-				_alloc.construct(pos - 1 + inserted, value);
-			}
-		}
-		catch (...) {
-			for (size_type i = 0; i < inserted; i++)
-				_alloc.destroy(&*(pos - 1 + i));
-			if (old_cap < this->capacity())
-				_alloc.deallocate(&*(pos - 1), this->capacity() - old_cap);
-			throw;
-		}
-	// }
+	try {
+		this->reserve(this->_size + count);
+		if (pos < this->end() - 1)
+			_range_copy(pos + count, pos, this->end());
+		_fill_insert(pos, count, value);
+		this->_size += count; // TODO: check if resizing needs to be done before range_copy
+			// if this doesn't work, have to add old_size var for resizing on failure
+	}
+	catch (...) {
+		if (old_cap < this->capacity())
+			_alloc.deallocate(&*pos, this->capacity() - old_cap);
+		throw;
+	}
 }
 
 template <class T, class Allocator>
 template <class InputIterator>
 void	vector<T,Allocator>::insert(iterator pos, InputIterator first,
-									InputIterator last) {
-	
+									InputIterator last) { // TODO: enable_if/is_integral
+	size_type	old_cap = this->capacity();
+	size_type	count = last - first;
+
+	try {
+		this->reserve(this->size + count);
+		if (pos < this->end() - 1)
+			_range_copy(pos + count, pos, this->end());
+		_range_copy(pos, first, last);
+		this->size += count; // TODO: check if resizing needs to be done before range_copy
+			// if this doesn't work, have to add old_size var for resizing on failure
+	}
+	catch (...) {
+		if (old_cap < this->capacity())
+			_alloc.deallocate(&*pos, this->capacity() - old_cap);
+		throw;
+	}
 }
 
 //	Because vectors use an array as their underlying storage, erasing elements
@@ -250,11 +255,11 @@ typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(iterator pos) 
 template <class T, class Allocator>
 typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(
 		iterator first, iterator last) {
-	size_type	n_to_erase = std::distance(first, last);
+	size_type	n_to_erase = last - first;
 	size_type	start = first - this->begin();
 	size_type	end;
 	
-	if (n_to_erase == 0 || first == this->end())
+	if (n_to_erase < 1 || first == this->end())
 		return first;
 	for (end = start; end < start + n_to_erase; end++)
 		_alloc.destroy(&_array[end]);
@@ -317,19 +322,38 @@ void	vector<T,Allocator>::_destroy_until_end(pointer new_end) {
 }
 
 //	Internal fn called by copy and range constructors.
-//	Inserts elements in range [first,last] at `start` using `alloc`.
+//	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
-void	vector<T,Allocator>::_range_copy(iterator start, iterator first,
-										iterator last, Allocator const& alloc) {
-	iterator	cur = start;
+void	vector<T,Allocator>::_range_copy(iterator pos, iterator first, iterator last) {
+	size_type   to_copy = last - first;
+	size_type	copied = to_copy;
 
 	try {
-		for (; first != last; first++, cur++)
-			alloc.construct(&*cur, *first);
+		for (; copied != 0; copied--){
+            _alloc.construct(&*(pos + copied - 1), *(first + copied - 1));
 	}
 	catch (...) {
-		for (size_type i = 0; i < (cur - start); i++)
-			alloc.destroy(start + i);
+		for (size_type i = 0; i < to_copy - copied; i++)
+			_alloc.destroy(&*(pos + i));
+		throw;
+	}
+}
+
+//	Internal fn called by fill constructor and insert (fill version).
+//	Inserts `count` elements with value `value` at `pos`.
+template <class T, class Allocator>
+void	vector<T,Allocator>::_fill_insert(iterator pos, size_type count,
+											T const& value) {
+	size_type constructed = 0;
+	
+	try {
+		for (; constructed < count; constructed++) {
+			_alloc.construct(&*(pos + constructed), value);
+		}
+	}
+	catch (...) {
+		for (size_type i = 0; i < constructed; i++)
+			_alloc.destroy(&*(pos + i));
 		throw;
 	}
 }

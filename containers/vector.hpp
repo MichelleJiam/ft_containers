@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/11 17:37:33 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/16 21:37:55 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define VECTOR_HPP
 
 #include <memory> // allocator
+#include <algorithm> // fill
 // #include "../utils/iterator_traits.hpp"
 
 // TODO: remove
@@ -157,8 +158,8 @@ class vector {
 		pointer			_array;
 
 		void	_destroy_until_end(pointer new_end);
-		void	_range_copy(iterator start, iterator first, iterator last,
-							Allocator const& alloc);
+		void	_range_copy(iterator start, iterator first, iterator last);
+		void	_fill_insert(iterator pos, size_type count, T const& value);
 };
 
 
