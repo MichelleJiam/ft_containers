@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/16 21:40:45 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/16 21:59:17 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ void	vector<T,Allocator>::assign (InputIterator first,
 
 template <class T, class Allocator>
 typename vector<T,Allocator>::allocator_type vector<T,Allocator>::get_allocator(void) const {
-
+	return this->_alloc;
 }
 
 //	ELEMENT ACCESS FUNCTIONS
@@ -155,13 +155,17 @@ typename vector<T,Allocator>::size_type	vector<T,Allocator>::max_size(void) cons
 }
 
 //	Only reallocates storage, increasing capacity to n or greater,
-//	if `n` > current capacity. Has no effect on current size.
+//	if `new_cap` > current capacity. Has no effect on current size.
 //	Exceptions:
 //	If size requested > vector::max_size, throws length_error exception;
 //	If reallocating, allocator may throw bad_alloc.
 template <class T, class Allocator>
 void		vector<T,Allocator>::reserve (size_type new_cap) {
-
+	if (new_cap > this->max_size())
+		throw std::length_error(
+			"vector::reserve - new_cap exceeds vector max_size");
+	if (new_cap <= current_capacity)
+		return ;
 }
 
 template <class T, class Allocator>
@@ -276,14 +280,27 @@ typename vector<T,Allocator>::iterator	vector<T,Allocator>::erase(
 		return (last - n_to_erase);
 }
 
+//	Exceptions: strong guarantee, fn has no effect.
+//				May throw length_error if reallocation exceeds max_size.
 template <class T, class Allocator>
 void	vector<T,Allocator>::push_back(T const& value) {
-	
+	size_type	old_cap = this->capacity();
+
+	try {
+		this->reserve(this->size + 1);
+		_alloc.construct(&_array[_size - 1], value);
+		this->_size += 1;
+	}
+	catch (...) {
+		if (old_cap < this->capacity())
+			_alloc.deallocate(&_array[_size], 1);
+		throw;
+	}
 }
 
 template <class T, class Allocator>
 void	vector<T,Allocator>::pop_back(void) {
-	_alloc.destroy(_array[_size - 1]);
+	_alloc.destroy(&_array[_size - 1]);
 	this->_size =- 1;
 }
 
@@ -293,7 +310,8 @@ void	vector<T,Allocator>::pop_back(void) {
 template <class T, class Allocator>
 void		vector<T,Allocator>::resize(size_type count, T value) {
 	if (count > this->max_size())
-		throw std::length_error("vector::resize - n exceeds vector max_size");
+		throw std::length_error(
+			"vector::resize - count exceeds vector max_size");
 	else if (count < this->_size)
 		_destroy_until_end(_array[count]);
 	else
