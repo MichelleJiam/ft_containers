@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/26 15:15:28 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/16 21:34:19 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/17 18:32:42 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,43 +97,74 @@ template <class T, class A>
 void	_fill_insert(vector<T,A> &vec, typename vector<T,A>::iterator pos, size_type count,
 											T const& value) {
 	size_type constructed = 0;
+    // typename vector<T,A>::iterator i = vec.begin();
+    // for (size_type count = 0 ; i != pos; i++, count++)
+    //     cout << count;
+    // cout << endl;
+    // size_type offset = std::distance(vec.begin(), pos);
+    // cout << "offset: " << offset << endl;
 	
 	try {
 		for (; constructed < count; constructed++) {
+            // cout << "constructing " << value << " at (pos " << *pos <<
+            // " + constructed " << constructed << ") " << *(pos + constructed) << endl;
 			vec.get_allocator().construct(&*(pos + constructed), value);
+            // cout << "vec[" << ((pos + constructed) - vec.begin()) << "] holds value " << *(pos + constructed) << endl;
 		}
+        // vector_print(vec, "fill_insert");
 	}
 	catch (...) {
+        cout << "fill_insert: failed to construct\n";
 		for (size_type i = 0; i < constructed; i++)
 			vec.get_allocator().destroy(&*(pos + i));
 		throw;
 	}
 }
 
+
 template <class T, class A>
 void	insert(vector<T,A> &vec, typename vector<T,A>::iterator pos,
                         size_type count, T const& value) {
 	size_type	old_cap = vec.capacity();
     size_type   old_size = vec.size();
+    size_type   elems_after = vec.end() - pos;
+    size_type   offset = std::distance(vec.begin(), pos);
 
 	try {
-		vec.reserve(vec.size() + count);
+        // cout << "if size " << vec.size() << " + count " << count << " > capacity " << vec.capacity() << endl;
+		// if (pos < vec.end() - 1){
+        
+        if (vec.size() + count > vec.capacity()){
+            vec.reserve(vec.size() + count);
+            // cout << "capacity is now " << vec.capacity() << endl;
+        }
         vec.resize(vec.size() + count);
         // cout << "capacity: " << vec.capacity() << " old_cap: " << old_cap << endl;
-		if (pos < vec.end() - 1){
+        if (elems_after >= count){
+            // cout << "elems_after (" << elems_after << ") is > count (" << count << ")\n";
             // cout << "_range_copy required: pos (" << *pos << ") < end - 1 (" << *(vec.end() - 1) << ")\n";
-			_range_copy(vec, pos + count, pos, vec.end());
+			_range_copy(vec, vec.begin() + offset + count, pos, vec.end());
             }
         // vector_print(vec, "myvector after range_copy");
-		_fill_insert(vec, pos, count, value);
+		_fill_insert(vec, vec.begin() + offset, count, value);
+        // vector_print(vec, "insert - after fill_insert");
+        // cout << "capacity: " << vec.capacity() << " size: " << vec.size() << endl;
 	}
 	catch (...) {
+        cout << "insert failed\n";
 		if (old_cap < vec.capacity())
 			vec.get_allocator().deallocate(&*pos, vec.capacity() - old_cap);
         if (old_size < vec.size())
             vec.resize(old_size);
 		throw;
 	}
+}
+
+template <class T, class A>
+ typename vector<T,A>::iterator	insert(vector<T,A> &vec,
+        typename vector<T,A>::iterator pos, T const& value) {
+	insert(vec, pos, 1, value);
+	return (pos);
 }
 
 template <class T, class A>
@@ -158,6 +189,24 @@ void	insert(vector<T,A> &vec, typename vector<T,A>::iterator pos,
             vec.resize(old_size);
 		throw;
 	}
+}
+
+template <class T, class A>
+void	push_back(vector<T,A> &vec, T const& value) {
+	insert(vec, vec.end(), value);
+    // size_type	old_cap = vec.capacity();
+
+	// try {
+    //     if (vec.size() == vec.capacity())
+	// 	    vec.reserve(vec.size() + 1);
+	// 	vec.resize(vec.size() + 1);
+	// 	vec.get_allocator().construct(&*(vec.end() - 1), value);
+	// }
+	// catch (...) {
+	// 	if (old_cap < vec.capacity())
+	// 		vec.get_allocator().deallocate(&*(vec.end() - 2), 1);
+	// 	throw;
+	// }
 }
 
 template <class T, class A>
@@ -267,6 +316,7 @@ int main() {
     myit = erase(myvector, myvector.end(), myvector.end()); // no-op due to invalid range, lib erase hangs
    vector_print(myvector, "myvector");
     cout << "myiterator is at " << *myit << endl;
+    cout << endl;
 
     // cout << "distance returns " << std::distance(stdvector.end(), stdvector.end() + 1) << endl;
     // cout << "distance returns " << std::distance(stdvector.end() - 2, stdvector.end() - 1) << endl;
@@ -289,21 +339,56 @@ int main() {
     insert(myvector, myvector.end() - 2, stdvector.begin(), stdvector.end() - 5);
     vector_print(myvector, "myvector");
 
+    cout << "- inserting 400 at end - 1 -\n";
+    stdvector.insert(stdvector.end() - 1, 400);
+    vector_print(stdvector, "stdvector");
+    insert(myvector, myvector.end() - 1, 400);
+    vector_print(myvector, "myvector");
+
     cout << "- testing _range_copy -\n";
-    vector<int> copyvector;
-    copyvector.reserve(myvector.size());
-    copyvector.resize(myvector.size());
-    _range_copy(copyvector, copyvector.begin(), myvector.begin(), myvector.end());
-    vector_print(copyvector, "copyvector");
+    vector<int> copyvec;
+    copyvec.reserve(myvector.size());
+    copyvec.resize(myvector.size());
+    _range_copy(copyvec, copyvec.begin(), myvector.begin(), myvector.end());
+    vector_print(copyvec, "copyvec");
+    cout << "copyvec end(): " << *copyvec.end() << " begin(): " << *copyvec.begin() << endl;
+    vector<int> stdcopyvec(stdvector);
+    vector_print(stdcopyvec, "stdcopyvec");
+    cout << "stdcopyvec end(): " << *stdcopyvec.end() << " begin(): " << *stdcopyvec.begin() << endl;
     
-    cout << "- testing iterator arithmetic -\n";
-    vector<int>::iterator it = stdvector.begin();
-    vector<int>::iterator it2 = stdvector.end();
-    vector<int>::iterator it3 = stdvector.begin() + 2;
-    vector<int>::difference_type dist = it2 - it;
-    vector<int>::difference_type dist2 = it3 - it;
-    cout << "end() - begin() = " << dist << endl;
-    cout << "begin+2(" << *it3 << ") - begin(" << *it << ") = " << dist2 << endl;
+    cout << "- inserting 100 at end -\n";
+    cout << "capacity of" <<
+        " stdcopyvec: " << stdcopyvec.capacity() <<
+        " copyvec: " << copyvec.capacity() <<
+        " stdvector: " << stdvector.capacity() <<
+        " myvector: " << myvector.capacity() << endl;
+    stdvector.insert(stdvector.end(), 100);
+    vector_print(stdvector, "stdvector");
+    insert(myvector, myvector.end(), 100);
+    vector_print(myvector, "myvector");
+    insert(copyvec, copyvec.end(), 100); // TODO: insert doesn't work if vector is at capacity
+    vector_print(copyvec, "copyvec");
+    stdcopyvec.insert(stdcopyvec.end(), 100);
+    vector_print(stdcopyvec, "stdcopyvec");
+    cout << endl;
+
+    cout << "- testing push_back with 42 -\n";
+    stdvector.push_back(42);
+    vector_print(stdvector, "stdvector");
+    push_back(myvector, 42);
+    vector_print(myvector, "myvector");
+    push_back(copyvec, 42);
+    vector_print(copyvec, "copyvec");
+    cout << endl;
+    
+    // cout << "- testing iterator arithmetic -\n";
+    // vector<int>::iterator it = stdvector.begin();
+    // vector<int>::iterator it2 = stdvector.end();
+    // vector<int>::iterator it3 = stdvector.begin() + 2;
+    // vector<int>::difference_type dist = it2 - it;
+    // vector<int>::difference_type dist2 = it3 - it;
+    // cout << "end() - begin() = " << dist << endl;
+    // cout << "begin+2(" << *it3 << ") - begin(" << *it << ") = " << dist2 << endl;
     
     return 0;
 }

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/16 21:37:55 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/17 18:46:07 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,6 +160,7 @@ class vector {
 		void	_destroy_until_end(pointer new_end);
 		void	_range_copy(iterator start, iterator first, iterator last);
 		void	_fill_insert(iterator pos, size_type count, T const& value);
+		void	_expand_and_move(iterator pos, size_type count);
 };
 
 

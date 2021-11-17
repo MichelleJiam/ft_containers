@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/16 21:59:17 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/17 18:48:02 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,9 @@ void		vector<T,Allocator>::reserve (size_type new_cap) {
 			"vector::reserve - new_cap exceeds vector max_size");
 	if (new_cap <= current_capacity)
 		return ;
+	else {
+
+	}
 }
 
 template <class T, class Allocator>
@@ -200,18 +203,18 @@ template <class T, class Allocator>
 void	vector<T,Allocator>::insert(iterator pos, size_type count,
 									T const& value) {
 	size_type	old_cap = this->capacity();
+	// size_type   elems_after = vec.end() - pos;
+	size_type   offset = pos - vec.begin();
 
 	try {
-		this->reserve(this->_size + count);
-		if (pos < this->end() - 1)
-			_range_copy(pos + count, pos, this->end());
-		_fill_insert(pos, count, value);
+		_expand_and_move(pos, count);
+		_fill_insert(this->begin() + offset, count, value);
 		this->_size += count; // TODO: check if resizing needs to be done before range_copy
 			// if this doesn't work, have to add old_size var for resizing on failure
 	}
 	catch (...) {
 		if (old_cap < this->capacity())
-			_alloc.deallocate(&*pos, this->capacity() - old_cap);
+			_alloc.deallocate(&*(this->begin() + offset), this->capacity() - old_cap);
 		throw;
 	}
 }
@@ -221,19 +224,23 @@ template <class InputIterator>
 void	vector<T,Allocator>::insert(iterator pos, InputIterator first,
 									InputIterator last) { // TODO: enable_if/is_integral
 	size_type	old_cap = this->capacity();
+	// size_type   elems_after = vec.end() - pos;
+	size_type   offset = pos - vec.begin();
 	size_type	count = last - first;
 
 	try {
-		this->reserve(this->size + count);
-		if (pos < this->end() - 1)
-			_range_copy(pos + count, pos, this->end());
-		_range_copy(pos, first, last);
+		// if (this->size() + count > this->capacity())
+		// 	this->reserve(this->size() + count);
+		// if (elems_after >= count)
+		// 	_range_copy(pos + count, pos, this->end());
+		_expand_and_move(pos, count);
+		_range_copy(this->begin() + offset, first, last);
 		this->size += count; // TODO: check if resizing needs to be done before range_copy
 			// if this doesn't work, have to add old_size var for resizing on failure
 	}
 	catch (...) {
 		if (old_cap < this->capacity())
-			_alloc.deallocate(&*pos, this->capacity() - old_cap);
+			_alloc.deallocate(&*(this->begin() + offset), this->capacity() - old_cap);
 		throw;
 	}
 }
@@ -374,6 +381,17 @@ void	vector<T,Allocator>::_fill_insert(iterator pos, size_type count,
 			_alloc.destroy(&*(pos + i));
 		throw;
 	}
+}
+
+template <class T, class Allocator>
+void	vector<T,Allocator>::_expand_and_move(iterator pos, size_type count) {
+	size_type   elems_after = this->end() - pos;
+	iterator	saved_pos = pos; // TODO: test if this works instead of offset
+
+	if (this->size() + count > this->capacity())
+		this->reserve(this->size() + count);
+	if (elems_after >= count)
+		_range_copy(saved_pos + count, saved_pos, this->end());
 }
 
 } //	namespace ft
