@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2021/10/14 18:00:52 by mjiam         ########   odam.nl          #
+#    Updated: 2021/11/18 19:36:30 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,21 +16,21 @@ CC			= 	clang++
 
 FLAGS		= 	-Wall -Wextra -Werror -std=c++98
 
-HEADER		= 	
+HEADER		= 	$(addprefix $(CONT_DIR), vector.hpp vector.ipp)
 
-SRC_TEST	= 	main.cpp
+SRC_TEST	= 	newmain.cpp
 
 OBJ			= 	$(addprefix $(OBJ_DIR)/, $(SRC_TEST:.cpp=.o))
 
 ifdef DEBUG
-FLAGS		+=	-fsanitize=address -fno-omit-frame-pointer
+FLAGS		+=	-fsanitize=address -fno-omit-frame-pointer -g
 endif
 
 # DIRECTORIES
-TEST_DIR	=	test
-CONT_DIR	=	containers
-UTILS_DIR	=	utils
-OBJ_DIR		=	obj
+TEST_DIR	=	test/
+CONT_DIR	=	containers/
+UTILS_DIR	=	utils/
+OBJ_DIR		=	obj/
 
 # COLORS
 CYAN		= 	\033[0;36m
@@ -53,7 +53,7 @@ run:
 
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp $(HEADER)
 	@echo "$(PURPLE)Compiling: $<$(RESET)"
-	@$(CC) $(FLAGS) -c $< -o $@
+	@$(CC) $(FLAGS) -I $(CONT_DIR) -c $< -o $@
 
 $(OBJ): | $(OBJ_DIR)
 

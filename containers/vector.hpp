@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/17 18:46:07 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/18 19:41:55 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,14 @@
 
 // TODO: remove
 #include <iterator>
+#include <vector>
+#include <iostream>
 //
 
 namespace   ft {
 
 template < class T, class Allocator = std::allocator<T> >
-class vector {
+class vector : public std::vector<T, Allocator> {
 	public:
 		typedef T									value_type;
 		typedef Allocator							allocator_type;
@@ -41,14 +43,15 @@ class vector {
 
 		// CONSTRUCTORS & ASSIGNMENT OPERATORS
 		// default: empty container
-		explicit vector(Allocator const& alloc);
+		explicit vector(Allocator const& alloc = Allocator());
 		// fill: container with `count` elements, each a copy of `value`
 		explicit vector(size_type count, T const& value = T(),
 						Allocator const& alloc = Allocator());
 		// range: container with first-last elements
-		template <class InputIterator>
+		template <typename InputIterator> // TODO: uncomment
 		vector(InputIterator first, InputIterator last,
-				Allocator const& alloc = Allocator());
+				Allocator const& alloc = Allocator(),
+				typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 		// copy: container with copies of each element in `other`
 		vector(vector const& other);
 		// assignment operator
@@ -58,14 +61,14 @@ class vector {
 		~vector(void);
 
 		// ITERATORS
-		iterator				begin(void);
-		const_iterator			begin(void) const;
-		iterator				end(void);
-		const_iterator			end(void) const;
-		reverse_iterator		rbegin(void);
-		const_reverse_iterator	rbegin(void) const;
-		reverse_iterator		rend(void);
-		const_reverse_iterator	rend(void) const;
+		iterator				begin(void){return std::vector<T,Allocator>::begin();}
+		const_iterator			begin(void) const{return std::vector<T,Allocator>::begin();}
+		iterator				end(void){return std::vector<T,Allocator>::end();}
+		const_iterator			end(void) const{return std::vector<T,Allocator>::end();}
+		reverse_iterator		rbegin(void){return std::vector<T,Allocator>::rbegin();}
+		const_reverse_iterator	rbegin(void) const{return std::vector<T,Allocator>::rbegin();}
+		reverse_iterator		rend(void){return std::vector<T,Allocator>::rend();}
+		const_reverse_iterator	rend(void) const{return std::vector<T,Allocator>::rend();}
 
 		// Replaces current contents with `count` elements, each initialized
 		// to a copy of `value`.
@@ -73,21 +76,22 @@ class vector {
 
 		// Replaces current contents with elements constructed from
 		// elements in range [first,last] in the same order.
-		template <class InputIterator>
-  		void	assign(InputIterator first, InputIterator last);
+		template <typename InputIterator>
+  		void	assign(InputIterator first, InputIterator last,
+		  				typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 
 		// Returns a copy of the allocator object associated with vector.
 		allocator_type	get_allocator(void) const;
 
 		// ELEMENT ACCESS FUNCTIONS
 		reference		operator[](size_type pos);
-		const_reference	operator[](size_type pos) const;
-		reference		at(size_type pos);
-		const_reference	at(size_type pos) const;
-		reference		front(void);
-		const_reference	front(void) const;
-		reference		back(void);
-		const_reference	back(void) const;
+		// const_reference	operator[](size_type pos) const;
+		// reference		at(size_type pos);
+		// const_reference	at(size_type pos) const;
+		// reference		front(void);
+		// const_reference	front(void) const;
+		// reference		back(void);
+		// const_reference	back(void) const;
 
 		// CAPACITY FUNCTIONS
 		// Returns whether vector is empty (= size is 0).
@@ -123,8 +127,9 @@ class vector {
 		void	insert(iterator pos, size_type count, T const& value);
 
 		// Inserts elements in range [first,last] at `pos` in same order.
-		template <class InputIterator>
-		void	insert(iterator pos, InputIterator first, InputIterator last);
+		template <typename InputIterator>
+		void	insert(iterator pos, InputIterator first, InputIterator last,
+						typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 
 		// Erases (destroys) single element at `pos`, reducing size by 1.
 		iterator	erase(iterator pos);
@@ -158,32 +163,32 @@ class vector {
 		pointer			_array;
 
 		void	_destroy_until_end(pointer new_end);
-		void	_range_copy(iterator start, iterator first, iterator last);
+		void	_range_copy(iterator start, const_iterator first, const_iterator last);
 		void	_fill_insert(iterator pos, size_type count, T const& value);
-		void	_expand_and_move(iterator pos, size_type count);
+		void	_expand_and_move(iterator pos, size_type count, size_type offset);
 };
 
 
 // NON-MEMBER FUNCTION OVERLOADS
-template <class T, class Allocator>
-bool operator==(vector<T,Allocator> const& lhs,vector<T,Allocator> const& rhs);
-template <class T, class Allocator>
-bool operator!=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
-template <class T, class Allocator>
-bool operator<(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
-template <class T, class Allocator>
-bool operator<=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
-template <class T, class Allocator>
-bool operator>(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
-template <class T, class Allocator>
-bool operator>=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+// template <class T, class Allocator>
+// bool operator==(vector<T,Allocator> const& lhs,vector<T,Allocator> const& rhs);
+// template <class T, class Allocator>
+// bool operator!=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+// template <class T, class Allocator>
+// bool operator<(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+// template <class T, class Allocator>
+// bool operator<=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+// template <class T, class Allocator>
+// bool operator>(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+// template <class T, class Allocator>
+// bool operator>=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 
-// Overload of member function `swap` hat improves its performance by
-// mutually transferring ownership over their assets to the other container
-// (i.e., the containers exchange references to their data, without actually
-// performing any element copy or movement).
-template <class T, class Allocator>
-void swap(vector<T,Allocator>& x, vector<T,Allocator>& y);
+// // Overload of member function `swap` hat improves its performance by
+// // mutually transferring ownership over their assets to the other container
+// // (i.e., the containers exchange references to their data, without actually
+// // performing any element copy or movement).
+// template <class T, class Allocator>
+// void swap(vector<T,Allocator>& x, vector<T,Allocator>& y);
 
 } // namespace ft
 

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/26 15:15:28 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/17 18:32:42 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/18 16:58:29 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,7 @@ void	insert(vector<T,A> &vec, typename vector<T,A>::iterator pos,
     size_type   old_size = vec.size();
     size_type   elems_after = vec.end() - pos;
     size_type   offset = std::distance(vec.begin(), pos);
+    // typename vector<T,A>::iterator saved_pos = vec.begin() + offset;
 
 	try {
         // cout << "if size " << vec.size() << " + count " << count << " > capacity " << vec.capacity() << endl;
@@ -144,9 +145,11 @@ void	insert(vector<T,A> &vec, typename vector<T,A>::iterator pos,
             // cout << "elems_after (" << elems_after << ") is > count (" << count << ")\n";
             // cout << "_range_copy required: pos (" << *pos << ") < end - 1 (" << *(vec.end() - 1) << ")\n";
 			_range_copy(vec, vec.begin() + offset + count, pos, vec.end());
+            // _range_copy(vec, saved_pos + count, saved_pos, vec.end());
             }
         // vector_print(vec, "myvector after range_copy");
 		_fill_insert(vec, vec.begin() + offset, count, value);
+        // _fill_insert(vec, saved_pos, count, value);
         // vector_print(vec, "insert - after fill_insert");
         // cout << "capacity: " << vec.capacity() << " size: " << vec.size() << endl;
 	}
@@ -356,7 +359,7 @@ int main() {
     vector_print(stdcopyvec, "stdcopyvec");
     cout << "stdcopyvec end(): " << *stdcopyvec.end() << " begin(): " << *stdcopyvec.begin() << endl;
     
-    cout << "- inserting 100 at end -\n";
+    cout << "- inserting 100 at end of full cap copies-\n";
     cout << "capacity of" <<
         " stdcopyvec: " << stdcopyvec.capacity() <<
         " copyvec: " << copyvec.capacity() <<
