@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2021/11/18 19:36:30 by mjiam         ########   odam.nl          #
+#    Updated: 2021/11/19 17:18:53 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,8 @@ CC			= 	clang++
 
 FLAGS		= 	-Wall -Wextra -Werror -std=c++98
 
-HEADER		= 	$(addprefix $(CONT_DIR), vector.hpp vector.ipp)
+HEADER		= 	$(addprefix $(CONT_DIR), vector.hpp vector.ipp \
+											)
 
 SRC_TEST	= 	newmain.cpp
 

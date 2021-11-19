@@ -19,11 +19,11 @@ int main() {
     ft::vector<int> ftvec;
     std::vector<int> stdvec;
 
-    for (int i = 1; i <= 10; i++){
-        ftvec.push_back(i);
-        stdvec.push_back(i);
-    }
-    std::cout << "size of ftvec: " << ftvec.size() << std::endl;
+    // for (int i = 1; i <= 10; i++){
+    //     ftvec.push_back(i);
+    //     stdvec.push_back(i);
+    // }
     printVector(ftvec, stdvec);
+    std::cout << "is ftvec empty: " << (ftvec.empty() ? "true" : "false") << std::endl;
     return 0;
 }

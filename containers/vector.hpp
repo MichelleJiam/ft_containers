@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/18 19:41:55 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/19 20:41:01 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,10 @@
 # define VECTOR_HPP
 
 #include <memory> // allocator
-#include <algorithm> // fill
-// #include "../utils/iterator_traits.hpp"
+#include <cstddef> // ptrdiff_t, size_t
+// #include <algorithm> // fill
+#include "../utils/iterator_utils.hpp"
+#include "../utils/random_access_iterator.hpp"
 
 // TODO: remove
 #include <iterator>
@@ -61,6 +63,7 @@ class vector : public std::vector<T, Allocator> {
 		~vector(void);
 
 		// ITERATORS
+		// iterator				begin(void){return _array;}
 		iterator				begin(void){return std::vector<T,Allocator>::begin();}
 		const_iterator			begin(void) const{return std::vector<T,Allocator>::begin();}
 		iterator				end(void){return std::vector<T,Allocator>::end();}
