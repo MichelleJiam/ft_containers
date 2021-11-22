@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/14 18:01:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/19 19:55:10 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/22 16:06:42 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,18 @@
 #include <iterator> // iterator_tags
 
 namespace   ft {
+// Iterator tags
+// These are empty types used to distinguish different iterators.
+typedef input_iterator_tag std::input_iterator_tag;
+typedef output_iterator_tag std::output_iterator_tag;
+typedef forward_iterator_tag std::forward_iterator_tag;
+typedef bidirectional_iterator_tag std::bidirectional_iterator_tag;
+typedef random_access_iterator_tag std::random_access_iterator_tag;
+
 // Common iterator class defining nested typedefs which iterator classes
 // can inherit to save work.
 template <class Category, class T, class Distance = std::ptrdiff_t,
-	class Pointer = T*, class Reference = T&>
+			class Pointer = T*, class Reference = T&>
 struct iterator {
 	// category of the iterator. must be one of the iterator category tags.
 	typedef Category	iterator_category;
@@ -54,7 +62,7 @@ struct iterator_traits<T*> {
 		typedef T								value_type;
 		typedef T*								pointer;
 		typedef T&								reference;
-		typedef std::random_access_iterator_tag	iterator_category;
+		typedef ft::random_access_iterator_tag	iterator_category;
 };
 
 // const T* specialization
@@ -65,7 +73,7 @@ struct iterator_traits<T const*> {
 		typedef T								value_type;
 		typedef T const*						pointer;
 		typedef T const&						reference;
-		typedef std::random_access_iterator_tag	iterator_category;
+		typedef ft::random_access_iterator_tag	iterator_category;
 };
 
 // template <class InputIterator>
