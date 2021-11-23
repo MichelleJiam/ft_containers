@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/19 20:41:01 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/23 21:41:22 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ class vector : public std::vector<T, Allocator> {
 		typedef typename Allocator::const_reference	const_reference;
 		typedef typename Allocator::pointer			pointer;
 		typedef typename Allocator::const_pointer	const_pointer;
-		typedef typename std::vector<T,Allocator>::iterator	iterator; // TODO: change to ft
-		typedef typename std::vector<T,Allocator>::const_iterator	const_iterator; // TODO: change to ft
+		typedef ft::RandomAccessIterator<value_type>		iterator;
+		typedef ft::RandomAccessIterator<value_type const>	const_iterator;
 		typedef std::reverse_iterator<iterator>	reverse_iterator; // TODO: change to ft
 		typedef std::reverse_iterator<const_iterator>	const_reverse_iterator; // TODO: change to ft
 
@@ -63,11 +63,10 @@ class vector : public std::vector<T, Allocator> {
 		~vector(void);
 
 		// ITERATORS
-		// iterator				begin(void){return _array;}
-		iterator				begin(void){return std::vector<T,Allocator>::begin();}
-		const_iterator			begin(void) const{return std::vector<T,Allocator>::begin();}
-		iterator				end(void){return std::vector<T,Allocator>::end();}
-		const_iterator			end(void) const{return std::vector<T,Allocator>::end();}
+		iterator				begin(void);
+		const_iterator			begin(void) const;
+		iterator				end(void);
+		const_iterator			end(void) const;
 		reverse_iterator		rbegin(void){return std::vector<T,Allocator>::rbegin();}
 		const_reverse_iterator	rbegin(void) const{return std::vector<T,Allocator>::rbegin();}
 		reverse_iterator		rend(void){return std::vector<T,Allocator>::rend();}
@@ -186,7 +185,7 @@ class vector : public std::vector<T, Allocator> {
 // template <class T, class Allocator>
 // bool operator>=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
 
-// // Overload of member function `swap` hat improves its performance by
+// // Overload of member function `swap` that improves its performance by
 // // mutually transferring ownership over their assets to the other container
 // // (i.e., the containers exchange references to their data, without actually
 // // performing any element copy or movement).

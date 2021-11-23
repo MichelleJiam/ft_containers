@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/14 18:01:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/22 16:06:42 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/23 19:22:11 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,18 @@
 namespace   ft {
 // Iterator tags
 // These are empty types used to distinguish different iterators.
-typedef input_iterator_tag std::input_iterator_tag;
-typedef output_iterator_tag std::output_iterator_tag;
-typedef forward_iterator_tag std::forward_iterator_tag;
-typedef bidirectional_iterator_tag std::bidirectional_iterator_tag;
-typedef random_access_iterator_tag std::random_access_iterator_tag;
+typedef std::input_iterator_tag input_iterator_tag;
+typedef	std::output_iterator_tag output_iterator_tag;
+typedef std::forward_iterator_tag forward_iterator_tag;
+typedef std::bidirectional_iterator_tag bidirectional_iterator_tag;
+typedef std::random_access_iterator_tag random_access_iterator_tag;
 
 // Common iterator class defining nested typedefs which iterator classes
 // can inherit to save work.
 template <class Category, class T, class Distance = std::ptrdiff_t,
 			class Pointer = T*, class Reference = T&>
-struct iterator {
+class iterator {
+	public:
 	// category of the iterator. must be one of the iterator category tags.
 	typedef Category	iterator_category;
 	// type of the values obtained when dereferencing the iterator.

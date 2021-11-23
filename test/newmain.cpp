@@ -25,5 +25,11 @@ int main() {
     // }
     printVector(ftvec, stdvec);
     std::cout << "is ftvec empty: " << (ftvec.empty() ? "true" : "false") << std::endl;
+
+    ft::vector<int>     ft_fill_vec(4, 42);
+    std::vector<int>    std_fill_vec(4, 42);
+    std::cout << "ft fill vec contains " << ft_fill_vec.size() << " elements.\n";
+    std::cout << "std fill vec contains " << std_fill_vec.size() << " elements.\n";
+    // printVector(ft_fill_vec, std_fill_vec);
     return 0;
 }

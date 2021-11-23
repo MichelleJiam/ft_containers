@@ -6,12 +6,14 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/19 17:03:34 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/23 22:12:01 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_IPP
 # define VECTOR_IPP
+
+#define myvector ft::vector<T,Allocator>
 
 //	#include "vector.hpp"
 // DEBUG
@@ -21,7 +23,7 @@
 
 //	DEFAULT CONSTRUCTOR
 template <class T, class Allocator>
-ft::vector<T,Allocator>::vector(Allocator const& alloc)
+myvector::vector(Allocator const& alloc)
 		: _alloc(alloc), _size(0), _capacity(0), _array(NULL) {
 }
 
@@ -33,12 +35,12 @@ ft::vector<T,Allocator>::vector(Allocator const& alloc)
 //	Note: if constructors throw, destructor is not called, so clean up
 //			is done on this level before throw.
 template <class T, class Allocator>
-ft::vector<T,Allocator>::vector(size_type count, T const& value,
+myvector::vector(size_type count, T const& value,
 							Allocator const& alloc)
 		:	_alloc(alloc),
 			_size(count),
 			_capacity(count),
-			_array(alloc.allocate(count)) {
+			_array(_alloc.allocate(count)) {
 	try {
 		_fill_insert(this->begin(), count, value);
 	}
@@ -55,7 +57,7 @@ ft::vector<T,Allocator>::vector(size_type count, T const& value,
 //	allocator::allocate & allocator:construct may throw bad_alloc.
 template <class T, class Allocator>
 template <typename InputIterator>
-ft::vector<T,Allocator>::vector(InputIterator first, InputIterator last,
+myvector::vector(InputIterator first, InputIterator last,
 								Allocator const& alloc,
 								typename std::iterator_traits<InputIterator>::type*) // TODO: change to ft::
 		:	_alloc(alloc),
@@ -75,7 +77,7 @@ ft::vector<T,Allocator>::vector(InputIterator first, InputIterator last,
 //	All elements in `other` are copied but any unused capacity is not.
 //	i.e. capacity == size in the new vector.
 template <class T, class Allocator>
-ft::vector<T,Allocator>::vector(vector const& other)
+myvector::vector(vector const& other)
 		:	_alloc(other._alloc),
 			_size(other._size),
 			_capacity(_size),
@@ -92,7 +94,7 @@ ft::vector<T,Allocator>::vector(vector const& other)
 
 //	ASSIGNMENT OPERATOR
 template <class T, class Allocator>
-ft::vector<T,Allocator>&	ft::vector<T,Allocator>::operator=(
+ft::vector<T,Allocator>&	myvector::operator=(
 		vector const& other) {
 	if (this != &other) {
 		this->assign(other.begin(), other.end());
@@ -102,26 +104,37 @@ ft::vector<T,Allocator>&	ft::vector<T,Allocator>::operator=(
 
 //	DESTRUCTOR
 template <class T, class Allocator>
-ft::vector<T,Allocator>::~vector(void) {
+myvector::~vector(void) {
 	this->clear();
 	_alloc.deallocate(_array, _capacity);
 }
 
 // ITERATORS
-// template <class T, class Allocator>
-// typename ft::vector<T,Allocator>::iterator	ft::vector<T,Allocator>::begin(void) {
-// 	return (iterator(_array));
-// }
+template <class T, class Allocator>
+typename myvector::iterator	myvector::begin(void) {
+	return iterator(_array);
+}
 
-// template <class T, class Allocator>
-// typename ft::vector<T,Allocator>::const_iterator	ft::vector<T,Allocator>::begin(void) const {
-// 	return (const_iterator(_array));
-// }
+template <class T, class Allocator>
+typename myvector::const_iterator	myvector::begin(void) const {
+	return const_iterator(_array);
+}
+
+template <class T, class Allocator>
+typename myvector::iterator	myvector::end(void) {
+	return iterator(_array + _size);
+}
+
+template <class T, class Allocator>
+typename myvector::const_iterator	myvector::end(void) const {
+	return const_iterator(_array + _size);
+}
+
 
 //	Destroys current elements and replaces with newly constructed ones.
 //	Automatically reallcoates if new size > current capacity.
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::assign(size_type count, const T& value) {
+void	myvector::assign(size_type count, const T& value) {
 	this->clear();
 	if (count == 0)
 		return ;
@@ -131,7 +144,7 @@ void	ft::vector<T,Allocator>::assign(size_type count, const T& value) {
 
 template <class T, class Allocator>
 template <typename InputIterator>
-void	ft::vector<T,Allocator>::assign (InputIterator first,
+void	myvector::assign (InputIterator first,
 										InputIterator last,
 										typename std::iterator_traits<InputIterator>::type*) { // TODO: change to ft
 	size_type	count = std::distance(first, last);
@@ -144,20 +157,20 @@ void	ft::vector<T,Allocator>::assign (InputIterator first,
 }
 
 template <class T, class Allocator>
-typename ft::vector<T,Allocator>::allocator_type ft::vector<T,Allocator>::get_allocator(void) const {
+typename myvector::allocator_type myvector::get_allocator(void) const {
 	return this->_alloc;
 }
 
 //	ELEMENT ACCESS FUNCTIONS
 template <class T, class Allocator>
-typename ft::vector<T,Allocator>::reference ft::vector<T,Allocator>::operator[](size_type pos) {
+typename myvector::reference myvector::operator[](size_type pos) {
 	return (this->_array[pos]);
 }
 
 
 //	CAPACITY FUNCTIONS
 template <class T, class Allocator>
-bool		ft::vector<T,Allocator>::empty(void) const {
+bool		myvector::empty(void) const {
 	if (this->_size == 0)
 		return true;
 	return false;
@@ -165,12 +178,12 @@ bool		ft::vector<T,Allocator>::empty(void) const {
 
 //	No-throw guarantee
 template <class T, class Allocator>
-typename ft::vector<T,Allocator>::size_type	ft::vector<T,Allocator>::size(void) const {
+typename myvector::size_type	myvector::size(void) const {
 	return this->_size;
 }
 
 template <class T, class Allocator>
-typename ft::vector<T,Allocator>::size_type	ft::vector<T,Allocator>::max_size(void) const {
+typename myvector::size_type	myvector::max_size(void) const {
 	return _alloc.max_size();
 }
 
@@ -180,7 +193,7 @@ typename ft::vector<T,Allocator>::size_type	ft::vector<T,Allocator>::max_size(vo
 //	If size requested > vector::max_size, throws length_error exception;
 //	If reallocating, allocator may throw bad_alloc.
 template <class T, class Allocator>
-void		ft::vector<T,Allocator>::reserve (size_type new_cap) {
+void		myvector::reserve (size_type new_cap) {
 	if (new_cap > this->max_size())
 		throw std::length_error(
 			"vector::reserve - new_cap exceeds vector max_size");
@@ -192,7 +205,7 @@ void		ft::vector<T,Allocator>::reserve (size_type new_cap) {
 }
 
 template <class T, class Allocator>
-typename ft::vector<T,Allocator>::size_type	ft::vector<T,Allocator>::capacity(void) const {
+typename myvector::size_type	myvector::capacity(void) const {
 	return this->_capacity;
 }
 
@@ -200,7 +213,7 @@ typename ft::vector<T,Allocator>::size_type	ft::vector<T,Allocator>::capacity(vo
 //	Invalidates all refs, ptrs, and iterators referring to contained elements.
 //	No-throw guarantee
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::clear(void) {
+void	myvector::clear(void) {
 	for (size_type i = 0; i < this->_size; i++) {
 		_alloc.destroy(&_array[i]);
 	}
@@ -209,7 +222,7 @@ void	ft::vector<T,Allocator>::clear(void) {
 
 // 
 template <class T, class Allocator>
-typename ft::vector<T,Allocator>::iterator	ft::vector<T,Allocator>::insert(
+typename myvector::iterator	myvector::insert(
 		iterator pos, T const& value) {
 	this->insert(pos, 1, value);
 	return (pos);
@@ -220,7 +233,7 @@ typename ft::vector<T,Allocator>::iterator	ft::vector<T,Allocator>::insert(
 //	all the elements after `pos` to their new positions.
 //	Exceptions: strong guarantee if exception occurs.
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::insert(iterator pos, size_type count,
+void	myvector::insert(iterator pos, size_type count,
 									T const& value) {
 	size_type	old_cap = this->capacity();
 	// size_type   elems_after = vec.end() - pos;
@@ -242,7 +255,7 @@ void	ft::vector<T,Allocator>::insert(iterator pos, size_type count,
 
 template <class T, class Allocator>
 template <typename InputIterator>
-void	ft::vector<T,Allocator>::insert(iterator pos, InputIterator first,
+void	myvector::insert(iterator pos, InputIterator first,
 									InputIterator last,
 									typename std::iterator_traits<InputIterator>::type*) { // TODO: enable_if/is_integral, change std:: to ft::
 	size_type	old_cap = this->capacity();
@@ -277,7 +290,7 @@ void	ft::vector<T,Allocator>::insert(iterator pos, InputIterator first,
 //	Returns: iterator following last removed element.
 //				If operation erased last element, end() is returned.
 template <class T, class Allocator>
-typename ft::vector<T,Allocator>::iterator	ft::vector<T,Allocator>::erase(iterator pos) {
+typename myvector::iterator	myvector::erase(iterator pos) {
 	return erase(pos, pos + 1);
 }
 
@@ -286,7 +299,7 @@ typename ft::vector<T,Allocator>::iterator	ft::vector<T,Allocator>::erase(iterat
 //	Invalid range causes undefined behaviour. Input is user's responsibility.
 //	Returns: `first` if empty range or first==end().
 template <class T, class Allocator>
-typename ft::vector<T,Allocator>::iterator	ft::vector<T,Allocator>::erase(
+typename myvector::iterator	myvector::erase(
 		iterator first, iterator last) {
 	size_type	n_to_erase = last - first;
 	size_type	start = first - this->begin();
@@ -318,12 +331,12 @@ typename ft::vector<T,Allocator>::iterator	ft::vector<T,Allocator>::erase(
 //	Exceptions: strong guarantee, fn has no effect.
 //				May throw length_error if reallocation exceeds max_size.
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::push_back(T const& value) {
+void	myvector::push_back(T const& value) {
 	insert(this->end(), value);
 }
 
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::pop_back(void) {
+void	myvector::pop_back(void) {
 	_alloc.destroy(&_array[_size - 1]);
 	this->_size =- 1;
 }
@@ -332,7 +345,7 @@ void	ft::vector<T,Allocator>::pop_back(void) {
 //	Exceptions: throws length_error if resized above max_size.
 //				Function has no effect then (strong guarantee).
 template <class T, class Allocator>
-void		ft::vector<T,Allocator>::resize(size_type count, T value) {
+void		myvector::resize(size_type count, T value) {
 	if (count > this->max_size())
 		throw std::length_error(
 			"vector::resize - count exceeds vector max_size");
@@ -343,7 +356,7 @@ void		ft::vector<T,Allocator>::resize(size_type count, T value) {
 }
 
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::swap(vector& other) {
+void	myvector::swap(vector& other) {
 	(void)other; // DEBUG
 }
 
@@ -351,7 +364,7 @@ void	ft::vector<T,Allocator>::swap(vector& other) {
 //	Destroys elements past `new_end` and adjusts _size.
 //	If `new_end` exceeds current end, doesn't do anything.
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::_destroy_until_end(pointer new_end) {
+void	myvector::_destroy_until_end(pointer new_end) {
 	pointer	end_ptr = _array[_size];
 
 	if (end_ptr < new_end)
@@ -366,7 +379,7 @@ void	ft::vector<T,Allocator>::_destroy_until_end(pointer new_end) {
 //	Internal fn called by copy and range constructors.
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::_range_copy(iterator pos,
+void	myvector::_range_copy(iterator pos,
 											const_iterator first,
 											const_iterator last) {
 	size_type   to_copy = last - first;
@@ -386,7 +399,7 @@ void	ft::vector<T,Allocator>::_range_copy(iterator pos,
 //	Internal fn called by fill constructor and insert (fill version).
 //	Inserts `count` elements with value `value` at `pos`.
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::_fill_insert(iterator pos, size_type count,
+void	myvector::_fill_insert(iterator pos, size_type count,
 											T const& value) {
 	size_type constructed = 0;
 	
@@ -403,7 +416,7 @@ void	ft::vector<T,Allocator>::_fill_insert(iterator pos, size_type count,
 }
 
 template <class T, class Allocator>
-void	ft::vector<T,Allocator>::_expand_and_move(iterator pos, size_type count,
+void	myvector::_expand_and_move(iterator pos, size_type count,
 												size_type offset) {
 	size_type   elems_after = this->end() - pos;
 
