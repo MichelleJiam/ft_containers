@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/23 21:41:22 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/26 20:41:15 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,8 +164,8 @@ class vector : public std::vector<T, Allocator> {
 		size_type		_capacity;
 		pointer			_array;
 
-		void	_destroy_until_end(pointer new_end);
-		void	_range_copy(iterator start, const_iterator first, const_iterator last);
+		void	_destroy_until(iterator new_end, iterator old_end);
+		void	_range_copy(iterator start, iterator first, iterator last);
 		void	_fill_insert(iterator pos, size_type count, T const& value);
 		void	_expand_and_move(iterator pos, size_type count, size_type offset);
 };

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/23 22:12:01 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/26 21:09:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define VECTOR_IPP
 
 #define myvector ft::vector<T,Allocator>
+#define DEBUG 1
 
 //	#include "vector.hpp"
 // DEBUG
@@ -35,8 +36,7 @@ myvector::vector(Allocator const& alloc)
 //	Note: if constructors throw, destructor is not called, so clean up
 //			is done on this level before throw.
 template <class T, class Allocator>
-myvector::vector(size_type count, T const& value,
-							Allocator const& alloc)
+myvector::vector(size_type count, T const& value, Allocator const& alloc)
 		:	_alloc(alloc),
 			_size(count),
 			_capacity(count),
@@ -58,8 +58,8 @@ myvector::vector(size_type count, T const& value,
 template <class T, class Allocator>
 template <typename InputIterator>
 myvector::vector(InputIterator first, InputIterator last,
-								Allocator const& alloc,
-								typename std::iterator_traits<InputIterator>::type*) // TODO: change to ft::
+				Allocator const& alloc,
+				typename std::iterator_traits<InputIterator>::type*) // TODO: change to ft::
 		:	_alloc(alloc),
 			_size(std::distance(first, last)),
 			_capacity(_size), //	TODO: use reserve?
@@ -94,8 +94,7 @@ myvector::vector(vector const& other)
 
 //	ASSIGNMENT OPERATOR
 template <class T, class Allocator>
-ft::vector<T,Allocator>&	myvector::operator=(
-		vector const& other) {
+ft::vector<T,Allocator>&	myvector::operator=(vector const& other) {
 	if (this != &other) {
 		this->assign(other.begin(), other.end());
 	}
@@ -144,9 +143,8 @@ void	myvector::assign(size_type count, const T& value) {
 
 template <class T, class Allocator>
 template <typename InputIterator>
-void	myvector::assign (InputIterator first,
-										InputIterator last,
-										typename std::iterator_traits<InputIterator>::type*) { // TODO: change to ft
+void	myvector::assign (InputIterator first, InputIterator last,
+							typename std::iterator_traits<InputIterator>::type*) { // TODO: change to ft
 	size_type	count = std::distance(first, last);
 	
 	this->clear();
@@ -197,10 +195,28 @@ void		myvector::reserve (size_type new_cap) {
 	if (new_cap > this->max_size())
 		throw std::length_error(
 			"vector::reserve - new_cap exceeds vector max_size");
-	if (new_cap <= this->capacity())
-		return ;
-	else {
-		std::vector<T,Allocator>::reserve(new_cap);
+	if (new_cap > this->capacity()) {
+		if (DEBUG) std::cout << "reserve: reallocating more memory\n";
+		// note: problem with push_back was reserve was not reallocating more mem
+		size_type	old_size = this->size();
+		pointer		tmp = NULL;
+		try {
+			 tmp = _alloc.allocate(new_cap);
+			 if (this->size() > 0) {
+				_range_copy(tmp, this->begin(), this->end() - 1);
+				_destroy_until(this->begin(), this->end());
+			 }
+			_alloc.deallocate(&*this->begin(), this->_capacity);
+			this->_array = tmp;
+			this->_size = old_size;
+			this->_capacity = new_cap;
+		}
+		catch (...) {
+			if (tmp)
+				_alloc.deallocate(tmp, new_cap);
+			throw;
+		}
+		if (DEBUG) std::cout << "capacity is now " << this->capacity() << std::endl;
 	}
 }
 
@@ -222,8 +238,7 @@ void	myvector::clear(void) {
 
 // 
 template <class T, class Allocator>
-typename myvector::iterator	myvector::insert(
-		iterator pos, T const& value) {
+typename myvector::iterator	myvector::insert(iterator pos, T const& value) {
 	this->insert(pos, 1, value);
 	return (pos);
 }
@@ -233,16 +248,17 @@ typename myvector::iterator	myvector::insert(
 //	all the elements after `pos` to their new positions.
 //	Exceptions: strong guarantee if exception occurs.
 template <class T, class Allocator>
-void	myvector::insert(iterator pos, size_type count,
-									T const& value) {
+void	myvector::insert(iterator pos, size_type count, T const& value) {
 	size_type	old_cap = this->capacity();
 	// size_type   elems_after = vec.end() - pos;
 	size_type   offset = pos - this->begin();
 
 	try {
+		// if (DEBUG) std::cout << "insert (fill): calling expand_and_move, begin was " << *begin() << std::endl;
 		_expand_and_move(pos, count, offset);
+		if (DEBUG) std::cout << "insert (fill): begin now " << *begin() << ", calling _fill_insert with begin + " << offset << std::endl;
 		_fill_insert(this->begin() + offset, count, value);
-		std::cout << "inserting " << value << " at position " << offset << std::endl;
+		if (DEBUG) std::cout << "inserting " << value << " at position " << offset << std::endl;
 		this->_size += count; // TODO: check if resizing needs to be done before range_copy
 			// if this doesn't work, have to add old_size var for resizing on failure
 	}
@@ -255,9 +271,8 @@ void	myvector::insert(iterator pos, size_type count,
 
 template <class T, class Allocator>
 template <typename InputIterator>
-void	myvector::insert(iterator pos, InputIterator first,
-									InputIterator last,
-									typename std::iterator_traits<InputIterator>::type*) { // TODO: enable_if/is_integral, change std:: to ft::
+void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
+						typename std::iterator_traits<InputIterator>::type*) { // TODO: enable_if/is_integral, change std:: to ft::
 	size_type	old_cap = this->capacity();
 	// size_type   elems_after = vec.end() - pos;
 	size_type   offset = pos - this->begin();
@@ -332,7 +347,7 @@ typename myvector::iterator	myvector::erase(
 //				May throw length_error if reallocation exceeds max_size.
 template <class T, class Allocator>
 void	myvector::push_back(T const& value) {
-	insert(this->end(), value);
+	insert(_array + _size, value);
 }
 
 template <class T, class Allocator>
@@ -349,8 +364,8 @@ void		myvector::resize(size_type count, T value) {
 	if (count > this->max_size())
 		throw std::length_error(
 			"vector::resize - count exceeds vector max_size");
-	else if (count < this->_size)
-		_destroy_until_end(_array[count]);
+	else if (count < this->size())
+		_destroy_until(_array[count], _array[_size]);
 	else
 		this->insert(this->end(), count - this->_size, value);
 }
@@ -360,18 +375,19 @@ void	myvector::swap(vector& other) {
 	(void)other; // DEBUG
 }
 
-//	Internal fn called by resize.
-//	Destroys elements past `new_end` and adjusts _size.
+//	Internal fn called by resize, reserve.
+//	Destroys elements from `old_end` to `new_end` and adjusts _size.
 //	If `new_end` exceeds current end, doesn't do anything.
 template <class T, class Allocator>
-void	myvector::_destroy_until_end(pointer new_end) {
-	pointer	end_ptr = _array[_size];
+void	myvector::_destroy_until(iterator new_end, iterator old_end) {
+	// pointer	end_ptr = old_end;
 
-	if (end_ptr < new_end)
+	if (old_end < new_end)
 		return ;
-	while(end_ptr != new_end) {
-		_alloc.destroy(_array[end_ptr]);
-		end_ptr--;
+	while (old_end != new_end) {
+		_alloc.destroy(&*old_end);
+		// end_ptr--;
+		old_end--;
 		this->_size -= 1;
 	}
 }
@@ -379,28 +395,41 @@ void	myvector::_destroy_until_end(pointer new_end) {
 //	Internal fn called by copy and range constructors.
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
-void	myvector::_range_copy(iterator pos,
-											const_iterator first,
-											const_iterator last) {
-	size_type   to_copy = last - first;
-	size_type	copied = to_copy;
+void	myvector::_range_copy(iterator pos, iterator first, iterator last) {
+	iterator	ptr = last;
+	iterator	cur = pos + (last - first);
 
 	try {
-		for (; copied != 0; copied--)
-            _alloc.construct(&*(pos + copied - 1), *(first + copied - 1));
+		for (; ptr != first; --ptr, --cur){
+			if (DEBUG) std::cout << "range_copy: constructing " << *ptr << "at " << cur - this->begin() << std::endl;
+            _alloc.construct(&*cur, *ptr);}
 	}
 	catch (...) {
-		for (size_type i = 0; i < to_copy - copied; i++)
-			_alloc.destroy(&*(pos + i));
+		for (; ptr != last; ptr++, cur++)
+			_alloc.destroy(&*cur);
 		throw;
 	}
+	// size_type   to_copy = last - first;
+	// size_type	copied = to_copy;
+
+	// try {
+	// 	for (; copied != 0; copied--)
+	// 		std::cout << "range_copy: constructing content of " << 
+	// 		first - this->begin() << " + copied (" << copied <<
+	// 		") - 1 at " << pos - this->begin() << " + copied - 1\n";
+    //         _alloc.construct(&*(pos + copied - 1), *(first + copied - 1));
+	// }
+	// catch (...) {
+	// 	for (size_type i = 0; i < to_copy - copied; i++)
+	// 		_alloc.destroy(&*(pos + i));
+	// 	throw;
+	// }
 }
 
 //	Internal fn called by fill constructor and insert (fill version).
 //	Inserts `count` elements with value `value` at `pos`.
 template <class T, class Allocator>
-void	myvector::_fill_insert(iterator pos, size_type count,
-											T const& value) {
+void	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
 	size_type constructed = 0;
 	
 	try {
@@ -417,13 +446,16 @@ void	myvector::_fill_insert(iterator pos, size_type count,
 
 template <class T, class Allocator>
 void	myvector::_expand_and_move(iterator pos, size_type count,
-												size_type offset) {
+									size_type offset) {
 	size_type   elems_after = this->end() - pos;
 
-	if (this->size() + count > this->capacity())
-		this->reserve(this->size() + count);
-	if (elems_after >= count)
-		_range_copy(this->begin() + offset + count, pos, this->end());
+	if (DEBUG) std::cout << "expand_and_move: ";
+	if (this->size() + count > this->capacity()){
+		if (DEBUG) std::cout << "calling reserve with " << this->size() + count << std::endl;
+		this->reserve(this->size() + count);}
+	if (elems_after >= count){
+		if (DEBUG) std::cout << "copying right elements\n";
+		_range_copy(this->begin() + offset + count, pos, this->end());}
 }
 
 // } //	namespace ft
