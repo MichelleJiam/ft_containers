@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/26 20:41:15 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/26 21:11:14 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,8 @@ class vector : public std::vector<T, Allocator> {
 		typedef typename Allocator::const_reference	const_reference;
 		typedef typename Allocator::pointer			pointer;
 		typedef typename Allocator::const_pointer	const_pointer;
-		typedef ft::RandomAccessIterator<value_type>		iterator;
-		typedef ft::RandomAccessIterator<value_type const>	const_iterator;
+		typedef ft::random_access_iterator<value_type>		iterator;
+		typedef ft::random_access_iterator<value_type const>	const_iterator;
 		typedef std::reverse_iterator<iterator>	reverse_iterator; // TODO: change to ft
 		typedef std::reverse_iterator<const_iterator>	const_reverse_iterator; // TODO: change to ft
 

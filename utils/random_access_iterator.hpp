@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/19 17:11:17 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/23 22:14:42 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/26 21:11:04 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 namespace   ft {
 template <class T>
-class RandomAccessIterator
+class random_access_iterator
 	: public ft::iterator<ft::random_access_iterator_tag, T> {
 	private:
 		typedef ft::iterator<ft::random_access_iterator_tag, T>	_it_type;
@@ -29,20 +29,20 @@ class RandomAccessIterator
 
 		// CONSTRUCTORS & DESTRUCTORS
 		// default constructor
-		RandomAccessIterator(void) : _current(NULL) {}
+		random_access_iterator(void) : _current(NULL) {}
 		// initialise constructor with a pointer
-		RandomAccessIterator(pointer ptr) : _current(ptr) {}
+		random_access_iterator(pointer ptr) : _current(ptr) {}
 		// copy constructor
-		RandomAccessIterator(RandomAccessIterator const& other)
+		random_access_iterator(random_access_iterator const& other)
 			: _current(other._current) {}
 		// assignment operator
-		RandomAccessIterator&	operator=(RandomAccessIterator const& other) {
+		random_access_iterator&	operator=(random_access_iterator const& other) {
 			if (this != &other)
 				this->_current = other._current;
 			return *this;
 		}
 		// destructor
-		~RandomAccessIterator(void) {}
+		~random_access_iterator(void) {}
 
 		// returns _current, the iterator used for underlying work.
 		pointer		base(void) const {
@@ -57,53 +57,53 @@ class RandomAccessIterator
 			return _current;
 		}
 		// user-defined conversion function for const iterator
-		operator	RandomAccessIterator<T const>() const {
-			return RandomAccessIterator<T const>(this->_current);
+		operator	random_access_iterator<T const>() const {
+			return random_access_iterator<T const>(this->_current);
 		}
 		// pre-increments underlying iterator and returns *this (e.g. ++a).
-		RandomAccessIterator&	operator++(void) {
+		random_access_iterator&	operator++(void) {
 			++_current;
 			return *this;
 		}
 		// post-increments underlying iterator and
 		// returns iterator with previous value of *this (e.g. a++).
-		RandomAccessIterator	operator++(int) {
-			RandomAccessIterator	tmp = *this;
+		random_access_iterator	operator++(int) {
+			random_access_iterator	tmp = *this;
 			++_current;
 			return tmp;
 		}
 		// pre-decrements underlying iterator and returns *this (e.g. --a).
-		RandomAccessIterator&	operator--(void) {
+		random_access_iterator&	operator--(void) {
 			--_current;
 			return *this;
 		}
 		// post-decrements underlying iterator and
 		// returns iterator with previous value of *this (e.g. a--).
-		RandomAccessIterator	operator--(int) {
-			RandomAccessIterator	tmp = *this;
+		random_access_iterator	operator--(int) {
+			random_access_iterator	tmp = *this;
 			--_current;
 			return tmp;
 		}
 		// returns an iterator referring to _current + `n`.
-		RandomAccessIterator	operator+(difference_type n) const {
-			return RandomAccessIterator(_current + n);
+		random_access_iterator	operator+(difference_type n) const {
+			return random_access_iterator(_current + n);
 		}
 		// moves underlying iterator forward `n` steps.
-		RandomAccessIterator&	operator+=(difference_type n) {
+		random_access_iterator&	operator+=(difference_type n) {
 			_current += n;
 			return *this;
 		}
 		// returns an iterator referring to _current - `n`.
-		RandomAccessIterator	operator-(difference_type n) const {
-			return RandomAccessIterator(_current - n);
+		random_access_iterator	operator-(difference_type n) const {
+			return random_access_iterator(_current - n);
 		}
 		// moves underlying iterator backward `n` steps.
-		RandomAccessIterator&	operator-=(difference_type n) {
+		random_access_iterator&	operator-=(difference_type n) {
 			_current -= n;
 			return *this;
 		}
 		// returns value at _current + `n`
-		RandomAccessIterator&	operator[](difference_type n) const {
+		random_access_iterator&	operator[](difference_type n) const {
 			return *(*this + n);
 		}
 
@@ -114,46 +114,46 @@ class RandomAccessIterator
 // NON-MEMBER FUNCTIONS
 // returns distance in address between 2 iterators.
 template <class T>
-typename RandomAccessIterator<T>::difference_type operator-(
-		RandomAccessIterator<T> const& lhs,
-		RandomAccessIterator<T> const& rhs) {
+typename random_access_iterator<T>::difference_type operator-(
+		random_access_iterator<T> const& lhs,
+		random_access_iterator<T> const& rhs) {
 	return rhs.base() - lhs.base();
 }
 
 // boolean comparison operators
 template <class T>
-bool	operator==(RandomAccessIterator<T> const& lhs,
-					RandomAccessIterator<T> const& rhs) {
+bool	operator==(random_access_iterator<T> const& lhs,
+					random_access_iterator<T> const& rhs) {
 	return lhs.base() == rhs.base();
 }
 
 template <class T>
-bool	operator!=(RandomAccessIterator<T> const& lhs,
-					RandomAccessIterator<T> const& rhs) {
+bool	operator!=(random_access_iterator<T> const& lhs,
+					random_access_iterator<T> const& rhs) {
 	return lhs.base() != rhs.base();
 }
 
 template <class T>
-bool	operator<(RandomAccessIterator<T> const& lhs,
-					RandomAccessIterator<T> const& rhs) {
+bool	operator<(random_access_iterator<T> const& lhs,
+					random_access_iterator<T> const& rhs) {
 	return lhs.base() < rhs.base();
 }
 
 template <class T>
-bool	operator>(RandomAccessIterator<T> const& lhs,
-					RandomAccessIterator<T> const& rhs) {
+bool	operator>(random_access_iterator<T> const& lhs,
+					random_access_iterator<T> const& rhs) {
 	return lhs.base() > rhs.base();
 }
 
 template <class T>
-bool	operator<=(RandomAccessIterator<T> const& lhs,
-					RandomAccessIterator<T> const& rhs) {
+bool	operator<=(random_access_iterator<T> const& lhs,
+					random_access_iterator<T> const& rhs) {
 	return lhs.base() <= rhs.base();
 }
 
 template <class T>
-bool	operator>=(RandomAccessIterator<T> const& lhs,
-					RandomAccessIterator<T> const& rhs) {
+bool	operator>=(random_access_iterator<T> const& lhs,
+					random_access_iterator<T> const& rhs) {
 	return lhs.base() >= rhs.base();
 }
 
