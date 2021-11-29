@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/29 16:48:59 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/29 18:59:39 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 # define VECTOR_IPP
 
 #define myvector ft::vector<T,Allocator>
-#define DEBUG 1
+#define DEBUG 0
 
 // DEBUG
 // #define InputIterator typename vector<T,A>::iterator
@@ -196,25 +196,7 @@ void		myvector::reserve (size_type new_cap) {
 	if (new_cap > this->capacity()) {
 		if (DEBUG) std::cout << "reserve: reallocating more memory\n";
 		// note: problem with push_back was reserve was not reallocating more mem
-		size_type	old_size = this->size();
-		pointer		tmp = NULL;
-		try {
-			 tmp = _alloc.allocate(new_cap);
-			 if (this->size() > 0) {
-				_range_copy(tmp, this->begin(), this->end() - 1);
-				_destroy_until(this->begin(), this->end());
-			 }
-			_alloc.deallocate(&*this->begin(), this->_capacity);
-			this->_array = tmp;
-			this->_size = old_size;
-			this->_capacity = new_cap;
-		}
-		catch (...) {
-			if (tmp)
-				_alloc.deallocate(tmp, new_cap);
-			throw;
-		}
-		if (DEBUG) std::cout << "capacity is now " << this->capacity() << std::endl;
+		_reallocate(new_cap);
 	}
 }
 
@@ -454,6 +436,29 @@ void	myvector::_expand_and_move(iterator pos, size_type count,
 	if (elems_after >= count){
 		if (DEBUG) std::cout << "copying right elements\n";
 		_range_copy(this->begin() + offset + count, pos, this->end());}
+}
+
+//	Internal fn called by reserve and insert.
+//	Reallocates array to `n` size, copying over any existing elements.
+template <class T, class Allocator>
+void	myvector::_reallocate(size_type n) {
+	pointer		old_start = this->_array;
+	pointer		new_start = NULL;
+	size_type	new_size = 0;
+	
+	try {
+		new_start = _alloc.allocate(n);
+		for (; new_size < _size; new_size++)
+			_alloc.construct(new_start + new_size, _array[new_size]);
+		_alloc.deallocate(old_start, _capacity);
+		this->_array = new_start;
+		this->_size = new_size;
+		this->_capacity = n;
+	}
+	catch (...) {
+		if (new_start)
+			_alloc.deallocate(new_start, n);
+	}
 }
 
 // } //	namespace ft

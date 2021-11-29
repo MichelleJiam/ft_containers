@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/29 16:48:29 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/29 18:33:06 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,6 +168,7 @@ class vector : public std::vector<T, Allocator> {
 		void	_range_copy(iterator start, iterator first, iterator last);
 		void	_fill_insert(iterator pos, size_type count, T const& value);
 		void	_expand_and_move(iterator pos, size_type count, size_type offset);
+		void	_reallocate(size_type new_size);
 };
 
 
