@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/19 17:11:17 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/26 21:11:04 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/29 18:09:08 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,17 @@ class random_access_iterator
 		pointer		operator->(void) const {
 			return _current;
 		}
+		// returns value at _current + `n`
+		random_access_iterator&	operator[](difference_type n) const {
+			return *(*this + n);
+		}
 		// user-defined conversion function for const iterator
 		operator	random_access_iterator<T const>() const {
 			return random_access_iterator<T const>(this->_current);
+		}
+		// returns an iterator referring to _current + `n`.
+		random_access_iterator	operator+(difference_type n) const {
+			return random_access_iterator(_current + n);
 		}
 		// pre-increments underlying iterator and returns *this (e.g. ++a).
 		random_access_iterator&	operator++(void) {
@@ -72,6 +80,15 @@ class random_access_iterator
 			++_current;
 			return tmp;
 		}
+		// moves underlying iterator forward `n` steps.
+		random_access_iterator&	operator+=(difference_type n) {
+			_current += n;
+			return *this;
+		}
+		// returns an iterator referring to _current - `n`.
+		random_access_iterator	operator-(difference_type n) const {
+			return random_access_iterator(_current - n);
+		}
 		// pre-decrements underlying iterator and returns *this (e.g. --a).
 		random_access_iterator&	operator--(void) {
 			--_current;
@@ -84,27 +101,10 @@ class random_access_iterator
 			--_current;
 			return tmp;
 		}
-		// returns an iterator referring to _current + `n`.
-		random_access_iterator	operator+(difference_type n) const {
-			return random_access_iterator(_current + n);
-		}
-		// moves underlying iterator forward `n` steps.
-		random_access_iterator&	operator+=(difference_type n) {
-			_current += n;
-			return *this;
-		}
-		// returns an iterator referring to _current - `n`.
-		random_access_iterator	operator-(difference_type n) const {
-			return random_access_iterator(_current - n);
-		}
 		// moves underlying iterator backward `n` steps.
 		random_access_iterator&	operator-=(difference_type n) {
 			_current -= n;
 			return *this;
-		}
-		// returns value at _current + `n`
-		random_access_iterator&	operator[](difference_type n) const {
-			return *(*this + n);
 		}
 
 		protected:

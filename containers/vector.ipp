@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/26 21:09:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/29 16:48:59 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 #define myvector ft::vector<T,Allocator>
 #define DEBUG 1
 
-//	#include "vector.hpp"
 // DEBUG
 // #define InputIterator typename vector<T,A>::iterator
 
@@ -25,8 +24,7 @@
 //	DEFAULT CONSTRUCTOR
 template <class T, class Allocator>
 myvector::vector(Allocator const& alloc)
-		: _alloc(alloc), _size(0), _capacity(0), _array(NULL) {
-}
+		: _alloc(alloc), _size(0), _capacity(0), _array(NULL) {}
 
 //	FILL CONSTRUCTOR
 //	Exceptions:
