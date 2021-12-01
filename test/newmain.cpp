@@ -1,44 +1,80 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   newmain.cpp                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
+/*   Updated: 2021/11/30 19:31:36 by mjiam         ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "vector.hpp"
+# define RED "\e[0;31m"
+# define GRN "\e[0;32m"
+# define YEL "\e[0;33m"
+# define BLU "\e[0;34m"
+# define MAG "\e[0;35m"
+# define CYN "\e[0;36m"
+# define WHT "\e[0;37m"
 
 template <class T>
-void    printVector(ft::vector<T> &ftvec, std::vector<T> &stdvec)
+void    printVector(std::string const testname, ft::vector<T> &ftvec, std::vector<T> &stdvec)
 {
-    std::cout << "- STL vector -\n";
-    std::cout << "Contains " << stdvec.size() << " elements:\t[";
-    for (unsigned i = 0; i < stdvec.size(); i++)
-        std::cout << ' ' << stdvec[i];
-    std::cout << "]\n";
-    (void)stdvec;
-    std::cout << "- FT vector -\n";
-    std::cout << "Contains " << ftvec.size() << " elements:\t[";
-    for (unsigned i = 0; i < ftvec.size(); i++)
-        std::cout << ' ' << ftvec[i];
-    std::cout << "]\n";
+	int error = 0;
+
+	std::cout << "\n===== " << testname << " test =====\n";
+	std::cout << "- STL vector -\n";
+	std::cout << "capacity: " << stdvec.capacity() << std::endl;
+	std::cout << "size:     " << stdvec.size() << std::endl;
+	std::cout << "contents: [";
+	for (unsigned i = 0; i < stdvec.size(); i++)
+		std::cout << ' ' << stdvec[i];
+	std::cout << " ]\n";
+	std::cout << "\n- FT vector -\n";
+	std::cout << "capacity: " << ftvec.capacity() << std::endl;
+	std::cout << "size:     " << ftvec.size() << std::endl;
+	std::cout << "contents: [";
+	for (unsigned i = 0; i < ftvec.size(); i++) {
+		std::cout << ' ' << ftvec[i];
+		ftvec[i] == stdvec[i] ? error : error++;
+	}
+	std::cout << " ]\n";
+	if (stdvec.size() == ftvec.size()
+		&& stdvec.capacity() == ftvec.capacity()
+		&& error == 0)
+		std::cout << "RESULT: Vectors are " << GRN << "equal.\n" << WHT;
+	else
+		std::cout << "RESULT: Vectors are " << RED << "NOT equal.\n" << WHT;   
 }
 
 int main() {
-    ft::vector<int> ftvec;
-    std::vector<int> stdvec;
+	ft::vector<int> ftvec;
+	std::vector<int> stdvec;
 
-    // for (int i = 1; i <= 10; i++){
-    //     ftvec.push_back(i);
-    //     stdvec.push_back(i);
-    // }
-    printVector(ftvec, stdvec);
-    std::cout << "is ftvec empty: " << (ftvec.empty() ? "true" : "false") << std::endl;
+	for (int i = 1; i <= 10; i++){
+		ftvec.push_back(i);
+		stdvec.push_back(i);
+	}
+	printVector("push_back", ftvec, stdvec);
+	// std::cout << "is ftvec empty: " << (ftvec.empty() ? "true" : "false") << std::endl;
 
-    // fill constructor test
-    ft::vector<int>     ft_fill_vec(4, 42);
-    std::vector<int>    std_fill_vec(4, 42);
-    printVector(ft_fill_vec, std_fill_vec);
+	// fill constructor test
+	ft::vector<int>     ft_fill_vec(4, 42);
+	std::vector<int>    std_fill_vec(4, 42);
+	printVector("fill constructor", ft_fill_vec, std_fill_vec);
 
-    // reserve test
-    std::cout << "ft fill vec capacity was " << ft_fill_vec.capacity() << ".\n";
-    std::cout << "std fill vec capacity was " << std_fill_vec.capacity() << ".\n";
-    ft_fill_vec.reserve(10);
-    std_fill_vec.reserve(10);
-    std::cout << "ft fill vec capacity is " << ft_fill_vec.capacity() << ".\n";
-    std::cout << "std fill vec capacity is " << std_fill_vec.capacity() << ".\n";
-    printVector(ft_fill_vec, std_fill_vec);
-    return 0;
+	// reserve test
+	size_t   ft_oldcap = ft_fill_vec.capacity(), std_oldcap = std_fill_vec.capacity();
+	ft_fill_vec.reserve(10);
+	std_fill_vec.reserve(10);
+	printVector("reserve", ft_fill_vec, std_fill_vec);
+	std::cout << "ft fill vec capacity was " << ft_oldcap << ", is now " << ft_fill_vec.capacity() << ".\n";
+	std::cout << "std fill vec capacity was " << std_oldcap << ", is now "  << std_fill_vec.capacity() << ".\n";
+
+	// ft::vector<int>     ft_range_vec(ft_fill_vec.begin(), ft_fill_vec.end());
+	// std::vector<int>    std_range_vec(std_fill_vec.begin(), std_fill_vec.end());
+	// printVector(ft_range_vec, std_range_vec);
+	return 0;
 }

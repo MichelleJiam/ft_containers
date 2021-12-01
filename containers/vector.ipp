@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/29 18:59:39 by mjiam         ########   odam.nl         */
+/*   Updated: 2021/11/30 18:42:33 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@ myvector::vector(vector const& other)
 }
 
 //	ASSIGNMENT OPERATOR
+//	Iterator invalidation: all
 template <class T, class Allocator>
 ft::vector<T,Allocator>&	myvector::operator=(vector const& other) {
 	if (this != &other) {
@@ -130,6 +131,7 @@ typename myvector::const_iterator	myvector::end(void) const {
 
 //	Destroys current elements and replaces with newly constructed ones.
 //	Automatically reallcoates if new size > current capacity.
+//	Iterator invalidation: all
 template <class T, class Allocator>
 void	myvector::assign(size_type count, const T& value) {
 	this->clear();
@@ -183,8 +185,9 @@ typename myvector::size_type	myvector::max_size(void) const {
 	return _alloc.max_size();
 }
 
-//	Only reallocates storage, increasing capacity to n or greater,
+//	Only reallocates storage, increasing capacity to `new_cap`,
 //	if `new_cap` > current capacity. Has no effect on current size.
+//	Iterator invalidation:	if reallocation happens, all invalidated.
 //	Exceptions:
 //	If size requested > vector::max_size, throws length_error exception;
 //	If reallocating, allocator may throw bad_alloc.
@@ -206,7 +209,8 @@ typename myvector::size_type	myvector::capacity(void) const {
 }
 
 //	After this call, size() returns 0. Leaves capacity unchanged.
-//	Invalidates all refs, ptrs, and iterators referring to contained elements.
+//	Iterator invalidation:	all refs, ptrs, and iterators referring to
+//							contained elements.
 //	No-throw guarantee
 template <class T, class Allocator>
 void	myvector::clear(void) {
@@ -216,28 +220,37 @@ void	myvector::clear(void) {
 	this->_size = 0;
 }
 
-// 
+//	Because vectors use an array as their underlying storage, inserting elements
+//	in positions other than the vector end causes the container to relocate 
+//	all the elements after `pos` to their new positions.
+//	Reallocates exponentially (N * 2) if current capacity is insufficient.
+//	Iterator invalidation:	If reallocation happens, all invalidated.
+//							If not, only after point of insertion.
+//	Exceptions: strong guarantee if exception occurs.
 template <class T, class Allocator>
 typename myvector::iterator	myvector::insert(iterator pos, T const& value) {
 	this->insert(pos, 1, value);
 	return (pos);
 }
 
-//	Because vectors use an array as their underlying storage, inserting elements
-//	in positions other than the vector end causes the container to relocate 
-//	all the elements after `pos` to their new positions.
-//	Exceptions: strong guarantee if exception occurs.
 template <class T, class Allocator>
 void	myvector::insert(iterator pos, size_type count, T const& value) {
 	size_type	old_cap = this->capacity();
-	// size_type   elems_after = vec.end() - pos;
-	size_type   offset = pos - this->begin();
-
+	size_type	new_cap = this->size() > 0 ? this->size() * 2 : 1;
+	difference_type	offset = this->size() - (this->end() - pos);
+	// if (pos == this->end())
+	// 	offset = this->_size;
+	// else
+	// 	offset = pos - this->begin();
+	
+	
 	try {
 		// if (DEBUG) std::cout << "insert (fill): calling expand_and_move, begin was " << *begin() << std::endl;
-		_expand_and_move(pos, count, offset);
+		// _expand_and_move(pos, count, offset);
+		if (this->size() + count > this->capacity())
+			_reallocate(new_cap);
 		if (DEBUG) std::cout << "insert (fill): begin now " << *begin() << ", calling _fill_insert with begin + " << offset << std::endl;
-		_fill_insert(this->begin() + offset, count, value);
+		_fill_insert(this->_array + offset, count, value);
 		if (DEBUG) std::cout << "inserting " << value << " at position " << offset << std::endl;
 		this->_size += count; // TODO: check if resizing needs to be done before range_copy
 			// if this doesn't work, have to add old_size var for resizing on failure
@@ -263,7 +276,9 @@ void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
 		// 	this->reserve(this->size() + count);
 		// if (elems_after >= count)
 		// 	_range_copy(pos + count, pos, this->end());
-		_expand_and_move(pos, count, offset);
+		// _expand_and_move(pos, count, offset);
+		if (this->size() + count > this->capacity())
+			_reallocate(this->size() + count);
 		_range_copy(this->begin() + offset, first, last);
 		this->size += count; // TODO: check if resizing needs to be done before range_copy
 			// if this doesn't work, have to add old_size var for resizing on failure
@@ -280,9 +295,10 @@ void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
 //	all the elements after the segment erased to their new positions.
 //	`pos` must be dereferencable. User has responsibility to pass valid input.
 //	`end()` is not valid and causes undefined behaviour.
+//	Iterator invalidation: erased elements and all following including end().
 //	Exceptions: does not throw unless exception is thrown by the assignment
 //				operator of T.
-//	Returns: iterator following last removed element.
+//	Returns:	iterator following last removed element.
 //				If operation erased last element, end() is returned.
 template <class T, class Allocator>
 typename myvector::iterator	myvector::erase(iterator pos) {
@@ -323,13 +339,17 @@ typename myvector::iterator	myvector::erase(
 		return (last - n_to_erase);
 }
 
+//	Iterator invalidation:	If reallocation happens, all invalidated.
+//							If not, only end(). // TODO: check if only end is invalidated.
 //	Exceptions: strong guarantee, fn has no effect.
 //				May throw length_error if reallocation exceeds max_size.
 template <class T, class Allocator>
 void	myvector::push_back(T const& value) {
+	if (DEBUG) std::cout << "push_back: calling insert with (" << 0 + _size << ", " << value << ")\n";
 	insert(_array + _size, value);
 }
 
+//	Iterator invalidation:	element erased and end().
 template <class T, class Allocator>
 void	myvector::pop_back(void) {
 	_alloc.destroy(&_array[_size - 1]);
@@ -337,6 +357,9 @@ void	myvector::pop_back(void) {
 }
 
 //	Changes only the number of elements in the container, not its capacity.
+//	Iterator invalidation:	If reallocation happens, all invalidated.
+//							If resizing to smaller, at point of destruction
+//							including end().
 //	Exceptions: throws length_error if resized above max_size.
 //				Function has no effect then (strong guarantee).
 template <class T, class Allocator>
@@ -350,12 +373,13 @@ void		myvector::resize(size_type count, T value) {
 		this->insert(this->end(), count - this->_size, value);
 }
 
+//	Iterator invalidation: never
 template <class T, class Allocator>
 void	myvector::swap(vector& other) {
 	(void)other; // DEBUG
 }
 
-//	Internal fn called by resize, reserve.
+//	Internal fn called by resize.
 //	Destroys elements from `old_end` to `new_end` and adjusts _size.
 //	If `new_end` exceeds current end, doesn't do anything.
 template <class T, class Allocator>
@@ -424,19 +448,19 @@ void	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
 	}
 }
 
-template <class T, class Allocator>
-void	myvector::_expand_and_move(iterator pos, size_type count,
-									size_type offset) {
-	size_type   elems_after = this->end() - pos;
+// template <class T, class Allocator>
+// void	myvector::_expand_and_move(iterator pos, size_type count,
+// 									size_type offset) {
+// 	size_type   elems_after = this->end() - pos;
 
-	if (DEBUG) std::cout << "expand_and_move: ";
-	if (this->size() + count > this->capacity()){
-		if (DEBUG) std::cout << "calling reserve with " << this->size() + count << std::endl;
-		this->reserve(this->size() + count);}
-	if (elems_after >= count){
-		if (DEBUG) std::cout << "copying right elements\n";
-		_range_copy(this->begin() + offset + count, pos, this->end());}
-}
+// 	if (DEBUG) std::cout << "expand_and_move: ";
+// 	if (this->size() + count > this->capacity()){
+// 		if (DEBUG) std::cout << "calling reserve with " << this->size() + count << std::endl;
+// 		this->reserve(this->size() + count);}
+// 	if (elems_after >= count){
+// 		if (DEBUG) std::cout << "copying right elements\n";
+// 		_range_copy(this->begin() + offset + count, pos, this->end());}
+// }
 
 //	Internal fn called by reserve and insert.
 //	Reallocates array to `n` size, copying over any existing elements.
