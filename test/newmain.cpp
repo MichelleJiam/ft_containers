@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/04 18:13:32 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/04 18:28:22 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,14 @@ int main() {
 	ft_fill_vec.insert(ft_fill_vec.end(), 2, 13);
 	std_fill_vec.insert(std_fill_vec.end(), 2, 13);
 	printVector("fill insert", ft_fill_vec, std_fill_vec);
+
+	// erase test
+	// ft_fill_vec.erase(ft_fill_vec.end() - 1);
+	// std_fill_vec.erase(std_fill_vec.end() - 1);
+	// printVector("erase", ft_fill_vec, std_fill_vec);
+	ft_fill_vec.erase(ft_fill_vec.end() - 2, ft_fill_vec.end() - 1);
+	std_fill_vec.erase(std_fill_vec.end() - 2, std_fill_vec.end() - 1);
+	printVector("erase", ft_fill_vec, std_fill_vec);
 
 	// ft::vector<int>     ft_range_vec(ft_fill_vec.begin(), ft_fill_vec.end());
 	// std::vector<int>    std_range_vec(std_fill_vec.begin(), std_fill_vec.end());

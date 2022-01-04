@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/04 18:15:15 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/04 18:34:19 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,6 +258,7 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 	}
 }
 
+// TODO: implement is_integral and add within fn body
 // template <class T, class Allocator>
 // template <typename InputIterator>
 // void	myvector::insert(iterator pos, InputIterator first, InputIterator last) {
@@ -297,7 +298,12 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 //				If operation erased last element, end() is returned.
 template <class T, class Allocator>
 typename myvector::iterator	myvector::erase(iterator pos) {
-	return erase(pos, pos + 1);
+	// return erase(pos, pos + 1);
+	if (pos + 1 != this->end())
+		// move elements backwards
+	this->_size -= 1;
+	_alloc.destroy(&_array[_size - 1]);
+	return pos;		
 }
 
 //	The iterator first does not need to be dereferenceable if first==last:
