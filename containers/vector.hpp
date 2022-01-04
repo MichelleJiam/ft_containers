@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/30 17:09:02 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/04 18:11:33 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,10 +50,10 @@ class vector : public std::vector<T, Allocator> {
 		explicit vector(size_type count, T const& value = T(),
 						Allocator const& alloc = Allocator());
 		// range: container with first-last elements
-		template <typename InputIterator> // TODO: uncomment
-		vector(InputIterator first, InputIterator last,
-				Allocator const& alloc = Allocator(),
-				typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
+		// template <typename InputIterator> // TODO: uncomment
+		// vector(InputIterator first, InputIterator last,
+		// 		Allocator const& alloc = Allocator(),
+		// 		typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 		// copy: container with copies of each element in `other`
 		vector(vector const& other);
 		// assignment operator
@@ -125,13 +125,13 @@ class vector : public std::vector<T, Allocator> {
 		// Insert single element at specified `pos`, increasing size by 1.
 		iterator	insert(iterator pos, T const& value);
 
-		// Inserts `count` elements iniitalized to a copy of `value`.
+		// Inserts `count` elements initialized to a copy of `value`.
 		void	insert(iterator pos, size_type count, T const& value);
 
 		// Inserts elements in range [first,last] at `pos` in same order.
-		template <typename InputIterator>
-		void	insert(iterator pos, InputIterator first, InputIterator last,
-						typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
+		// template <typename InputIterator>
+		// void	insert(iterator pos, InputIterator first, InputIterator last);
+		// 				// typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 
 		// Erases (destroys) single element at `pos`, reducing size by 1.
 		iterator	erase(iterator pos);

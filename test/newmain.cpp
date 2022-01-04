@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/30 19:31:36 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/04 18:13:32 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,11 @@ int main() {
 	printVector("reserve", ft_fill_vec, std_fill_vec);
 	std::cout << "ft fill vec capacity was " << ft_oldcap << ", is now " << ft_fill_vec.capacity() << ".\n";
 	std::cout << "std fill vec capacity was " << std_oldcap << ", is now "  << std_fill_vec.capacity() << ".\n";
+
+	// fill insert test
+	ft_fill_vec.insert(ft_fill_vec.end(), 2, 13);
+	std_fill_vec.insert(std_fill_vec.end(), 2, 13);
+	printVector("fill insert", ft_fill_vec, std_fill_vec);
 
 	// ft::vector<int>     ft_range_vec(ft_fill_vec.begin(), ft_fill_vec.end());
 	// std::vector<int>    std_range_vec(std_fill_vec.begin(), std_fill_vec.end());

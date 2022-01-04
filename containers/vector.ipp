@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/30 18:42:33 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/04 18:15:15 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@
 
 // DEBUG
 // #define InputIterator typename vector<T,A>::iterator
-
-// namespace ft {
 
 //	DEFAULT CONSTRUCTOR
 template <class T, class Allocator>
@@ -53,23 +51,23 @@ myvector::vector(size_type count, T const& value, Allocator const& alloc)
 //	std::distance may throw if arithmetical operations performed on the 
 //	iterators throw;
 //	allocator::allocate & allocator:construct may throw bad_alloc.
-template <class T, class Allocator>
-template <typename InputIterator>
-myvector::vector(InputIterator first, InputIterator last,
-				Allocator const& alloc,
-				typename std::iterator_traits<InputIterator>::type*) // TODO: change to ft::
-		:	_alloc(alloc),
-			_size(std::distance(first, last)),
-			_capacity(_size), //	TODO: use reserve?
-			_array(alloc.allocate(_size)) {
-	try {
-		_range_copy(this->begin(), first, last);
-	}
-	catch (...) {
-		_alloc.deallocate(_array, _size);
-	}
-			//	_alloc.construct(&_array[i], *(first + i));
-}
+// template <class T, class Allocator>
+// template <typename InputIterator>
+// myvector::vector(InputIterator first, InputIterator last,
+// 				Allocator const& alloc,
+// 				typename std::iterator_traits<InputIterator>::type*) // TODO: change to ft::
+// 		:	_alloc(alloc),
+// 			_size(std::distance(first, last)),
+// 			_capacity(_size), //	TODO: use reserve?
+// 			_array(alloc.allocate(_size)) {
+// 	try {
+// 		_range_copy(this->begin(), first, last);
+// 	}
+// 	catch (...) {
+// 		_alloc.deallocate(_array, _size);
+// 	}
+// 			//	_alloc.construct(&_array[i], *(first + i));
+// }
 
 //	COPY CONSTRUCTOR
 //	All elements in `other` are copied but any unused capacity is not.
@@ -236,7 +234,6 @@ typename myvector::iterator	myvector::insert(iterator pos, T const& value) {
 template <class T, class Allocator>
 void	myvector::insert(iterator pos, size_type count, T const& value) {
 	size_type	old_cap = this->capacity();
-	size_type	new_cap = this->size() > 0 ? this->size() * 2 : 1;
 	difference_type	offset = this->size() - (this->end() - pos);
 	// if (pos == this->end())
 	// 	offset = this->_size;
@@ -248,12 +245,11 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 		// if (DEBUG) std::cout << "insert (fill): calling expand_and_move, begin was " << *begin() << std::endl;
 		// _expand_and_move(pos, count, offset);
 		if (this->size() + count > this->capacity())
-			_reallocate(new_cap);
+			_reallocate(this->size() ? this->size() * 2 : 1);
 		if (DEBUG) std::cout << "insert (fill): begin now " << *begin() << ", calling _fill_insert with begin + " << offset << std::endl;
 		_fill_insert(this->_array + offset, count, value);
 		if (DEBUG) std::cout << "inserting " << value << " at position " << offset << std::endl;
-		this->_size += count; // TODO: check if resizing needs to be done before range_copy
-			// if this doesn't work, have to add old_size var for resizing on failure
+		this->_size += count;
 	}
 	catch (...) {
 		if (old_cap < this->capacity())
@@ -262,33 +258,32 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 	}
 }
 
-template <class T, class Allocator>
-template <typename InputIterator>
-void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
-						typename std::iterator_traits<InputIterator>::type*) { // TODO: enable_if/is_integral, change std:: to ft::
-	size_type	old_cap = this->capacity();
-	// size_type   elems_after = vec.end() - pos;
-	size_type   offset = pos - this->begin();
-	size_type	count = last - first;
+// template <class T, class Allocator>
+// template <typename InputIterator>
+// void	myvector::insert(iterator pos, InputIterator first, InputIterator last) {
+// 						// typename std::iterator_traits<InputIterator>::type*) { // TODO: enable_if/is_integral, change std:: to ft::
+// 	size_type	old_cap = this->capacity();
+// 	// size_type   elems_after = vec.end() - pos;
+// 	size_type   offset = pos - this->begin();
+// 	size_type	count = last - first;
 
-	try {
-		// if (this->size() + count > this->capacity())
-		// 	this->reserve(this->size() + count);
-		// if (elems_after >= count)
-		// 	_range_copy(pos + count, pos, this->end());
-		// _expand_and_move(pos, count, offset);
-		if (this->size() + count > this->capacity())
-			_reallocate(this->size() + count);
-		_range_copy(this->begin() + offset, first, last);
-		this->size += count; // TODO: check if resizing needs to be done before range_copy
-			// if this doesn't work, have to add old_size var for resizing on failure
-	}
-	catch (...) {
-		if (old_cap < this->capacity())
-			_alloc.deallocate(&*(this->begin() + offset), this->capacity() - old_cap);
-		throw;
-	}
-}
+// 	try {
+// 		// if (this->size() + count > this->capacity())
+// 		// 	this->reserve(this->size() + count);
+// 		// if (elems_after >= count)
+// 		// 	_range_copy(pos + count, pos, this->end());
+// 		// _expand_and_move(pos, count, offset);
+// 		if (this->size() + count > this->capacity())
+// 			_reallocate(this->size() + count);
+// 		_range_copy(this->begin() + offset, first, last);
+// 		this->size += count;
+// 	}
+// 	catch (...) {
+// 		if (old_cap < this->capacity())
+// 			_alloc.deallocate(&*(this->begin() + offset), this->capacity() - old_cap);
+// 		throw;
+// 	}
+// }
 
 //	Because vectors use an array as their underlying storage, erasing elements
 //	in positions other than the vector end causes the container to relocate 
@@ -484,7 +479,5 @@ void	myvector::_reallocate(size_type n) {
 			_alloc.deallocate(new_start, n);
 	}
 }
-
-// } //	namespace ft
 
 #endif
