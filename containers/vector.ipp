@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/04 18:34:19 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/10 17:41:53 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,9 +298,8 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 //				If operation erased last element, end() is returned.
 template <class T, class Allocator>
 typename myvector::iterator	myvector::erase(iterator pos) {
-	// return erase(pos, pos + 1);
 	if (pos + 1 != this->end())
-		// move elements backwards
+		_range_copy(pos, pos + 1, end());
 	this->_size -= 1;
 	_alloc.destroy(&_array[_size - 1]);
 	return pos;		
@@ -313,31 +312,44 @@ typename myvector::iterator	myvector::erase(iterator pos) {
 template <class T, class Allocator>
 typename myvector::iterator	myvector::erase(
 		iterator first, iterator last) {
-	size_type	n_to_erase = last - first;
-	size_type	start = first - this->begin();
-	size_type	end;
-	size_type	i = 0;
-	
-	if (n_to_erase < 1 || first == this->end())
-		return first;
-	for (end = start; end < start + n_to_erase; end++)
-		_alloc.destroy(&_array[end]);
-	try {
-		for (; end + i < _size; i++) {
-			_alloc.construct(&_array[start + i], _array[end + i]);
-			_alloc.destroy(&_array[end + i]);
+	if (first != last) {
+		if (last != this->end())
+			_range_copy(first, last, end());
+		// _destroy_until((first + (end() - last)), end());
+		pointer pos = first.base() + (end() - last);
+		if (size_type n = (this->_array + _size - 1) - pos) {
+			for (; pos != (this->_array + _size - 1); ++pos) {
+				_alloc.destroy(&*pos);
+				this->_size -= 1;
+			}
 		}
 	}
-	catch (...) {
-		for (size_type j = 0; j < i; j++)
-			_alloc.destroy(&_array[start + j]);
-		throw;
-	}
-	this->_size -= n_to_erase;
-	if (end >= _size)
-		return this->end();
-	else
-		return (last - n_to_erase);
+	return first;
+	// size_type	n_to_erase = last - first;
+	// size_type	start = first - this->begin();
+	// size_type	end;
+	// size_type	i = 0;
+	
+	// if (n_to_erase < 1 || first == this->end())
+	// 	return first;
+	// for (end = start; end < start + n_to_erase; end++)
+	// 	_alloc.destroy(&_array[end]);
+	// try {
+	// 	for (; end + i < _size; i++) {
+	// 		_alloc.construct(&_array[start + i], _array[end + i]);
+	// 		_alloc.destroy(&_array[end + i]);
+	// 	}
+	// }
+	// catch (...) {
+	// 	for (size_type j = 0; j < i; j++)
+	// 		_alloc.destroy(&_array[start + j]);
+	// 	throw;
+	// }
+	// this->_size -= n_to_erase;
+	// if (end >= _size)
+	// 	return this->end();
+	// else
+	// 	return (last - n_to_erase);
 }
 
 //	Iterator invalidation:	If reallocation happens, all invalidated.
@@ -365,11 +377,12 @@ void	myvector::pop_back(void) {
 //				Function has no effect then (strong guarantee).
 template <class T, class Allocator>
 void		myvector::resize(size_type count, T value) {
+	std::cout << "resize: count = " << count << ", size = " << _size << std::endl;
 	if (count > this->max_size())
 		throw std::length_error(
 			"vector::resize - count exceeds vector max_size");
 	else if (count < this->size())
-		_destroy_until(_array[count], _array[_size]);
+		_destroy_until(_array + count, _array + _size);
 	else
 		this->insert(this->end(), count - this->_size, value);
 }
@@ -380,24 +393,24 @@ void	myvector::swap(vector& other) {
 	(void)other; // DEBUG
 }
 
-//	Internal fn called by resize.
+//	Internal fn called by resize, erase.
 //	Destroys elements from `old_end` to `new_end` and adjusts _size.
 //	If `new_end` exceeds current end, doesn't do anything.
 template <class T, class Allocator>
 void	myvector::_destroy_until(iterator new_end, iterator old_end) {
 	// pointer	end_ptr = old_end;
 
-	if (old_end < new_end)
-		return ;
-	while (old_end != new_end) {
-		_alloc.destroy(&*old_end);
-		// end_ptr--;
-		old_end--;
-		this->_size -= 1;
+	if (old_end - new_end) {
+		while (old_end != new_end) {
+			_alloc.destroy(&*old_end);
+			// end_ptr--;
+			old_end--;
+			this->_size -= 1;
+		}
 	}
 }
 
-//	Internal fn called by copy and range constructors.
+//	Internal fn called by copy and range constructors, and erase.
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
 void	myvector::_range_copy(iterator pos, iterator first, iterator last) {
