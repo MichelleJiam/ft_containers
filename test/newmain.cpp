@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/11 17:55:59 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/11 18:21:57 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void    printVector(std::string const testname, ft::vector<T> &ftvec, std::vecto
 {
 	int error = 0;
 
-	std::cout << "\n===== " << testname << " test =====\n";
+	std::cout << WHT << "\n===== " << testname << " test =====\n";
 	std::cout << "- STL vector -\n";
 	std::cout << "capacity: " << stdvec.capacity() << std::endl;
 	std::cout << "size:     " << stdvec.size() << std::endl;
@@ -65,6 +65,11 @@ int main() {
 	std::vector<int>    std_fill_vec(4, 42);
 	printVector("fill constructor", ft_fill_vec, std_fill_vec);
 
+	// pop_back test
+	ftvec.pop_back();
+	stdvec.pop_back();
+	printVector("pop_back", ftvec, stdvec);
+
 	// reserve test
 	size_t   ft_oldcap = ft_fill_vec.capacity(), std_oldcap = std_fill_vec.capacity();
 	ft_fill_vec.reserve(10);
@@ -100,8 +105,8 @@ int main() {
 	printVector("erase", ft_fill_vec, std_fill_vec);
 	ft_fill_vec.erase(ft_fill_vec.end() - 3, ft_fill_vec.end() - 1);
 	std_fill_vec.erase(std_fill_vec.end() - 3, std_fill_vec.end() - 1);
-	// ft_fill_vec.erase(ft_fill_vec.begin() + 2, ft_fill_vec.begin() + 4);
-	// std_fill_vec.erase(std_fill_vec.begin() + 2, std_fill_vec.begin() + 4);
+	ft_fill_vec.erase(ft_fill_vec.begin() + 2, ft_fill_vec.begin() + 4);
+	std_fill_vec.erase(std_fill_vec.begin() + 2, std_fill_vec.begin() + 4);
 	printVector("erase range", ft_fill_vec, std_fill_vec);
 
 	// ft::vector<int>     ft_range_vec(ft_fill_vec.begin(), ft_fill_vec.end());

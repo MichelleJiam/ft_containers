@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/11 18:16:02 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/11 18:22:30 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -363,7 +363,7 @@ void	myvector::push_back(T const& value) {
 template <class T, class Allocator>
 void	myvector::pop_back(void) {
 	_alloc.destroy(&_array[_size - 1]);
-	this->_size =- 1;
+	this->_size -= 1;
 }
 
 //	Changes only the number of elements in the container, not its capacity.
@@ -394,12 +394,9 @@ void	myvector::swap(vector& other) {
 //	If `new_end` exceeds current end, doesn't do anything.
 template <class T, class Allocator>
 void	myvector::_destroy_until(iterator new_end, iterator old_end) {
-	// pointer	end_ptr = old_end;
-
 	if (old_end - new_end) {
 		while (old_end != new_end) {
 			_alloc.destroy(&*old_end);
-			// end_ptr--;
 			old_end--;
 			this->_size -= 1;
 		}
