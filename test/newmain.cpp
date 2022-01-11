@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/10 17:38:48 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/11 17:55:59 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,19 @@ int main() {
 	std::cout << "std fill vec capacity was " << std_oldcap << ", is now "  << std_fill_vec.capacity() << ".\n";
 
 	// insert test
-	ft_fill_vec.insert(ft_fill_vec.end(), 2, 13);
-	std_fill_vec.insert(std_fill_vec.end(), 2, 13);
-	// ft_fill_vec.insert(ft_fill_vec.begin() + 1, 2, 0);
-	// std_fill_vec.insert(std_fill_vec.begin() + 1, 2, 0);
+	ft::vector<int>::iterator ft_it;
+	std::vector<int>::iterator std_it;
+	ft_it = ft_fill_vec.end();
+	std_it = std_fill_vec.end();
+	ft_fill_vec.insert(ft_it - 1, 2, 13);
+	std_fill_vec.insert(std_it - 1, 2, 13);
+	printVector("insert", ft_fill_vec, std_fill_vec);
+	ft_it = ft_fill_vec.begin();
+	std_it = std_fill_vec.begin();
+	ft_fill_vec.insert(ft_it + 2, 2, 0);
+	std_fill_vec.insert(std_it + 2, 2, 0);
+	ft_fill_vec.insert(ft_it + 1, 2, 10);
+	std_fill_vec.insert(std_it + 1, 2, 10);
 	printVector("insert", ft_fill_vec, std_fill_vec);
 
 	// resize test
@@ -86,11 +95,11 @@ int main() {
 	printVector("resize", ft_fill_vec, std_fill_vec);
 
 	// erase test
-	ft_fill_vec.erase(ft_fill_vec.end() - 1);
-	std_fill_vec.erase(std_fill_vec.end() - 1);
-	// printVector("erase", ft_fill_vec, std_fill_vec);
-	// ft_fill_vec.erase(ft_fill_vec.end() - 2, ft_fill_vec.end() - 1);
-	// std_fill_vec.erase(std_fill_vec.end() - 2, std_fill_vec.end() - 1);
+	ft_fill_vec.erase(ft_fill_vec.end() - 2);
+	std_fill_vec.erase(std_fill_vec.end() - 2);
+	printVector("erase", ft_fill_vec, std_fill_vec);
+	ft_fill_vec.erase(ft_fill_vec.end() - 3, ft_fill_vec.end() - 1);
+	std_fill_vec.erase(std_fill_vec.end() - 3, std_fill_vec.end() - 1);
 	// ft_fill_vec.erase(ft_fill_vec.begin() + 2, ft_fill_vec.begin() + 4);
 	// std_fill_vec.erase(std_fill_vec.begin() + 2, std_fill_vec.begin() + 4);
 	printVector("erase range", ft_fill_vec, std_fill_vec);

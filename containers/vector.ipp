@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/10 17:41:53 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/11 18:16:02 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -233,27 +233,30 @@ typename myvector::iterator	myvector::insert(iterator pos, T const& value) {
 
 template <class T, class Allocator>
 void	myvector::insert(iterator pos, size_type count, T const& value) {
-	size_type	old_cap = this->capacity();
-	difference_type	offset = this->size() - (this->end() - pos);
-	// if (pos == this->end())
-	// 	offset = this->_size;
-	// else
-	// 	offset = pos - this->begin();
-	
+	size_type		old_cap = this->capacity();
+	iterator		end = this->_array + _size;
+	difference_type	offset = std::distance(pos, this->begin());
+	// difference_type offset = this->size() - (this->end() - pos);	
 	
 	try {
-		// if (DEBUG) std::cout << "insert (fill): calling expand_and_move, begin was " << *begin() << std::endl;
-		// _expand_and_move(pos, count, offset);
+		// if (DEBUG) std::cout
+		// 	// << "insert (fill): begin now " << *begin() << ", "
+		// 	<< "calling _fill_insert with begin + " << offset << std::endl;
 		if (this->size() + count > this->capacity())
 			_reallocate(this->size() ? this->size() * 2 : 1);
-		if (DEBUG) std::cout << "insert (fill): begin now " << *begin() << ", calling _fill_insert with begin + " << offset << std::endl;
+		if (pos != end)
+			_range_copy(pos + count, pos, end);
 		_fill_insert(this->_array + offset, count, value);
-		if (DEBUG) std::cout << "inserting " << value << " at position " << offset << std::endl;
+		if (DEBUG) std::cout << "inserting " << value << " at position " << 	
+			offset << std::endl;
 		this->_size += count;
+		// for (size_type i = 0; i < _size; i++)
+		// 	std::cout << _array[i] << " ";
+		// std::cout << " | end of array\n";
 	}
 	catch (...) {
 		if (old_cap < this->capacity())
-			_alloc.deallocate(&*(this->begin() + offset), this->capacity() - old_cap);
+			_alloc.deallocate(&*(this->_array + offset), this->capacity() - old_cap);
 		throw;
 	}
 }
@@ -313,16 +316,10 @@ template <class T, class Allocator>
 typename myvector::iterator	myvector::erase(
 		iterator first, iterator last) {
 	if (first != last) {
+		size_type	elems_after = std::distance(this->end(), last);
 		if (last != this->end())
-			_range_copy(first, last, end());
-		// _destroy_until((first + (end() - last)), end());
-		pointer pos = first.base() + (end() - last);
-		if (size_type n = (this->_array + _size - 1) - pos) {
-			for (; pos != (this->_array + _size - 1); ++pos) {
-				_alloc.destroy(&*pos);
-				this->_size -= 1;
-			}
-		}
+			_range_copy(first, last, this->end());
+		_destroy_until((first + elems_after), end());
 	}
 	return first;
 	// size_type	n_to_erase = last - first;
@@ -377,7 +374,6 @@ void	myvector::pop_back(void) {
 //				Function has no effect then (strong guarantee).
 template <class T, class Allocator>
 void		myvector::resize(size_type count, T value) {
-	std::cout << "resize: count = " << count << ", size = " << _size << std::endl;
 	if (count > this->max_size())
 		throw std::length_error(
 			"vector::resize - count exceeds vector max_size");
@@ -414,32 +410,34 @@ void	myvector::_destroy_until(iterator new_end, iterator old_end) {
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
 void	myvector::_range_copy(iterator pos, iterator first, iterator last) {
-	iterator	ptr = last;
-	iterator	cur = pos + (last - first);
-
-	try {
-		for (; ptr != first; --ptr, --cur){
-			if (DEBUG) std::cout << "range_copy: constructing " << *ptr << "at " << cur - this->begin() << std::endl;
-            _alloc.construct(&*cur, *ptr);}
-	}
-	catch (...) {
-		for (; ptr != last; ptr++, cur++)
-			_alloc.destroy(&*cur);
-		throw;
-	}
-	// size_type   to_copy = last - first;
-	// size_type	copied = to_copy;
+	// iterator	ptr = last;
+	// iterator	cur = pos + (last - first);
 
 	// try {
-	// 	for (; copied != 0; copied--)
-	// 		std::cout << "range_copy: constructing content of " << 
-	// 		first - this->begin() << " + copied (" << copied <<
-	// 		") - 1 at " << pos - this->begin() << " + copied - 1\n";
-    //         _alloc.construct(&*(pos + copied - 1), *(first + copied - 1));
+	// 	for (; ptr != first; --ptr, --cur){
+	// 		if (DEBUG) std::cout << "range_copy: constructing " << *ptr << " at " << cur - this->begin() << std::endl;
+    //         _alloc.construct(&*cur, *ptr);}
 	// }
 	// catch (...) {
-	// 	for (size_type i = 0; i < to_copy - copied; i++)
-	// 		_alloc.destroy(&*(pos + i));
+	// 	for (; ptr != last; ptr++, cur++)
+	// 		_alloc.destroy(&*cur);
+	// 	throw;
+	// }
+	difference_type to_copy = std::distance(last, first);
+	for (; to_copy > 0; to_copy--) {
+		if (DEBUG) std::cout << "range_copy: constructing " << *(first + to_copy - 1) << " at " << std::distance((pos + to_copy), this->begin()) << std::endl;
+		_alloc.construct(&*(pos + to_copy - 1), *(first + to_copy - 1));
+	}
+	// iterator cur = pos;
+
+	// try {
+	// 	for (; first != last; ++first, ++cur){
+	// 		if (DEBUG) std::cout << "range_copy: constructing " << *first << " at " 	<< std::distance(cur, this->begin()) << std::endl;
+	// 		_alloc.construct(&*cur, *first);}
+	// }
+	// catch (...) {
+	// 	for (; pos != cur; ++pos)
+	// 		_alloc.destroy(&*pos);
 	// 	throw;
 	// }
 }
