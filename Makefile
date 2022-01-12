@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/01/12 16:49:12 by mjiam         ########   odam.nl          #
+#    Updated: 2022/01/12 18:00:24 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ FLAGS		= 	-Wall -Wextra -Werror -std=c++98
 CONTAINERS	= 	$(addprefix $(CONT_DIR), vector.hpp vector.ipp \
 											)
 
-SRC_TEST	= 	newmain.cpp
+SRC_TEST	= 	newmain.cpp tester.cpp
 
 OBJ			= 	$(addprefix $(OBJ_DIR)/, $(SRC_TEST:.cpp=.o))
 

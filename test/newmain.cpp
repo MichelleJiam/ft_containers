@@ -6,23 +6,16 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/12 17:07:33 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/12 18:14:42 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "tester.hpp"
 #include "vector.hpp"
 #include "../utils/pair.hpp"
-# define RED "\e[0;31m"
-# define GRN "\e[0;32m"
-# define YEL "\e[0;33m"
-# define BLU "\e[0;34m"
-# define MAG "\e[0;35m"
-# define CYN "\e[0;36m"
-# define WHT "\e[0;37m"
+#include "../utils/lexicographical_compare.hpp"
 
-void	printTest(std::string const testname) {
-	std::cout << WHT << "\n===== " << testname << " test =====\n";
-}
+#define lex_comp lexicographical_compare
 
 template <class T>
 void    printVector(std::string const testname,
@@ -44,15 +37,18 @@ void    printVector(std::string const testname,
 	std::cout << "contents: [";
 	for (unsigned i = 0; i < ftvec.size(); i++) {
 		std::cout << ' ' << ftvec[i];
-		ftvec[i] == stdvec[i] ? error : error++;
+		error += isNotEqual(ftvec[i], stdvec[i]);
+		// ftvec[i] == stdvec[i] ? error : error++;
 	}
 	std::cout << " ]\n";
-	if (stdvec.size() == ftvec.size()
-		&& stdvec.capacity() == ftvec.capacity()
-		&& error == 0)
-		std::cout << "RESULT: Vectors are " << GRN << "equal.\n" << WHT;
-	else
-		std::cout << "RESULT: Vectors are " << RED << "NOT equal.\n" << WHT;   
+	printResult(stdvec.size() == ftvec.size() && stdvec.capacity() == ftvec.capacity()
+		&& error == 0);
+	// if (stdvec.size() == ftvec.size()
+	// 	&& stdvec.capacity() == ftvec.capacity()
+	// 	&& error == 0)
+	// 	std::cout << "RESULT: Vectors are " << GRN << "equal.\n" << WHT;
+	// else
+	// 	std::cout << "RESULT: Vectors are " << RED << "NOT equal.\n" << WHT;   
 }
 
 int main() {
@@ -117,9 +113,28 @@ int main() {
 	ft::pair<int,int>	p1 = ft::make_pair(ft_fill_vec[1], ftvec[0]);
 	std::pair<int,int>	p2 = std::make_pair(ft_fill_vec[1], ftvec[0]);
 	printTest("pair");
-	std::cout << "Making pair with values: " << ft_fill_vec[1] << ", " << ftvec[0] << std::endl;
+	std::cout << "Making pair with values: " << ft_fill_vec[1] << ", "
+		<< ftvec[0] << std::endl;
 	std::cout << "Value of (ft)p1 is (" << p1.first << ", " << p1.second << ")\n";
 	std::cout << "Value of (std)p2 is (" << p2.first << ", " << p2.second << ")\n";
+	printResult(p1.first == p2.first && p1.second == p2.second);
+
+	// lexicographical_compare test
+	std::string	s1 = "Apple";
+	std::string s2 = "apple";
+	printTest("lexicographical_compare");
+	std::cout << "Comparing strings: " << s1 << " & " << s2 << std::endl << std::boolalpha;
+	ft::pair<bool,bool> comp1(
+			std::lex_comp(s1.begin(), s1.end(), s2.begin(), s2.end()),
+			ft::lex_comp(s1.begin(), s1.end(), s2.begin(), s2.end()));
+	ft::pair<bool,bool> comp2(
+			std::lex_comp(s1.begin(), s1.end(), s2.begin(), s2.end(), mycomp),
+			ft::lex_comp(s1.begin(), s1.end(), s2.begin(), s2.end(), mycomp));
+	std::cout << "Default comparison returns: " << comp1.first << " (std), "
+		<< comp1.second << " (ft)\n";
+	std::cout << "Case-insensitive custom comparison returns: " << comp2.first << " (std), "
+		<< comp2.second << " (ft)\n";
+	printResult(comp1.first == comp1.second && comp2.first == comp2.second);
 
 	// ft::vector<int>     ft_range_vec(ft_fill_vec.begin(), ft_fill_vec.end());
 	// std::vector<int>    std_range_vec(std_fill_vec.begin(), std_fill_vec.end());
