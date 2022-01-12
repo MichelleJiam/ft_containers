@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/04 18:11:33 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/12 16:03:29 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,6 @@
 //
 
 namespace   ft {
-
 template < class T, class Allocator = std::allocator<T> >
 class vector : public std::vector<T, Allocator> {
 	public:

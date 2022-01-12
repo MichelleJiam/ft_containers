@@ -6,11 +6,12 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/11 18:21:57 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/12 17:07:33 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "vector.hpp"
+#include "../utils/pair.hpp"
 # define RED "\e[0;31m"
 # define GRN "\e[0;32m"
 # define YEL "\e[0;33m"
@@ -19,12 +20,17 @@
 # define CYN "\e[0;36m"
 # define WHT "\e[0;37m"
 
+void	printTest(std::string const testname) {
+	std::cout << WHT << "\n===== " << testname << " test =====\n";
+}
+
 template <class T>
-void    printVector(std::string const testname, ft::vector<T> &ftvec, std::vector<T> &stdvec)
+void    printVector(std::string const testname,
+			ft::vector<T> &ftvec, std::vector<T> &stdvec)
 {
 	int error = 0;
 
-	std::cout << WHT << "\n===== " << testname << " test =====\n";
+	printTest(testname);
 	std::cout << "- STL vector -\n";
 	std::cout << "capacity: " << stdvec.capacity() << std::endl;
 	std::cout << "size:     " << stdvec.size() << std::endl;
@@ -90,8 +96,6 @@ int main() {
 	std_it = std_fill_vec.begin();
 	ft_fill_vec.insert(ft_it + 2, 2, 0);
 	std_fill_vec.insert(std_it + 2, 2, 0);
-	ft_fill_vec.insert(ft_it + 1, 2, 10);
-	std_fill_vec.insert(std_it + 1, 2, 10);
 	printVector("insert", ft_fill_vec, std_fill_vec);
 
 	// resize test
@@ -108,6 +112,14 @@ int main() {
 	ft_fill_vec.erase(ft_fill_vec.begin() + 2, ft_fill_vec.begin() + 4);
 	std_fill_vec.erase(std_fill_vec.begin() + 2, std_fill_vec.begin() + 4);
 	printVector("erase range", ft_fill_vec, std_fill_vec);
+
+	// pair/make_pair test
+	ft::pair<int,int>	p1 = ft::make_pair(ft_fill_vec[1], ftvec[0]);
+	std::pair<int,int>	p2 = std::make_pair(ft_fill_vec[1], ftvec[0]);
+	printTest("pair");
+	std::cout << "Making pair with values: " << ft_fill_vec[1] << ", " << ftvec[0] << std::endl;
+	std::cout << "Value of (ft)p1 is (" << p1.first << ", " << p1.second << ")\n";
+	std::cout << "Value of (std)p2 is (" << p2.first << ", " << p2.second << ")\n";
 
 	// ft::vector<int>     ft_range_vec(ft_fill_vec.begin(), ft_fill_vec.end());
 	// std::vector<int>    std_range_vec(std_fill_vec.begin(), std_fill_vec.end());

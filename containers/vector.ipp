@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/11 18:22:30 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/12 15:35:30 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -373,7 +373,7 @@ void	myvector::pop_back(void) {
 //	Exceptions: throws length_error if resized above max_size.
 //				Function has no effect then (strong guarantee).
 template <class T, class Allocator>
-void		myvector::resize(size_type count, T value) {
+void	myvector::resize(size_type count, T value) {
 	if (count > this->max_size())
 		throw std::length_error(
 			"vector::resize - count exceeds vector max_size");
@@ -403,7 +403,7 @@ void	myvector::_destroy_until(iterator new_end, iterator old_end) {
 	}
 }
 
-//	Internal fn called by copy and range constructors, and erase.
+//	Internal fn called by copy and range constructors, insert and erase.
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
 void	myvector::_range_copy(iterator pos, iterator first, iterator last) {
