@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/18 18:16:39 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/18 20:56:19 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,8 +99,9 @@ ft::vector<T,Allocator>&	myvector::operator=(vector const& other) {
 //	DESTRUCTOR
 template <class T, class Allocator>
 myvector::~vector(void) {
-	this->clear();
-	_alloc.deallocate(_array, _capacity);
+	// this->clear();
+	if (_array)
+		_alloc.deallocate(_array, _capacity);
 }
 
 // ITERATORS
@@ -228,17 +229,18 @@ typename myvector::iterator	myvector::insert(iterator pos, T const& value) {
 template <class T, class Allocator>
 void	myvector::insert(iterator pos, size_type count, T const& value) {
 	size_type		old_cap = this->capacity();
-	iterator		end = this->_array + _size;
+	iterator		saved_end = this->_array + _size;
 	difference_type	offset = std::distance(pos, this->begin());
-	
+
 	try {
 		// if (DEBUG) std::cout
 		// 	// << "insert (fill): begin now " << *begin() << ", "
 		// 	<< "calling _fill_insert with begin + " << offset << std::endl;
-		if (this->size() + count > this->capacity())
+		if (this->capacity() - this->size() < count)
 			_reallocate(this->size() ? this->size() * 2 : 1);
-		if (pos != end)
-			_range_copy(pos + count, pos, end);
+		if (pos != saved_end)
+			// _range_copy(pos + count, pos, saved_end);
+			_range_copy(this->_array + offset + count, pos, saved_end);
 		_fill_insert(this->_array + offset, count, value);
 		if (DEBUG) std::cout << "inserting " << value << " at position " << 	
 			offset << std::endl;
@@ -354,7 +356,11 @@ void	myvector::resize(size_type count, T value) {
 //	Iterator invalidation: never
 template <class T, class Allocator>
 void	myvector::swap(vector& other) {
-	(void)other; // DEBUG
+	vector	tmp;
+
+	tmp._copy_data(*this);
+	this->_copy_data(other);
+	other._copy_data(tmp);
 }
 
 //	Internal fn called by resize, erase.
@@ -377,8 +383,9 @@ template <class T, class Allocator>
 template <typename InputIterator>
 void	myvector::_range_copy(iterator pos, InputIterator first, InputIterator last) {
 	difference_type to_copy = std::distance(last, first);
+	
 	for (; to_copy > 0; to_copy--) {
-		if (DEBUG) std::cout << "range_copy: constructing " << *(first + to_copy - 1) << " at " << std::distance((pos + to_copy), this->begin()) << std::endl;
+		if (DEBUG) std::cout << "range_copy: constructing " << *(first + to_copy - 1) << " at " << std::distance((pos + to_copy - 1), this->begin()) << std::endl;
 		_alloc.construct(&*(pos + to_copy - 1), *(first + to_copy - 1));
 	}
 }
@@ -392,6 +399,7 @@ void	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
 	try {
 		for (; constructed < count; constructed++) {
 			_alloc.construct(&*(pos + constructed), value);
+			if (DEBUG) std::cout << "fill_insert: constructed " << *(pos + constructed) << std::endl;
 		}
 	}
 	catch (...) {
@@ -425,7 +433,7 @@ void	myvector::_reallocate(size_type n) {
 	
 	try {
 		new_start = _alloc.allocate(n);
-		for (; new_size < _size; new_size++)
+		for (; new_size < this->_size; new_size++)
 			_alloc.construct(new_start + new_size, _array[new_size]);
 		_alloc.deallocate(old_start, _capacity);
 		this->_array = new_start;
@@ -436,6 +444,16 @@ void	myvector::_reallocate(size_type n) {
 		if (new_start)
 			_alloc.deallocate(new_start, n);
 	}
+}
+
+//	Internal fn called by swap.
+//	Copies over data of other to current object.
+template <class T, class Allocator>
+void	myvector::_copy_data(vector const& other) {
+	this->_alloc = other._alloc;
+	this->_size = other._size;
+	this->_capacity = other._capacity;
+	this->_array = other._array;
 }
 
 #endif
