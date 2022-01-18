@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:49:42 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/18 18:03:09 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/18 19:36:44 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ int		printResult(bool passed) {
 void	printPassing(int const pass_count, int const test_count) {
 	if (pass_count == test_count) {
 		std::cout << GRN << "\nPassed: " << pass_count << "/" << test_count
-			<< std::endl << WHT;
+			<< WHT << std::endl;
 	}
 	else {
 		std::cout << RED << "\nFailed: " << (test_count - pass_count) << "/"
-			<< test_count << std::endl << WHT;
+			<< test_count << WHT << std::endl;
 	}
 }
 

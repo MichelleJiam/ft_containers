@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/18 20:56:19 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/18 21:41:53 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ ft::vector<T,Allocator>&	myvector::operator=(vector const& other) {
 template <class T, class Allocator>
 myvector::~vector(void) {
 	// this->clear();
-	if (_array)
+	if (_array != NULL)
 		_alloc.deallocate(_array, _capacity);
 }
 
@@ -355,12 +355,18 @@ void	myvector::resize(size_type count, T value) {
 
 //	Iterator invalidation: never
 template <class T, class Allocator>
-void	myvector::swap(vector& other) {
-	vector	tmp;
+void	myvector::swap(vector& other) {	
+	size_type	tmp_size = other._size;
+	size_type	tmp_capacity = other._capacity;
+	pointer		tmp_array = other._array;
 
-	tmp._copy_data(*this);
-	this->_copy_data(other);
-	other._copy_data(tmp);
+	other._size = this->_size;
+	other._capacity = this->_capacity;
+	other._array = this->_array;
+
+	this->_size = tmp_size;
+	this->_capacity = tmp_capacity;
+	this->_array = tmp_array;
 }
 
 //	Internal fn called by resize, erase.
@@ -424,36 +430,25 @@ void	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
 // }
 
 //	Internal fn called by reserve and insert.
-//	Reallocates array to `n` size, copying over any existing elements.
+//	Reallocates array to `new_cap` size, copying over any existing elements.
 template <class T, class Allocator>
-void	myvector::_reallocate(size_type n) {
-	pointer		old_start = this->_array;
+void	myvector::_reallocate(size_type new_cap) {
 	pointer		new_start = NULL;
 	size_type	new_size = 0;
 	
 	try {
-		new_start = _alloc.allocate(n);
+		new_start = _alloc.allocate(new_cap);
 		for (; new_size < this->_size; new_size++)
 			_alloc.construct(new_start + new_size, _array[new_size]);
-		_alloc.deallocate(old_start, _capacity);
+		_alloc.deallocate(_array, _capacity);
 		this->_array = new_start;
 		this->_size = new_size;
-		this->_capacity = n;
+		this->_capacity = new_cap;
 	}
 	catch (...) {
 		if (new_start)
-			_alloc.deallocate(new_start, n);
+			_alloc.deallocate(new_start, new_cap);
 	}
-}
-
-//	Internal fn called by swap.
-//	Copies over data of other to current object.
-template <class T, class Allocator>
-void	myvector::_copy_data(vector const& other) {
-	this->_alloc = other._alloc;
-	this->_size = other._size;
-	this->_capacity = other._capacity;
-	this->_array = other._array;
 }
 
 #endif

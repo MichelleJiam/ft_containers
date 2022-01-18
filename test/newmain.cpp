@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/18 18:18:50 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/18 21:41:39 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,30 +18,31 @@
 #define lex_comp lexicographical_compare
 
 template <class T>
-int    printVector(std::string const test_name, int &test_count,
-			ft::vector<T> &ftvec, std::vector<T> &stdvec)
+int    printVector(ft::vector<T> &ft_vec, std::vector<T> &std_vec,
+			int &test_count, std::string const &test_name = std::string())
 {
 	int error = 0;
 
-	printTest(test_name, test_count);
+	if (!test_name.empty())
+		printTest(test_name, test_count);
 	std::cout << "- STL vector -\n";
-	std::cout << "capacity: " << stdvec.capacity() << std::endl;
-	std::cout << "size:     " << stdvec.size() << std::endl;
+	std::cout << "capacity: " << std_vec.capacity() << std::endl;
+	std::cout << "size:     " << std_vec.size() << std::endl;
 	std::cout << "contents: [";
-	for (unsigned i = 0; i < stdvec.size(); i++)
-		std::cout << ' ' << stdvec[i];
+	for (unsigned i = 0; i < std_vec.size(); i++)
+		std::cout << ' ' << std_vec[i];
 	std::cout << " ]\n";
 	std::cout << "\n- FT vector -\n";
-	std::cout << "capacity: " << ftvec.capacity() << std::endl;
-	std::cout << "size:     " << ftvec.size() << std::endl;
+	std::cout << "capacity: " << ft_vec.capacity() << std::endl;
+	std::cout << "size:     " << ft_vec.size() << std::endl;
 	std::cout << "contents: [";
-	for (unsigned i = 0; i < ftvec.size(); i++) {
-		std::cout << ' ' << ftvec[i];
-		error += isNotEqual(ftvec[i], stdvec[i]);
+	for (unsigned i = 0; i < ft_vec.size(); i++) {
+		std::cout << ' ' << ft_vec[i];
+		error += isNotEqual(ft_vec[i], std_vec[i]);
 	}
 	std::cout << " ]\n";
-	return printResult(stdvec.size() == ftvec.size()
-		&& stdvec.capacity() == ftvec.capacity()
+	return printResult(std_vec.size() == ft_vec.size()
+		&& std_vec.capacity() == ft_vec.capacity()
 		&& error == 0);
 }
 
@@ -49,47 +50,47 @@ int main() {
 	int					test_count = 0;
 	int					pass_count = 0;
 
-	ft::vector<int>		ftvec;
-	std::vector<int>	stdvec;
+	ft::vector<int>		ft_vec;
+	std::vector<int>	std_vec;
 
 	// push_back test
 	for (int i = 1; i <= 10; i++){
-		ftvec.push_back(i);
-		stdvec.push_back(i);
+		ft_vec.push_back(i);
+		std_vec.push_back(i);
 	}
-	pass_count += printVector("push_back", test_count, ftvec, stdvec);
+	pass_count += printVector(ft_vec, std_vec, test_count, "push_back");
 
 	// empty test
 	printTest("empty", test_count);
-	std::cout << std::boolalpha << "is ftvec empty: " << ftvec.empty() << std::endl;
-	std::cout << std::boolalpha << "is stdvec empty: " << stdvec.empty() << std::endl;
-	pass_count += printResult(ftvec.empty() == stdvec.empty());
+	std::cout << std::boolalpha << "is ft_vec empty: " << ft_vec.empty() << std::endl;
+	std::cout << std::boolalpha << "is std_vec empty: " << std_vec.empty() << std::endl;
+	pass_count += printResult(ft_vec.empty() == std_vec.empty());
 
 	// pop_back test
-	ftvec.pop_back();
-	stdvec.pop_back();
-	pass_count += printVector("pop_back", test_count, ftvec, stdvec);
+	ft_vec.pop_back();
+	std_vec.pop_back();
+	pass_count += printVector(ft_vec, std_vec, test_count, "pop_back");
 
 	// fill constructor test
 	ft::vector<int>     ft_fill_vec(4, 42);
 	std::vector<int>    std_fill_vec(4, 42);
-	pass_count += printVector("fill constructor", test_count, ft_fill_vec, std_fill_vec);
+	pass_count += printVector(ft_fill_vec, std_fill_vec, test_count, "fill constructor");
 
 	// copy constructor test
-	ft::vector<int>		ft_copy_vec(ftvec);
-	std::vector<int>		std_copy_vec(stdvec);
-	pass_count += printVector("copy constructor", test_count, ft_copy_vec, std_copy_vec);
+	ft::vector<int>		ft_copy_vec(ft_vec);
+	std::vector<int>		std_copy_vec(std_vec);
+	pass_count += printVector(ft_copy_vec, std_copy_vec, test_count, "copy constructor");
 
 	// clear test
 	ft_copy_vec.clear();
 	std_copy_vec.clear();
-	pass_count += printVector("clear", test_count, ft_copy_vec, std_copy_vec);
+	pass_count += printVector(ft_copy_vec, std_copy_vec, test_count, "clear");
 	
 	// reserve test
 	size_t   ft_oldcap = ft_fill_vec.capacity(), std_oldcap = std_fill_vec.capacity();
 	ft_fill_vec.reserve(10);
 	std_fill_vec.reserve(10);
-	pass_count += printVector("reserve", test_count, ft_fill_vec, std_fill_vec);
+	pass_count += printVector(ft_fill_vec, std_fill_vec, test_count, "reserve");
 	std::cout << "ft fill vec capacity was " << ft_oldcap << ", is now " << ft_fill_vec.capacity() << ".\n";
 	std::cout << "std fill vec capacity was " << std_oldcap << ", is now "  << std_fill_vec.capacity() << ".\n";
 
@@ -100,34 +101,43 @@ int main() {
 	std_it = std_fill_vec.end();
 	ft_fill_vec.insert(ft_it - 1, 2, 13);
 	std_fill_vec.insert(std_it - 1, 2, 13);
-	pass_count += printVector("insert", test_count, ft_fill_vec, std_fill_vec);
+	pass_count += printVector(ft_fill_vec, std_fill_vec, test_count, "insert");
 	ft_it = ft_fill_vec.begin();
 	std_it = std_fill_vec.begin();
 	ft_fill_vec.insert(ft_it + 2, 2, 0);
 	std_fill_vec.insert(std_it + 2, 2, 0);
-	pass_count += printVector("insert", test_count, ft_fill_vec, std_fill_vec);
+	pass_count += printVector(ft_fill_vec, std_fill_vec, test_count, "insert");
 
 	// resize test
 	ft_fill_vec.resize(8, 7);
 	std_fill_vec.resize(8, 7);
-	pass_count += printVector("resize", test_count, ft_fill_vec, std_fill_vec);
+	pass_count += printVector(ft_fill_vec, std_fill_vec, test_count, "resize");
 
 	// erase test
 	ft_fill_vec.erase(ft_fill_vec.end() - 2);
 	std_fill_vec.erase(std_fill_vec.end() - 2);
-	pass_count += printVector("erase", test_count, ft_fill_vec, std_fill_vec);
+	pass_count += printVector(ft_fill_vec, std_fill_vec, test_count, "erase");
 	ft_fill_vec.erase(ft_fill_vec.end() - 3, ft_fill_vec.end() - 1);
 	std_fill_vec.erase(std_fill_vec.end() - 3, std_fill_vec.end() - 1);
 	ft_fill_vec.erase(ft_fill_vec.begin() + 2, ft_fill_vec.begin() + 4);
 	std_fill_vec.erase(std_fill_vec.begin() + 2, std_fill_vec.begin() + 4);
-	pass_count += printVector("erase range", test_count, ft_fill_vec, std_fill_vec);
+	pass_count += printVector(ft_fill_vec, std_fill_vec, test_count, "erase range");
+
+	// swap test
+	ft_fill_vec.swap(ft_vec);
+	std_fill_vec.swap(std_vec);
+	printTest("swap", test_count);
+	std::cout << "fill_vectors now look like:\n";
+	pass_count += printVector(ft_fill_vec, std_fill_vec, test_count);
+	std::cout << "\nbase vectors now look like:\n";
+	printVector(ft_vec, std_vec, test_count);
 
 	// pair/make_pair test
-	ft::pair<int,int>	p1 = ft::make_pair(ft_fill_vec[1], ftvec[0]);
-	std::pair<int,int>	p2 = std::make_pair(ft_fill_vec[1], ftvec[0]);
+	ft::pair<int,int>	p1 = ft::make_pair(ft_fill_vec[1], ft_vec[0]);
+	std::pair<int,int>	p2 = std::make_pair(ft_fill_vec[1], ft_vec[0]);
 	printTest("pair", test_count);
 	std::cout << "Making pair with values: " << ft_fill_vec[1] << ", "
-		<< ftvec[0] << std::endl;
+		<< ft_vec[0] << std::endl;
 	std::cout << "Value of (ft)p1 is (" << p1.first << ", " << p1.second << ")\n";
 	std::cout << "Value of (std)p2 is (" << p2.first << ", " << p2.second << ")\n";
 	pass_count += printResult(p1.first == p2.first && p1.second == p2.second);
