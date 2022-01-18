@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/01/12 18:00:24 by mjiam         ########   odam.nl          #
+#    Updated: 2022/01/18 17:16:04 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -67,7 +67,7 @@ debug: $(OBJ) $(CONTAINERS)
 
 clean:
 	@echo "$(BLUE)Cleaning$(RESET)"
-	@rm -rf $(OBJ)
+	@rm -rf $(OBJ_DIR)
 	@echo "$(BLUE)Removed: $(OBJ_DIR) folder$(RESET)"
 
 fclean: clean
