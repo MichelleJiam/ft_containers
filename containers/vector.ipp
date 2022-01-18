@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/12 15:35:30 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/18 18:06:14 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,6 @@ myvector::vector(vector const& other)
 	catch (...) {
 		_alloc.deallocate(_array, _size);
 	}
-			//	_alloc.construct(&_array[i], other._array[i]);
-	// TODO: check if resize has to be called before range_copy
 }
 
 //	ASSIGNMENT OPERATOR
@@ -196,7 +194,6 @@ void		myvector::reserve (size_type new_cap) {
 			"vector::reserve - new_cap exceeds vector max_size");
 	if (new_cap > this->capacity()) {
 		if (DEBUG) std::cout << "reserve: reallocating more memory\n";
-		// note: problem with push_back was reserve was not reallocating more mem
 		_reallocate(new_cap);
 	}
 }
@@ -236,7 +233,6 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 	size_type		old_cap = this->capacity();
 	iterator		end = this->_array + _size;
 	difference_type	offset = std::distance(pos, this->begin());
-	// difference_type offset = this->size() - (this->end() - pos);	
 	
 	try {
 		// if (DEBUG) std::cout
@@ -322,31 +318,6 @@ typename myvector::iterator	myvector::erase(
 		_destroy_until((first + elems_after), end());
 	}
 	return first;
-	// size_type	n_to_erase = last - first;
-	// size_type	start = first - this->begin();
-	// size_type	end;
-	// size_type	i = 0;
-	
-	// if (n_to_erase < 1 || first == this->end())
-	// 	return first;
-	// for (end = start; end < start + n_to_erase; end++)
-	// 	_alloc.destroy(&_array[end]);
-	// try {
-	// 	for (; end + i < _size; i++) {
-	// 		_alloc.construct(&_array[start + i], _array[end + i]);
-	// 		_alloc.destroy(&_array[end + i]);
-	// 	}
-	// }
-	// catch (...) {
-	// 	for (size_type j = 0; j < i; j++)
-	// 		_alloc.destroy(&_array[start + j]);
-	// 	throw;
-	// }
-	// this->_size -= n_to_erase;
-	// if (end >= _size)
-	// 	return this->end();
-	// else
-	// 	return (last - n_to_erase);
 }
 
 //	Iterator invalidation:	If reallocation happens, all invalidated.
@@ -406,37 +377,13 @@ void	myvector::_destroy_until(iterator new_end, iterator old_end) {
 //	Internal fn called by copy and range constructors, insert and erase.
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
-void	myvector::_range_copy(iterator pos, iterator first, iterator last) {
-	// iterator	ptr = last;
-	// iterator	cur = pos + (last - first);
-
-	// try {
-	// 	for (; ptr != first; --ptr, --cur){
-	// 		if (DEBUG) std::cout << "range_copy: constructing " << *ptr << " at " << cur - this->begin() << std::endl;
-    //         _alloc.construct(&*cur, *ptr);}
-	// }
-	// catch (...) {
-	// 	for (; ptr != last; ptr++, cur++)
-	// 		_alloc.destroy(&*cur);
-	// 	throw;
-	// }
+template <typename InputIterator>
+void	myvector::_range_copy(iterator pos, InputIterator first, InputIterator last) {
 	difference_type to_copy = std::distance(last, first);
 	for (; to_copy > 0; to_copy--) {
 		if (DEBUG) std::cout << "range_copy: constructing " << *(first + to_copy - 1) << " at " << std::distance((pos + to_copy), this->begin()) << std::endl;
 		_alloc.construct(&*(pos + to_copy - 1), *(first + to_copy - 1));
 	}
-	// iterator cur = pos;
-
-	// try {
-	// 	for (; first != last; ++first, ++cur){
-	// 		if (DEBUG) std::cout << "range_copy: constructing " << *first << " at " 	<< std::distance(cur, this->begin()) << std::endl;
-	// 		_alloc.construct(&*cur, *first);}
-	// }
-	// catch (...) {
-	// 	for (; pos != cur; ++pos)
-	// 		_alloc.destroy(&*pos);
-	// 	throw;
-	// }
 }
 
 //	Internal fn called by fill constructor and insert (fill version).

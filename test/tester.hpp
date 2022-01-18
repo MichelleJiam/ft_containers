@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/12 17:57:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/18 18:04:07 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,10 @@ bool	isNotEqual(const T& lhs, const T& rhs) {
     return (lhs != rhs);
 }
 
-void	printTest(std::string const testname);
-void	printResult(bool passed);
+/* prints test name and increments test_count */
+void	printTest(std::string const test_name, int &test_count);
+int     printResult(bool passed);
+void	printPassing(int const pass_count, int const test_count);
 bool	mycomp(char c1, char c2);
 
 #endif
