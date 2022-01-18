@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/18 18:06:14 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/18 18:16:39 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,10 +209,7 @@ typename myvector::size_type	myvector::capacity(void) const {
 //	No-throw guarantee
 template <class T, class Allocator>
 void	myvector::clear(void) {
-	for (size_type i = 0; i < this->_size; i++) {
-		_alloc.destroy(&_array[i]);
-	}
-	this->_size = 0;
+	_destroy_until(this->begin(), this->end());
 }
 
 //	Because vectors use an array as their underlying storage, inserting elements
@@ -315,7 +312,7 @@ typename myvector::iterator	myvector::erase(
 		size_type	elems_after = std::distance(this->end(), last);
 		if (last != this->end())
 			_range_copy(first, last, this->end());
-		_destroy_until((first + elems_after), end());
+		_destroy_until((first + elems_after), this->end());
 	}
 	return first;
 }

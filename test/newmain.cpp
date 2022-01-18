@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/18 18:09:31 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/18 18:18:50 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,12 @@ int main() {
 	ft::vector<int>		ft_copy_vec(ftvec);
 	std::vector<int>		std_copy_vec(stdvec);
 	pass_count += printVector("copy constructor", test_count, ft_copy_vec, std_copy_vec);
-	// pass_count += printVector("copy constructor", ftvec, std_copy_vec);
 
+	// clear test
+	ft_copy_vec.clear();
+	std_copy_vec.clear();
+	pass_count += printVector("clear", test_count, ft_copy_vec, std_copy_vec);
+	
 	// reserve test
 	size_t   ft_oldcap = ft_fill_vec.capacity(), std_oldcap = std_fill_vec.capacity();
 	ft_fill_vec.reserve(10);
