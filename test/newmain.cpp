@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/30 18:13:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/18 21:41:39 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/19 18:26:08 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,11 @@ int main() {
 	std::vector<int>		std_copy_vec(std_vec);
 	pass_count += printVector(ft_copy_vec, std_copy_vec, test_count, "copy constructor");
 
+	// range test
+	ft::vector<int>     ft_range_vec(ft_fill_vec.begin(), ft_fill_vec.end());
+	std::vector<int>    std_range_vec(std_fill_vec.begin(), std_fill_vec.end());
+	pass_count += printVector(ft_range_vec, std_range_vec, test_count, "range constructor");
+
 	// clear test
 	ft_copy_vec.clear();
 	std_copy_vec.clear();
@@ -131,7 +136,7 @@ int main() {
 	pass_count += printVector(ft_fill_vec, std_fill_vec, test_count);
 	std::cout << "\nbase vectors now look like:\n";
 	printVector(ft_vec, std_vec, test_count);
-
+	
 	// pair/make_pair test
 	ft::pair<int,int>	p1 = ft::make_pair(ft_fill_vec[1], ft_vec[0]);
 	std::pair<int,int>	p2 = std::make_pair(ft_fill_vec[1], ft_vec[0]);
@@ -159,10 +164,5 @@ int main() {
 		<< comp2.second << " (ft)\n";
 	pass_count += printResult(comp1.first == comp1.second && comp2.first == comp2.second);
 	printPassing(pass_count, test_count);
-	
-	// ft::vector<int>     ft_range_vec(ft_fill_vec.begin(), ft_fill_vec.end());
-	// std::vector<int>    std_range_vec(std_fill_vec.begin(), std_fill_vec.end());
-	// printVector(ft_range_vec, std_range_vec);
-
 	return 0;
 }

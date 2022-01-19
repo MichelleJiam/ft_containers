@@ -6,12 +6,14 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/18 21:41:53 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/19 18:25:21 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_IPP
 # define VECTOR_IPP
+
+#include "../utils/iterator_utils.hpp"
 
 #define myvector ft::vector<T,Allocator>
 #define DEBUG 0
@@ -51,23 +53,21 @@ myvector::vector(size_type count, T const& value, Allocator const& alloc)
 //	std::distance may throw if arithmetical operations performed on the 
 //	iterators throw;
 //	allocator::allocate & allocator:construct may throw bad_alloc.
-// template <class T, class Allocator>
-// template <typename InputIterator>
-// myvector::vector(InputIterator first, InputIterator last,
-// 				Allocator const& alloc,
-// 				typename std::iterator_traits<InputIterator>::type*) // TODO: change to ft::
-// 		:	_alloc(alloc),
-// 			_size(std::distance(first, last)),
-// 			_capacity(_size), //	TODO: use reserve?
-// 			_array(alloc.allocate(_size)) {
-// 	try {
-// 		_range_copy(this->begin(), first, last);
-// 	}
-// 	catch (...) {
-// 		_alloc.deallocate(_array, _size);
-// 	}
-// 			//	_alloc.construct(&_array[i], *(first + i));
-// }
+template <class T, class Allocator>
+template <typename InputIterator> //, typename = typename std::iterator_traits<InputIterator>::value_type>
+myvector::vector(InputIterator first, InputIterator last,
+				Allocator const& alloc) //typename ft::iterator_traits<InputIterator>::type*)
+				// typename std::iterator_traits<InputIterator>::type*) // TODO: change to ft::
+		:	_alloc(alloc) {
+	try {
+		// checks if integral type received. If so, it's not an iterator.
+		typedef typename std::is_integral<InputIterator>::type	Integral; // TODO: replace with ft impl
+		_range_construct(first, last, Integral());
+	}
+	catch (...) {
+		_alloc.deallocate(_array, _size);
+	}
+}
 
 //	COPY CONSTRUCTOR
 //	All elements in `other` are copied but any unused capacity is not.
@@ -367,6 +367,34 @@ void	myvector::swap(vector& other) {
 	this->_size = tmp_size;
 	this->_capacity = tmp_capacity;
 	this->_array = tmp_array;
+}
+
+//	Internal fn called by range constructor.
+//	Integer specialization
+template <class T, class Allocator>
+template <typename Integer>
+void	myvector::_range_construct(Integer n, Integer value, std::true_type) {  // TODO: replace with ft impl
+	size_type	count = static_cast<size_type>(n);
+	_array = _alloc.allocate(count);
+	_size = count;
+	_capacity = _size;
+	_fill_insert(this->begin(), count, value);
+}
+
+//	Iterator specialization
+template <class T, class Allocator>
+template <typename InputIterator>
+void	myvector::_range_construct(InputIterator first, InputIterator last, std::false_type) {  // TODO: replace with ft impl
+	try {
+		_size = std::distance(last, first);
+		_capacity = _size;
+		_array = _alloc.allocate(_size);
+		_range_copy(this->begin(), first, last);
+	}
+	catch (...) {
+		clear();
+		throw;
+	}
 }
 
 //	Internal fn called by resize, erase.

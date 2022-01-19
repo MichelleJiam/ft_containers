@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/14 18:01:43 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/23 19:22:11 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/19 18:04:20 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,16 +77,16 @@ struct iterator_traits<T const*> {
 		typedef ft::random_access_iterator_tag	iterator_category;
 };
 
-// template <class InputIterator>
-// typename iterator_traits<InputIterator>::difference_type
-// 	distance(InputIterator first, InputIterator last) {
-// 		typename ft::iterator_traits<InputIterator>::difference_type res = 0;
-// 		while (first != last) {
-// 			first++;
-// 			res++;
-// 		}
-// 		return res;
-// 	}
+template <class InputIterator>
+typename iterator_traits<InputIterator>::difference_type
+	distance(InputIterator first, InputIterator last) {
+		typename ft::iterator_traits<InputIterator>::difference_type res = 0;
+		while (first != last) {
+			first++;
+			res++;
+		}
+		return res;
+	}
 } // namespace ft
 
 #endif
