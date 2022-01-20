@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/19 18:20:16 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/20 16:11:10 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 // #include <algorithm> // fill
 #include "../utils/iterator_utils.hpp"
 #include "../utils/random_access_iterator.hpp"
+#include "../utils/type_traits.hpp"
 
 // TODO: remove
 #include <iterator>
@@ -48,7 +49,7 @@ class vector : public std::vector<T, Allocator> {
 		explicit vector(size_type count, T const& value = T(),
 						Allocator const& alloc = Allocator());
 		// range: container with first-last elements
-		template <typename InputIterator> //, typename std::iterator_traits<InputIterator>::value_type> // TODO: uncomment
+		template <class InputIterator> //, typename std::iterator_traits<InputIterator>::value_type> // TODO: uncomment
 		vector(InputIterator first, InputIterator last,
 				Allocator const& alloc = Allocator());
 				// typename ft::iterator_traits<InputIterator>::type* = NULL);
@@ -77,7 +78,7 @@ class vector : public std::vector<T, Allocator> {
 
 		// Replaces current contents with elements constructed from
 		// elements in range [first,last] in the same order.
-		template <typename InputIterator>
+		template <class InputIterator>
   		void	assign(InputIterator first, InputIterator last,
 		  				typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 
@@ -128,7 +129,7 @@ class vector : public std::vector<T, Allocator> {
 		void	insert(iterator pos, size_type count, T const& value);
 
 		// Inserts elements in range [first,last] at `pos` in same order.
-		// template <typename InputIterator>
+		// template <class InputIterator>
 		// void	insert(iterator pos, InputIterator first, InputIterator last);
 		// 				// typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 
@@ -163,12 +164,12 @@ class vector : public std::vector<T, Allocator> {
 		size_type		_capacity;
 		pointer			_array;
 
-		template <typename Integer>
+		template <class Integer>
 		void	_range_construct(Integer n, Integer value, std::true_type);
-		template <typename InputIterator>
+		template <class InputIterator>
 		void	_range_construct(InputIterator first, InputIterator last, std::false_type);
 		void	_destroy_until(iterator new_end, iterator old_end);
-		template <typename InputIterator>
+		template <class InputIterator>
 		void	_range_copy(iterator start, InputIterator first, InputIterator last);
 		void	_fill_insert(iterator pos, size_type count, T const& value);
 		// void	_expand_and_move(iterator pos, size_type count, size_type offset);

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/18 18:04:07 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/20 17:38:52 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 #define TESTER_HPP
 
 #include <iostream>
-#include <cctype>	// tolower
+#include <algorithm> // transform
+#include <cctype> // tolower
+#include <iomanip> // setw
+#include "../utils/pair.hpp" // pair
 
 # define RED "\e[0;31m"
 # define GRN "\e[0;32m"
@@ -25,14 +28,20 @@
 # define WHT "\e[0;37m"
 
 template <class T>
-bool	isNotEqual(const T& lhs, const T& rhs) {
+bool	is_not_equal(T const& lhs, T const& rhs) {
     return (lhs != rhs);
 }
 
-/* prints test name and increments test_count */
+// prints test unit header, taking unit name (e.g. "vector") as parameter
+void	printHeader(std::string unit_name);
+// prints test name and increments test_count
 void	printTest(std::string const test_name, int &test_count);
-int     printResult(bool passed);
-void	printPassing(int const pass_count, int const test_count);
-bool	mycomp(char c1, char c2);
+int     printResult(bool const passed);
+void	printPassing(ft::pair<int,int> const passed_tests);
+bool	mycomp(char const c1, char const c2);
+
+// container test units
+void    test_vector(ft::pair<int,int> &passed_tests);
+void    test_utils(ft::pair<int,int> &passed_tests);
 
 #endif

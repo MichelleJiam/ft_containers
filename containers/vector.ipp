@@ -6,14 +6,12 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/19 18:25:21 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/20 16:10:59 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_IPP
 # define VECTOR_IPP
-
-#include "../utils/iterator_utils.hpp"
 
 #define myvector ft::vector<T,Allocator>
 #define DEBUG 0
@@ -54,14 +52,14 @@ myvector::vector(size_type count, T const& value, Allocator const& alloc)
 //	iterators throw;
 //	allocator::allocate & allocator:construct may throw bad_alloc.
 template <class T, class Allocator>
-template <typename InputIterator> //, typename = typename std::iterator_traits<InputIterator>::value_type>
+template <class InputIterator> //, typename = typename std::iterator_traits<InputIterator>::value_type>
 myvector::vector(InputIterator first, InputIterator last,
 				Allocator const& alloc) //typename ft::iterator_traits<InputIterator>::type*)
 				// typename std::iterator_traits<InputIterator>::type*) // TODO: change to ft::
 		:	_alloc(alloc) {
 	try {
 		// checks if integral type received. If so, it's not an iterator.
-		typedef typename std::is_integral<InputIterator>::type	Integral; // TODO: replace with ft impl
+		typedef typename ft::is_integral<InputIterator>::type	Integral;
 		_range_construct(first, last, Integral());
 	}
 	catch (...) {
@@ -139,7 +137,7 @@ void	myvector::assign(size_type count, const T& value) {
 }
 
 template <class T, class Allocator>
-template <typename InputIterator>
+template <class InputIterator>
 void	myvector::assign (InputIterator first, InputIterator last,
 							typename std::iterator_traits<InputIterator>::type*) { // TODO: change to ft
 	size_type	count = std::distance(first, last);
@@ -258,7 +256,7 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 
 // TODO: implement is_integral and add within fn body
 // template <class T, class Allocator>
-// template <typename InputIterator>
+// template <class InputIterator>
 // void	myvector::insert(iterator pos, InputIterator first, InputIterator last) {
 // 						// typename std::iterator_traits<InputIterator>::type*) { // TODO: enable_if/is_integral, change std:: to ft::
 // 	size_type	old_cap = this->capacity();
@@ -372,8 +370,8 @@ void	myvector::swap(vector& other) {
 //	Internal fn called by range constructor.
 //	Integer specialization
 template <class T, class Allocator>
-template <typename Integer>
-void	myvector::_range_construct(Integer n, Integer value, std::true_type) {  // TODO: replace with ft impl
+template <class Integer>
+void	myvector::_range_construct(Integer n, Integer value, ft::true_type) {
 	size_type	count = static_cast<size_type>(n);
 	_array = _alloc.allocate(count);
 	_size = count;
@@ -383,8 +381,8 @@ void	myvector::_range_construct(Integer n, Integer value, std::true_type) {  // 
 
 //	Iterator specialization
 template <class T, class Allocator>
-template <typename InputIterator>
-void	myvector::_range_construct(InputIterator first, InputIterator last, std::false_type) {  // TODO: replace with ft impl
+template <class InputIterator>
+void	myvector::_range_construct(InputIterator first, InputIterator last, ft::false_type) {
 	try {
 		_size = std::distance(last, first);
 		_capacity = _size;
@@ -414,7 +412,7 @@ void	myvector::_destroy_until(iterator new_end, iterator old_end) {
 //	Internal fn called by copy and range constructors, insert and erase.
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
-template <typename InputIterator>
+template <class InputIterator>
 void	myvector::_range_copy(iterator pos, InputIterator first, InputIterator last) {
 	difference_type to_copy = std::distance(last, first);
 	
