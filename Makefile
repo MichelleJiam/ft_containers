@@ -6,11 +6,12 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/01/20 21:10:23 by mjiam         ########   odam.nl          #
+#    Updated: 2022/01/20 21:45:55 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 # NAME		= 	ft_test std_test
+
 NAME		=	ft_bin
 
 CC			= 	clang++
@@ -36,7 +37,7 @@ FLAGS		+=	-fsanitize=address -fno-omit-frame-pointer -g
 endif
 
 # DIRECTORIES
-TEST_DIR	=	test
+TEST_DIR	=	test2
 CONT_DIR	=	containers
 UTILS_DIR	=	utils
 OBJ_DIR		=	obj
@@ -78,7 +79,8 @@ compile_std: $(OBJ)
 
 run:
 	@$(MAKE)
-	@./$(NAME)
+	@echo "Running $(GREEN)diff$(RESET) on binaries"
+	@bash -c "diff <(./ft_bin) <(./std_bin)"
 
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp $(CONTAINERS)
 	@echo "$(PURPLE)Compiling: $<$(RESET)"
