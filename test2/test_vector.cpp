@@ -6,129 +6,120 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/20 21:37:56 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/21 19:11:53 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
 #include "vector.hpp"
 
-template <class T>
-int    printVector(ft::vector<T> &ft_vec, std::vector<T> &std_vec,
-			int &test_count, std::string const &test_name = std::string())
+// template <class T>
+template <class T, typename S>
+void    printVector(S &out, IMPL::vector<T> &base_vec, int &test_count,
+					std::string const &test_name = std::string())
 {
-	int error = 0;
-
 	if (!test_name.empty())
-		printTest(test_name, test_count);
-	std::cout << "- STL vector -\n";
-	std::cout << "capacity: " << std_vec.capacity() << std::endl;
-	std::cout << "size:     " << std_vec.size() << std::endl;
-	std::cout << "contents: [";
-	for (unsigned i = 0; i < std_vec.size(); i++)
-		std::cout << ' ' << std_vec[i];
-	std::cout << " ]\n";
-	std::cout << "\n- FT vector -\n";
-	std::cout << "capacity: " << ft_vec.capacity() << std::endl;
-	std::cout << "size:     " << ft_vec.size() << std::endl;
-	std::cout << "contents: [";
-	for (unsigned i = 0; i < ft_vec.size(); i++) {
-		std::cout << ' ' << ft_vec[i];
-		error += is_not_equal(ft_vec[i], std_vec[i]);
-	}
-	std::cout << " ]\n";
-	return printResult(std_vec.size() == ft_vec.size()
-		&& std_vec.capacity() == ft_vec.capacity()
-		&& error == 0);
+		printTest(out, test_name, test_count);
+	out << "\n- Vector -\n";
+	out << "capacity: " << base_vec.capacity() << std::endl;
+	out << "size:     " << base_vec.size() << std::endl;
+	out << "contents: [";
+	for (unsigned i = 0; i < base_vec.size(); i++)
+		out << ' ' << base_vec[i];
+	out << " ]\n";
 }
 
-void test_vector(ft::pair<int,int> &passed_tests, std::ofstream &outfile) {
-	printHeader("vector");
-	outfile << "hello\n";
-	ft::vector<int>		ft_vec;
-	std::vector<int>	std_vec;
+template <typename S>
+void test_vector(IMPL::pair<int,int> &passed_tests, S &out) {
+	printHeader(out, "vector");
+
+	IMPL::vector<int>		base_vec;
 
 	// push_back test
-	for (int i = 1; i <= 10; i++){
-		ft_vec.push_back(i);
-		std_vec.push_back(i);
-	}
-	passed_tests.first += printVector(ft_vec, std_vec, passed_tests.second, "push_back");
+	printTest(out, "push_back", passed_tests.second);
+	for (int i = 1; i <= 10; i++)
+		base_vec.push_back(i);
+	printVector(out, base_vec, passed_tests.second);
+	// passed_tests.first += printVector(out, base_vec, std_vec, passed_tests.second, "push_back");
 
 	// empty test
-	printTest("empty", passed_tests.second);
-	std::cout << std::boolalpha << "is ft_vec empty: " << ft_vec.empty() << std::endl;
-	std::cout << std::boolalpha << "is std_vec empty: " << std_vec.empty() << std::endl;
-	passed_tests.first += printResult(ft_vec.empty() == std_vec.empty());
+	printTest(out, "empty", passed_tests.second);
+	out << std::boolalpha << "is base_vec empty: " << base_vec.empty() << std::endl;
+	printVector(out, base_vec, passed_tests.second);
+	// passed_tests.first += printResult(base_vec.empty() == std_vec.empty());
 
 	// pop_back test
-	ft_vec.pop_back();
-	std_vec.pop_back();
-	passed_tests.first += printVector(ft_vec, std_vec, passed_tests.second, "pop_back");
+	printTest(out, "pop_back", passed_tests.second);
+	base_vec.pop_back();
+	printVector(out, base_vec, passed_tests.second);
+	// passed_tests.first += printVector(out, base_vec, std_vec, passed_tests.second, "pop_back");
 
 	// fill constructor test
-	ft::vector<int>     ft_fill_vec(4, 42);
-	std::vector<int>    std_fill_vec(4, 42);
-	passed_tests.first += printVector(ft_fill_vec, std_fill_vec, passed_tests.second, "fill constructor");
+	printTest(out, "fill constructor", passed_tests.second);
+	IMPL::vector<int>	fill_vec(4, 42);
+	printVector(out, fill_vec, passed_tests.second);
+	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "fill constructor");
 
 	// copy constructor test
-	ft::vector<int>		ft_copy_vec(ft_vec);
-	std::vector<int>		std_copy_vec(std_vec);
-	passed_tests.first += printVector(ft_copy_vec, std_copy_vec, passed_tests.second, "copy constructor");
+	printTest(out, "copy constructor", passed_tests.second);
+	IMPL::vector<int>	copy_vec(base_vec);
+	printVector(out, copy_vec, passed_tests.second);
+	// passed_tests.first += printVector(copy_vec, std_copy_vec, passed_tests.second, "copy constructor");
 
-	// range test
-	ft::vector<int>     ft_range_vec(ft_fill_vec.begin(), ft_fill_vec.end() - 2);
-	std::vector<int>    std_range_vec(std_fill_vec.begin(), std_fill_vec.end() - 2);
-	passed_tests.first += printVector(ft_range_vec, std_range_vec, passed_tests.second, "range constructor");
+	// range constructor test
+	printTest(out, "range constructor", passed_tests.second);
+	IMPL::vector<int>	range_vec(fill_vec.begin(), fill_vec.end() - 2);
+	printVector(out, range_vec, passed_tests.second);
+	// passed_tests.first += printVector(range_vec, std_range_vec, passed_tests.second, "range constructor");
 
 	// clear test
-	ft_copy_vec.clear();
-	std_copy_vec.clear();
-	passed_tests.first += printVector(ft_copy_vec, std_copy_vec, passed_tests.second, "clear");
+	printTest(out, "clear", passed_tests.second);
+	copy_vec.clear();
+	printVector(out, copy_vec, passed_tests.second);
+	// passed_tests.first += printVector(copy_vec, std_copy_vec, passed_tests.second, "clear");
 	
 	// reserve test
-	size_t   ft_oldcap = ft_fill_vec.capacity(), std_oldcap = std_fill_vec.capacity();
-	ft_fill_vec.reserve(10);
-	std_fill_vec.reserve(10);
-	passed_tests.first += printVector(ft_fill_vec, std_fill_vec, passed_tests.second, "reserve");
-	std::cout << "ft fill vec capacity was " << ft_oldcap << ", is now " << ft_fill_vec.capacity() << ".\n";
-	std::cout << "std fill vec capacity was " << std_oldcap << ", is now "  << std_fill_vec.capacity() << ".\n";
-
+	printTest(out, "reserve", passed_tests.second);
+	size_t   oldcap = fill_vec.capacity();
+	fill_vec.reserve(10);
+	printVector(out, fill_vec, passed_tests.second);
+	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "reserve");
+	out << "fill vec capacity was " << oldcap << ", is now " << fill_vec.capacity() << ".\n";
+	
 	// insert test
-	ft::vector<int>::iterator ft_it;
-	std::vector<int>::iterator std_it;
-	ft_it = ft_fill_vec.end();
-	std_it = std_fill_vec.end();
-	ft_fill_vec.insert(ft_it - 1, 2, 13);
-	std_fill_vec.insert(std_it - 1, 2, 13);
-	passed_tests.first += printVector(ft_fill_vec, std_fill_vec, passed_tests.second, "insert");
-	ft_it = ft_fill_vec.begin();
-	std_it = std_fill_vec.begin();
-	ft_fill_vec.insert(ft_it + 2, 2, 0);
-	std_fill_vec.insert(std_it + 2, 2, 0);
-	passed_tests.first += printVector(ft_fill_vec, std_fill_vec, passed_tests.second, "insert");
+	printTest(out, "insert", passed_tests.second);
+	IMPL::vector<int>::iterator it;
+	it = fill_vec.end();
+	fill_vec.insert(it - 1, 2, 13);
+	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "insert");
+	printVector(out, fill_vec, passed_tests.second);
+	it = fill_vec.begin();
+	fill_vec.insert(it + 2, 2, 0);
+	printVector(out, fill_vec, passed_tests.second);
+	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "insert");
 
 	// resize test
-	ft_fill_vec.resize(8, 7);
-	std_fill_vec.resize(8, 7);
-	passed_tests.first += printVector(ft_fill_vec, std_fill_vec, passed_tests.second, "resize");
+	printTest(out, "resize", passed_tests.second);
+	fill_vec.resize(8, 7);
+	printVector(out, fill_vec, passed_tests.second);
+	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "resize");
 
 	// erase test
-	ft_fill_vec.erase(ft_fill_vec.end() - 2);
-	std_fill_vec.erase(std_fill_vec.end() - 2);
-	passed_tests.first += printVector(ft_fill_vec, std_fill_vec, passed_tests.second, "erase");
-	ft_fill_vec.erase(ft_fill_vec.end() - 3, ft_fill_vec.end() - 1);
-	std_fill_vec.erase(std_fill_vec.end() - 3, std_fill_vec.end() - 1);
-	ft_fill_vec.erase(ft_fill_vec.begin() + 2, ft_fill_vec.begin() + 4);
-	std_fill_vec.erase(std_fill_vec.begin() + 2, std_fill_vec.begin() + 4);
-	passed_tests.first += printVector(ft_fill_vec, std_fill_vec, passed_tests.second, "erase range");
+	printTest(out, "erase", passed_tests.second);
+	fill_vec.erase(fill_vec.end() - 2);
+	printVector(out, fill_vec, passed_tests.second);
+	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "erase");
+	fill_vec.erase(fill_vec.end() - 3, fill_vec.end() - 1);
+	fill_vec.erase(fill_vec.begin() + 2, fill_vec.begin() + 4);
+	printVector(out, fill_vec, passed_tests.second);
+	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "erase range");
 
 	// swap test
-	ft_fill_vec.swap(ft_vec);
-	std_fill_vec.swap(std_vec);
-	printTest("swap", passed_tests.second);
-	std::cout << "fill_vectors now look like:\n";
-	passed_tests.first += printVector(ft_fill_vec, std_fill_vec, passed_tests.second);
-	std::cout << "\nbase vectors now look like:\n";
-	printVector(ft_vec, std_vec, passed_tests.second);
+	printTest(out, "swap", passed_tests.second);
+	fill_vec.swap(base_vec);
+	out << "fill_vector now looks like:\n";
+	printVector(out, fill_vec, passed_tests.second);
+	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second);
+	out << "\nbase vector now looks like:\n";
+	printVector(out, base_vec, passed_tests.second);
 }

@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/01/20 21:45:55 by mjiam         ########   odam.nl          #
+#    Updated: 2022/01/21 18:35:50 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,6 +81,9 @@ run:
 	@$(MAKE)
 	@echo "Running $(GREEN)diff$(RESET) on binaries"
 	@bash -c "diff <(./ft_bin) <(./std_bin)"
+
+save:
+	@$(MAKE) CFLAGS+=-DSAVE=1
 
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp $(CONTAINERS)
 	@echo "$(PURPLE)Compiling: $<$(RESET)"

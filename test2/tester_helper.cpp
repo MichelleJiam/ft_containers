@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:22 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/20 18:52:43 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/21 19:01:47 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,23 @@
 #define header_width 42
 
 // helper function for centering output
-void	alignedPrint(std::string str, int linelength, bool newline = true)
+template <typename S>
+void	alignedPrint(S &out, std::string str,
+						int linelength, bool newline = true)
 {
 	int spaces = (linelength - str.size()) / 2;
 	
 	if (spaces > 0)
-		std::cout << std::string(spaces, ' ');
-	std::cout << str;
+		out << std::string(spaces, ' ');
+	out << str;
 	if (spaces > 0)
-   		std::cout << std::string(spaces, ' ');
+   		out << std::string(spaces, ' ');
 	if (newline)
-		std::cout << "\n";
+		out << "\n";
 }
 
-void	printHeader(std::string unit_name) {
+template <typename S>
+void	printHeader(S &out, std::string unit_name) {
 	// converting unit_name to uppercase
 	std::transform(unit_name.begin(), unit_name.end(),
 						unit_name.begin(), ::toupper);
@@ -39,18 +42,19 @@ void	printHeader(std::string unit_name) {
 	std::string header = "/*-----------------------+";
 	std::string footer = "  +-----------------------*/";
 
-	std::cout << "\n" << YEL;
-	alignedPrint(header, header_width);
-	alignedPrint(" |" + spaces + text + spaces + "|", header_width);
-	alignedPrint(footer, header_width);
-	std::cout << WHT;
+	out << "\n" << YEL;
+	alignedPrint(out, header, header_width);
+	alignedPrint(out, " |" + spaces + text + spaces + "|", header_width);
+	alignedPrint(out, footer, header_width);
+	out << WHT;
 }
 
-void	printTest(std::string const test_name, int &test_count) {	
+template <typename S>
+void	printTest(S &out, std::string const test_name, int &test_count) {	
 	std::string header(header_width, '=');
-	std::cout << "\n" << header << "\n" << CYN;
-	alignedPrint(test_name, header_width);
-	std::cout << WHT << header << "\n";
+	out << "\n" << header << "\n" << CYN;
+	alignedPrint(out, test_name, header_width);
+	out << WHT << header << "\n";
 	test_count += 1;
 }
 
@@ -62,7 +66,7 @@ int		printResult(bool const passed) {
 	return (passed == true);
 }
 
-void	printPassing(ft::pair<int,int> const passed_tests) {
+void	printPassing(IMPL::pair<int,int> const passed_tests) {
 	// passed_tests pair containing (passed_count, test_count)
 	if (passed_tests.first == passed_tests.second) {
 		std::cout << GRN << "\nPassed: " << passed_tests.first << "/"
@@ -79,3 +83,14 @@ void	printPassing(ft::pair<int,int> const passed_tests) {
 bool	mycomp(char const c1, char const c2) {
 	return std::tolower(c1) < std::tolower(c2);
 }
+
+// namespace std {
+// 	inline std::string	get_name() { return "std"; }
+// }
+
+// namespace ft {
+// 	inline std::string	get_name() { return "ft"; }
+// 	std::ofstream		&getoutputfile(std::string impl_name) {
+
+// 	}
+// }
