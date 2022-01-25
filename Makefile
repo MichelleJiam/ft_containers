@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/01/21 18:35:50 by mjiam         ########   odam.nl          #
+#    Updated: 2022/01/25 18:32:26 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,9 +28,13 @@ endif
 CONTAINERS	= 	$(addprefix $(CONT_DIR)/, vector.hpp vector.ipp \
 											)
 
-SRC_TEST	= 	main.cpp tester_helper.cpp test_vector.cpp test_utils.cpp
+SRC_TEST	= 	main.cpp tester_helper.cpp test_utils.cpp
 
 OBJ			= 	$(addprefix $(OBJ_DIR)/, $(SRC_TEST:.cpp=.o))
+
+ifdef SAVE
+FLAGS		+=	-D SAVE=1
+endif
 
 ifdef DEBUG
 FLAGS		+=	-fsanitize=address -fno-omit-frame-pointer -g
@@ -72,18 +76,23 @@ std:
 # 	@$(CC) $(FLAGS)  $(OBJ) -o $(word 2, $(NAME))
 # 	@echo "Executable $(CYAN)$(word 2, $(NAME))$(RESET) made"
 
-compile_std: $(OBJ)
-	@$(CC) $(FLAGS) $(OBJ) -o $@
-	@echo "Executable $(CYAN)$(NAME)$(RESET) made"
-	@$(MAKE) quietclean
+# compile_std: $(OBJ)
+# 	@$(CC) $(FLAGS) $(OBJ) -o $@
+# 	@echo "Executable $(CYAN)$(NAME)$(RESET) made"
+# 	@$(MAKE) quietclean
 
 run:
 	@$(MAKE)
 	@echo "Running $(GREEN)diff$(RESET) on binaries"
 	@bash -c "diff <(./ft_bin) <(./std_bin)"
 
+compare:
+	@$(MAKE)
+	@./ft_bin >> ft_output
+
 save:
-	@$(MAKE) CFLAGS+=-DSAVE=1
+	@echo "$(YELLOW)Saving output to txt files$(RESET)"
+	@$(MAKE) SAVE=1
 
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp $(CONTAINERS)
 	@echo "$(PURPLE)Compiling: $<$(RESET)"
@@ -100,7 +109,7 @@ debug: $(OBJ) $(CONTAINERS)
 
 clean:
 	@echo "$(BLUE)Cleaning$(RESET)"
-	@rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR) ft_output.txt std_output.txt
 	@echo "$(BLUE)Removed: $(OBJ_DIR) folder$(RESET)"
 
 quietclean:

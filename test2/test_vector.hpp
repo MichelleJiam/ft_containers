@@ -1,21 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   test_vector.cpp                                    :+:    :+:            */
+/*   test_vector.hpp                                    :+:    :+:            */
 /*                                                     +:+                    */
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/21 19:11:53 by mjiam         ########   odam.nl         */
+/*   Created: 2022/01/25 17:38:26 by mjiam         #+#    #+#                 */
+/*   Updated: 2022/01/25 17:52:30 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef TEST_VECTOR_HPP
+#define TEST_VECTOR_HPP
 
 #include "tester.hpp"
 #include "vector.hpp"
 
-// template <class T>
 template <class T, typename S>
-void    printVector(S &out, IMPL::vector<T> &base_vec, int &test_count,
+void    printVector(S &out, T &base_vec, int &test_count,
 					std::string const &test_name = std::string())
 {
 	if (!test_name.empty())
@@ -123,3 +125,5 @@ void test_vector(IMPL::pair<int,int> &passed_tests, S &out) {
 	out << "\nbase vector now looks like:\n";
 	printVector(out, base_vec, passed_tests.second);
 }
+
+#endif
