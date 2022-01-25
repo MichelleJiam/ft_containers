@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/21 18:31:31 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/25 21:57:38 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ myvector::vector(size_type count, T const& value, Allocator const& alloc)
 		_alloc.deallocate(_array, count);
 		throw;
 	}
-}
+}	// TODO: fill constructor isn't being called. Range constructor gets called instead. Fix?
 
 //	RANGE CONSTRUCTOR
 //	Exceptions:

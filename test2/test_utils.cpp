@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:54 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/21 19:03:20 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/25 21:02:13 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #define lex_comp lexicographical_compare
 
 // void test_utils(IMPL::pair<int,int> &passed_tests) { //, std::ofstream &outfile) {
-// 	printHeader("utils");
+// 	printHeader("testing utils");
 	
 // 	// pair/make_pair test
 //     int a[3] = {7, 42, 30};

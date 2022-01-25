@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:22 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/21 19:01:47 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/25 21:54:43 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,46 +15,57 @@
 #define header_width 42
 
 // helper function for centering output
-template <typename S>
-void	alignedPrint(S &out, std::string str,
+void	alignedPrint(std::string str,
 						int linelength, bool newline = true)
 {
 	int spaces = (linelength - str.size()) / 2;
 	
 	if (spaces > 0)
-		out << std::string(spaces, ' ');
-	out << str;
+		std::cout << std::string(spaces, ' ');
+	std::cout << str;
 	if (spaces > 0)
-   		out << std::string(spaces, ' ');
+   		std::cout << std::string(spaces, ' ');
 	if (newline)
-		out << "\n";
+		std::cout << "\n";
 }
 
-template <typename S>
-void	printHeader(S &out, std::string unit_name) {
-	// converting unit_name to uppercase
-	std::transform(unit_name.begin(), unit_name.end(),
-						unit_name.begin(), ::toupper);
-	std::string text = "TESTING " + unit_name;
-	// for aligning text within header
-	int	inner_width = 23;
+std::string	formatMiddle(int inner_width, std::string const lside,
+							std::string text, std::string const rside) {
+	if (text[0] == ' ')	// so leading spaces don't throw off banner alignment
+		text = text.substr(1);
 	std::string	spaces((inner_width - text.size()) / 2, ' ');
+
+	return (lside + spaces + text + spaces + rside);
+}
+
+void	printHeader(std::string header_text) {
+	// converting header_text to uppercase
+	std::transform(header_text.begin(), header_text.end(),
+						header_text.begin(), ::toupper);
+	
 	std::string header = "/*-----------------------+";
 	std::string footer = "  +-----------------------*/";
 
-	out << "\n" << YEL;
-	alignedPrint(out, header, header_width);
-	alignedPrint(out, " |" + spaces + text + spaces + "|", header_width);
-	alignedPrint(out, footer, header_width);
-	out << WHT;
+	std::cout << "\n" << YEL;
+	alignedPrint(header, header_width);
+	// loop for printing longer header text in multiple lines
+	for (size_t i = 0; i < header_text.length(); i += 20) {
+		std::string middle = formatMiddle(23, " |", header_text.substr(i, 20), " |");
+		alignedPrint(middle, header_width);
+	}
+	alignedPrint(footer, header_width);
+	std::cout << WHT;
 }
 
-template <typename S>
-void	printTest(S &out, std::string const test_name, int &test_count) {	
+void	printTest(std::string const test_name, int &test_count) {
+#ifdef SIMPLE
+	std::cout << "\nTESTING: " << test_name << std::endl;
+#else
 	std::string header(header_width, '=');
-	out << "\n" << header << "\n" << CYN;
-	alignedPrint(out, test_name, header_width);
-	out << WHT << header << "\n";
+	std::cout << "\n" << header << "\n" << CYN;
+	alignedPrint(test_name, header_width);
+	std::cout << WHT << header << "\n";
+#endif
 	test_count += 1;
 }
 
@@ -66,16 +77,16 @@ int		printResult(bool const passed) {
 	return (passed == true);
 }
 
-void	printPassing(IMPL::pair<int,int> const passed_tests) {
+void	printPassing(int const passed, int const tests) {
 	// passed_tests pair containing (passed_count, test_count)
-	if (passed_tests.first == passed_tests.second) {
-		std::cout << GRN << "\nPassed: " << passed_tests.first << "/"
-			<< passed_tests.second << WHT << std::endl;
+	if (passed == tests) {
+		std::cout << GRN << "\nPassed: " << passed << "/"
+			<< tests << WHT << std::endl;
 	}
 	else {
 		std::cout << RED << "\nFailed: "
-			<< (passed_tests.second - passed_tests.first) << "/"
-			<< passed_tests.second << WHT << std::endl;
+			<< (tests - passed) << "/"
+			<< tests << WHT << std::endl;
 	}
 }
 
@@ -84,13 +95,4 @@ bool	mycomp(char const c1, char const c2) {
 	return std::tolower(c1) < std::tolower(c2);
 }
 
-// namespace std {
-// 	inline std::string	get_name() { return "std"; }
-// }
-
-// namespace ft {
-// 	inline std::string	get_name() { return "ft"; }
-// 	std::ofstream		&getoutputfile(std::string impl_name) {
-
-// 	}
-// }
+#undef header_width

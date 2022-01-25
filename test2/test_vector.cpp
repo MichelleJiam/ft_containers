@@ -6,120 +6,131 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/21 19:11:53 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/25 22:30:36 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
 #include "vector.hpp"
 
-// template <class T>
-template <class T, typename S>
-void    printVector(S &out, IMPL::vector<T> &base_vec, int &test_count,
+template <class T>
+void    printVector(IMPL::vector<T> &base_vec, int &test_count,
 					std::string const &test_name = std::string())
 {
 	if (!test_name.empty())
-		printTest(out, test_name, test_count);
-	out << "\n- Vector -\n";
-	out << "capacity: " << base_vec.capacity() << std::endl;
-	out << "size:     " << base_vec.size() << std::endl;
-	out << "contents: [";
+		printTest(test_name, test_count);
+	std::cout << "\ncapacity: " << base_vec.capacity() << std::endl;
+	std::cout << "size:     " << base_vec.size() << std::endl;
+	std::cout << "contents: [";
 	for (unsigned i = 0; i < base_vec.size(); i++)
-		out << ' ' << base_vec[i];
-	out << " ]\n";
+		std::cout << ' ' << base_vec[i];
+	std::cout << " ]\n";
 }
 
-template <typename S>
-void test_vector(IMPL::pair<int,int> &passed_tests, S &out) {
-	printHeader(out, "vector");
+void test_vector(IMPL::pair<int,int> &passed_tests) {
+#ifndef SIMPLE
+	printHeader("testing vector");
+#endif
 
 	IMPL::vector<int>		base_vec;
-
+	
 	// push_back test
-	printTest(out, "push_back", passed_tests.second);
+	printTest("push_back", passed_tests.second);
+	clock_t start = clock();
 	for (int i = 1; i <= 10; i++)
 		base_vec.push_back(i);
-	printVector(out, base_vec, passed_tests.second);
-	// passed_tests.first += printVector(out, base_vec, std_vec, passed_tests.second, "push_back");
+	printVector(base_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 
 	// empty test
-	printTest(out, "empty", passed_tests.second);
-	out << std::boolalpha << "is base_vec empty: " << base_vec.empty() << std::endl;
-	printVector(out, base_vec, passed_tests.second);
-	// passed_tests.first += printResult(base_vec.empty() == std_vec.empty());
+	printTest("empty", passed_tests.second);
+	start = clock();
+	std::cout << std::boolalpha << "is base_vec empty: " << base_vec.empty() << std::endl;
+	printVector(base_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 
 	// pop_back test
-	printTest(out, "pop_back", passed_tests.second);
+	printTest("pop_back", passed_tests.second);
+	start = clock();
 	base_vec.pop_back();
-	printVector(out, base_vec, passed_tests.second);
-	// passed_tests.first += printVector(out, base_vec, std_vec, passed_tests.second, "pop_back");
+	printVector(base_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 
 	// fill constructor test
-	printTest(out, "fill constructor", passed_tests.second);
+	printTest("fill constructor", passed_tests.second);
+	start = clock();
 	IMPL::vector<int>	fill_vec(4, 42);
-	printVector(out, fill_vec, passed_tests.second);
-	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "fill constructor");
+	printVector(fill_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 
 	// copy constructor test
-	printTest(out, "copy constructor", passed_tests.second);
+	printTest("copy constructor", passed_tests.second);
+	start = clock();
 	IMPL::vector<int>	copy_vec(base_vec);
-	printVector(out, copy_vec, passed_tests.second);
-	// passed_tests.first += printVector(copy_vec, std_copy_vec, passed_tests.second, "copy constructor");
+	printVector(copy_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 
 	// range constructor test
-	printTest(out, "range constructor", passed_tests.second);
+	printTest("range constructor", passed_tests.second);
+	start = clock();
 	IMPL::vector<int>	range_vec(fill_vec.begin(), fill_vec.end() - 2);
-	printVector(out, range_vec, passed_tests.second);
-	// passed_tests.first += printVector(range_vec, std_range_vec, passed_tests.second, "range constructor");
+	printVector(range_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 
 	// clear test
-	printTest(out, "clear", passed_tests.second);
+	printTest("clear", passed_tests.second);
+	start = clock();
 	copy_vec.clear();
-	printVector(out, copy_vec, passed_tests.second);
-	// passed_tests.first += printVector(copy_vec, std_copy_vec, passed_tests.second, "clear");
+	printVector(copy_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 	
 	// reserve test
-	printTest(out, "reserve", passed_tests.second);
+	printTest("reserve", passed_tests.second);
+	start = clock();
 	size_t   oldcap = fill_vec.capacity();
 	fill_vec.reserve(10);
-	printVector(out, fill_vec, passed_tests.second);
-	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "reserve");
-	out << "fill vec capacity was " << oldcap << ", is now " << fill_vec.capacity() << ".\n";
+	printVector(fill_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
+	std::cout << "fill vec capacity was " << oldcap << ", is now " << fill_vec.capacity() << ".\n";
 	
 	// insert test
-	printTest(out, "insert", passed_tests.second);
+	printTest("insert", passed_tests.second);
+	start = clock();
 	IMPL::vector<int>::iterator it;
 	it = fill_vec.end();
 	fill_vec.insert(it - 1, 2, 13);
-	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "insert");
-	printVector(out, fill_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
+	printVector(fill_vec, passed_tests.second);
 	it = fill_vec.begin();
 	fill_vec.insert(it + 2, 2, 0);
-	printVector(out, fill_vec, passed_tests.second);
-	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "insert");
+	printVector(fill_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 
 	// resize test
-	printTest(out, "resize", passed_tests.second);
+	printTest("resize", passed_tests.second);
+	start = clock();
 	fill_vec.resize(8, 7);
-	printVector(out, fill_vec, passed_tests.second);
-	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "resize");
+	printVector(fill_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 
 	// erase test
-	printTest(out, "erase", passed_tests.second);
+	printTest("erase", passed_tests.second);
+	start = clock();
 	fill_vec.erase(fill_vec.end() - 2);
-	printVector(out, fill_vec, passed_tests.second);
-	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "erase");
+	printVector(fill_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 	fill_vec.erase(fill_vec.end() - 3, fill_vec.end() - 1);
 	fill_vec.erase(fill_vec.begin() + 2, fill_vec.begin() + 4);
-	printVector(out, fill_vec, passed_tests.second);
-	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second, "erase range");
+	printVector(fill_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
 
 	// swap test
-	printTest(out, "swap", passed_tests.second);
+	printTest("swap", passed_tests.second);
+	start = clock();
 	fill_vec.swap(base_vec);
-	out << "fill_vector now looks like:\n";
-	printVector(out, fill_vec, passed_tests.second);
-	// passed_tests.first += printVector(out, fill_vec, std_fill_vec, passed_tests.second);
-	out << "\nbase vector now looks like:\n";
-	printVector(out, base_vec, passed_tests.second);
+	std::cout << "fill_vector now looks like:\n";
+	printVector(fill_vec, passed_tests.second);
+	std::cout << "Duration of operation: " << ((clock() - start) / (double)CLOCKS_PER_SEC) * 1000 << "seconds." << std::endl;
+	std::cout << "\nbase vector now looks like:\n";
+	printVector(base_vec, passed_tests.second);
 }

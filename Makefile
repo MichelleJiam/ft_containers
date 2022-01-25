@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/01/21 18:35:50 by mjiam         ########   odam.nl          #
+#    Updated: 2022/01/25 22:21:37 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ NAME		=	ft_bin
 
 CC			= 	clang++
 
-FLAGS		= 	-Wall -Wextra -Werror
+FLAGS		= 	-Wall -Wextra -Werror -std=c++98
 
 ifdef STD
 NAME		=	std_bin
@@ -31,6 +31,10 @@ CONTAINERS	= 	$(addprefix $(CONT_DIR)/, vector.hpp vector.ipp \
 SRC_TEST	= 	main.cpp tester_helper.cpp test_vector.cpp test_utils.cpp
 
 OBJ			= 	$(addprefix $(OBJ_DIR)/, $(SRC_TEST:.cpp=.o))
+
+ifdef SIMPLE
+FLAGS		+=	-D SIMPLE=1
+endif
 
 ifdef DEBUG
 FLAGS		+=	-fsanitize=address -fno-omit-frame-pointer -g
@@ -72,18 +76,24 @@ std:
 # 	@$(CC) $(FLAGS)  $(OBJ) -o $(word 2, $(NAME))
 # 	@echo "Executable $(CYAN)$(word 2, $(NAME))$(RESET) made"
 
-compile_std: $(OBJ)
-	@$(CC) $(FLAGS) $(OBJ) -o $@
-	@echo "Executable $(CYAN)$(NAME)$(RESET) made"
-	@$(MAKE) quietclean
+# compile_std: $(OBJ)
+# 	@$(CC) $(FLAGS) $(OBJ) -o $@
+# 	@echo "Executable $(CYAN)$(NAME)$(RESET) made"
+# 	@$(MAKE) quietclean
 
 run:
 	@$(MAKE)
-	@echo "Running $(GREEN)diff$(RESET) on binaries"
+	@echo "\nRunning simple $(GREEN)diff$(RESET) test on compiled binaries."
+	@echo "Run $(YELLOW)make compare$(RESET) for more detailed comparison."
 	@bash -c "diff <(./ft_bin) <(./std_bin)"
 
-save:
-	@$(MAKE) CFLAGS+=-DSAVE=1
+compare:
+	@$(MAKE) SIMPLE=1
+	@echo "\n$(GREEN)Saved output to txt files. Running comparison program$(RESET)"
+	@./ft_bin > ft_output.txt
+	@./std_bin > std_output.txt
+	@$(CC) $(FLAGS) $(TEST_DIR)/compare.cpp $(TEST_DIR)/tester_helper.cpp -o compare
+	@./compare
 
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp $(CONTAINERS)
 	@echo "$(PURPLE)Compiling: $<$(RESET)"
@@ -100,7 +110,7 @@ debug: $(OBJ) $(CONTAINERS)
 
 clean:
 	@echo "$(BLUE)Cleaning$(RESET)"
-	@rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR) ft_output.txt std_output.txt compare
 	@echo "$(BLUE)Removed: $(OBJ_DIR) folder$(RESET)"
 
 quietclean:
@@ -116,4 +126,4 @@ re:
 	@$(MAKE) fclean
 	@$(MAKE) all
 
-.PHONY: all run debug clean fclean re
+.PHONY: all run debug clean fclean re compare
