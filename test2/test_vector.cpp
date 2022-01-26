@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/25 22:30:36 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/26 14:51:32 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void    printVector(IMPL::vector<T> &base_vec, int &test_count,
 	std::cout << " ]\n";
 }
 
-void test_vector(IMPL::pair<int,int> &passed_tests) {
+void test_vector(IMPL::pair<int,int> &passed_tests) {	// TODO: remove unused passed_tests
 #ifndef SIMPLE
 	printHeader("testing vector");
 #endif

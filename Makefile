@@ -6,17 +6,13 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/01/25 22:21:37 by mjiam         ########   odam.nl          #
+#    Updated: 2022/01/26 14:58:04 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
 # NAME		= 	ft_test std_test
 
 NAME		=	ft_bin
-
-CC			= 	clang++
-
-FLAGS		= 	-Wall -Wextra -Werror -std=c++98
 
 ifdef STD
 NAME		=	std_bin
@@ -25,12 +21,11 @@ else
 VERS		=	-D IMPL=ft
 endif
 
-CONTAINERS	= 	$(addprefix $(CONT_DIR)/, vector.hpp vector.ipp \
-											)
+COMPARE_BIN	=	compare
 
-SRC_TEST	= 	main.cpp tester_helper.cpp test_vector.cpp test_utils.cpp
+CC			= 	clang++
 
-OBJ			= 	$(addprefix $(OBJ_DIR)/, $(SRC_TEST:.cpp=.o))
+FLAGS		= 	-Wall -Wextra -Werror -std=c++98
 
 ifdef SIMPLE
 FLAGS		+=	-D SIMPLE=1
@@ -39,6 +34,17 @@ endif
 ifdef DEBUG
 FLAGS		+=	-fsanitize=address -fno-omit-frame-pointer -g
 endif
+
+CONTAINERS	= 	$(addprefix $(CONT_DIR)/, vector.hpp vector.ipp \
+											)
+
+TEST_SRC	= 	main.cpp tester_helper.cpp test_vector.cpp test_utils.cpp
+
+COMPARE_SRC	=	$(addprefix $(TEST_DIR)/, compare.cpp)
+
+OBJ			= 	$(addprefix $(OBJ_DIR)/, $(TEST_SRC:.cpp=.o))
+
+SAVE_FILES	=	ft_output.txt std_output.txt
 
 # DIRECTORIES
 TEST_DIR	=	test2
@@ -81,19 +87,21 @@ std:
 # 	@echo "Executable $(CYAN)$(NAME)$(RESET) made"
 # 	@$(MAKE) quietclean
 
+# simple comparison using diff
 run:
 	@$(MAKE)
 	@echo "\nRunning simple $(GREEN)diff$(RESET) test on compiled binaries."
 	@echo "Run $(YELLOW)make compare$(RESET) for more detailed comparison."
 	@bash -c "diff <(./ft_bin) <(./std_bin)"
 
+# detailed comparison that shows which test failed and expected vs. received output
 compare:
 	@$(MAKE) SIMPLE=1
 	@echo "\n$(GREEN)Saved output to txt files. Running comparison program$(RESET)"
-	@./ft_bin > ft_output.txt
-	@./std_bin > std_output.txt
-	@$(CC) $(FLAGS) $(TEST_DIR)/compare.cpp $(TEST_DIR)/tester_helper.cpp -o compare
-	@./compare
+	@./ft_bin > $(word 1, $(SAVE_FILES))
+	@./std_bin > $(word 2, $(SAVE_FILES))
+	@$(CC) $(FLAGS) $(COMPARE_SRC) $(TEST_DIR)/tester_helper.cpp -o $(COMPARE_BIN)
+	@./$(COMPARE_BIN)
 
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp $(CONTAINERS)
 	@echo "$(PURPLE)Compiling: $<$(RESET)"
@@ -110,7 +118,7 @@ debug: $(OBJ) $(CONTAINERS)
 
 clean:
 	@echo "$(BLUE)Cleaning$(RESET)"
-	@rm -rf $(OBJ_DIR) ft_output.txt std_output.txt compare
+	@rm -rf $(OBJ_DIR)
 	@echo "$(BLUE)Removed: $(OBJ_DIR) folder$(RESET)"
 
 quietclean:
@@ -118,7 +126,7 @@ quietclean:
 
 fclean: clean
 	@echo "$(BLUE)Removing: $(NAME)$(RESET)"
-	@rm -rf ft_bin std_bin
+	@rm -rf ft_bin std_bin $(SAVE_FILES) $(COMPARE_BIN)
 	@echo "$(BLUE)Clean af$(RESET)"
 
 re:

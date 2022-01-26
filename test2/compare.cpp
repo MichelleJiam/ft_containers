@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/25 18:52:21 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/25 22:21:28 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/26 14:50:53 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,6 @@ int main() {
 
     printHeader("comparing std and ft containers");
 
-    // pair containing (passed_count, test_count)
     int tests = 0, failed = 0;
     int status = 0;
     int new_test = 0;
