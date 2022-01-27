@@ -6,15 +6,15 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/25 21:57:38 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/27 20:45:46 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_IPP
 # define VECTOR_IPP
 
-#define myvector ft::vector<T,Allocator>
 #define DEBUG 0
+#define myvector ft::vector<T,Allocator>
 
 // DEBUG
 // #define InputIterator typename vector<T,A>::iterator

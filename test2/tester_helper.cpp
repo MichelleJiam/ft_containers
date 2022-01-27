@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:22 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/25 21:54:43 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/27 17:52:22 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	printHeader(std::string header_text) {
 	std::cout << WHT;
 }
 
-void	printTest(std::string const test_name, int &test_count) {
+void	printTest(std::string const test_name) {
 #ifdef SIMPLE
 	std::cout << "\nTESTING: " << test_name << std::endl;
 #else
@@ -66,7 +66,6 @@ void	printTest(std::string const test_name, int &test_count) {
 	alignedPrint(test_name, header_width);
 	std::cout << WHT << header << "\n";
 #endif
-	test_count += 1;
 }
 
 int		printResult(bool const passed) {
