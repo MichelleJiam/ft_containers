@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/26 21:11:29 by mjiam         #+#    #+#                 */
-/*   Updated: 2021/11/29 18:17:26 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/28 15:13:56 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,13 @@ class reverse_iterator
 						typename ft::iterator_traits<Iterator>::difference_type,
 						typename ft::iterator_traits<Iterator>::pointer,
 						typename ft::iterator_traits<Iterator>::reference> {
+	private:
+		typedef	ft::iterator_traits<Iterator>			_traits_type;
+
 	public:
 		typedef	Iterator								iterator_type;
-		typedef typename T								value_type;
-		typedef typename Category						iterator_category;
+		// typedef typename T								value_type;
+		// typedef typename Category						iterator_category;
 		typedef typename _traits_type::difference_type	difference_type;
 		typedef typename _traits_type::pointer			pointer;
 		typedef typename _traits_type::reference		reference;
@@ -115,8 +118,6 @@ class reverse_iterator
 		}
 
 	protected:
-		typedef	ft::iterator_traits<Iterator>	_traits_type;
-
 		Iterator								_current;
 };
 } // namespace ft

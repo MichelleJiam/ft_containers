@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/20 16:11:10 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/28 16:21:52 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 // #include <algorithm> // fill
 #include "../utils/iterator_utils.hpp"
 #include "../utils/random_access_iterator.hpp"
+#include "../utils/reverse_iterator.hpp"
 #include "../utils/type_traits.hpp"
 
 // TODO: remove
@@ -37,10 +38,10 @@ class vector : public std::vector<T, Allocator> {
 		typedef typename Allocator::const_reference	const_reference;
 		typedef typename Allocator::pointer			pointer;
 		typedef typename Allocator::const_pointer	const_pointer;
-		typedef ft::random_access_iterator<value_type>		iterator;
+		typedef ft::random_access_iterator<value_type>			iterator;
 		typedef ft::random_access_iterator<value_type const>	const_iterator;
-		typedef std::reverse_iterator<iterator>	reverse_iterator; // TODO: change to ft
-		typedef std::reverse_iterator<const_iterator>	const_reverse_iterator; // TODO: change to ft
+		typedef ft::reverse_iterator<iterator>			reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 		// CONSTRUCTORS & ASSIGNMENT OPERATORS
 		// default: empty container
@@ -49,11 +50,10 @@ class vector : public std::vector<T, Allocator> {
 		explicit vector(size_type count, T const& value = T(),
 						Allocator const& alloc = Allocator());
 		// range: container with first-last elements
-		template <class InputIterator> //, typename std::iterator_traits<InputIterator>::value_type> // TODO: uncomment
+		template <class InputIterator>
 		vector(InputIterator first, InputIterator last,
 				Allocator const& alloc = Allocator());
-				// typename ft::iterator_traits<InputIterator>::type* = NULL);
-				// typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
+				// typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL);
 		// copy: container with copies of each element in `other`
 		vector(vector const& other);
 		// assignment operator
@@ -164,13 +164,20 @@ class vector : public std::vector<T, Allocator> {
 		size_type		_capacity;
 		pointer			_array;
 
+		
 		template <class Integer>
-		void	_range_construct(Integer n, Integer value, std::true_type);
+		void	_range_dispatch(Integer n, Integer value, std::true_type);
 		template <class InputIterator>
-		void	_range_construct(InputIterator first, InputIterator last, std::false_type);
+		void	_range_dispatch(InputIterator first, InputIterator last, std::false_type);
+		template <class Integer>
+		void	_assign_dispatch(Integer n, Integer value, std::true_type);
+		template <class InputIterator>
+		void	_assign_dispatch(InputIterator first, InputIterator last, std::false_type);
 		void	_destroy_until(iterator new_end, iterator old_end);
 		template <class InputIterator>
-		void	_range_copy(iterator start, InputIterator first, InputIterator last);
+		void	_copy_forward(iterator pos, InputIterator first, InputIterator last);
+		template <class InputIterator>
+		void	_copy_backward(iterator pos, InputIterator first, InputIterator last);
 		void	_fill_insert(iterator pos, size_type count, T const& value);
 		// void	_expand_and_move(iterator pos, size_type count, size_type offset);
 		void	_reallocate(size_type new_size);

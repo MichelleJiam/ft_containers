@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/27 20:45:46 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/28 16:22:30 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,26 +44,28 @@ myvector::vector(size_type count, T const& value, Allocator const& alloc)
 		_alloc.deallocate(_array, count);
 		throw;
 	}
-}	// TODO: fill constructor isn't being called. Range constructor gets called instead. Fix?
+}
 
 //	RANGE CONSTRUCTOR
+//	Also called if passing 2 integers as first 2 params, instead of fill cons.
 //	Exceptions:
-//	std::distance may throw if arithmetical operations performed on the 
-//	iterators throw;
+//	std::distance may throw if arithmetical operations performed 
+//	on the iterators throw;
 //	allocator::allocate & allocator:construct may throw bad_alloc.
 template <class T, class Allocator>
 template <class InputIterator> //, typename = typename std::iterator_traits<InputIterator>::value_type>
 myvector::vector(InputIterator first, InputIterator last,
-				Allocator const& alloc) //typename ft::iterator_traits<InputIterator>::type*)
-				// typename std::iterator_traits<InputIterator>::type*) // TODO: change to ft::
+				Allocator const& alloc)
+				// typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*)
 		:	_alloc(alloc) {
 	try {
 		// checks if integral type received. If so, it's not an iterator.
 		typedef typename ft::is_integral<InputIterator>::type	Integral;
-		_range_construct(first, last, Integral());
+		_range_dispatch(first, last, Integral());
 	}
 	catch (...) {
 		_alloc.deallocate(_array, _size);
+		throw;
 	}
 }
 
@@ -77,7 +79,7 @@ myvector::vector(vector const& other)
 			_capacity(_size),
 			_array(_alloc.allocate(_size)) {
 	try {
-		_range_copy(this->begin(), other.begin(), other.end());
+		_copy_backward(this->begin(), other.begin(), other.end());
 	}
 	catch (...) {
 		_alloc.deallocate(_array, _size);
@@ -138,8 +140,12 @@ void	myvector::assign(size_type count, const T& value) {
 
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::assign (InputIterator first, InputIterator last,
+void	myvector::assign(InputIterator first, InputIterator last,
 							typename std::iterator_traits<InputIterator>::type*) { // TODO: change to ft
+	// checks if integral type received. If so, it's not an iterator.
+	typedef typename ft::is_integral<InputIterator>::type	Integral;
+	_assign_dispatch(first, last, Integral());
+	
 	size_type	count = std::distance(first, last);
 	
 	this->clear();
@@ -238,7 +244,7 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 			_reallocate(this->size() ? this->size() * 2 : 1);
 		if (pos != saved_end)
 			// _range_copy(pos + count, pos, saved_end);
-			_range_copy(this->_array + offset + count, pos, saved_end);
+			_copy_backward(this->_array + offset + count, pos, saved_end);
 		_fill_insert(this->_array + offset, count, value);
 		if (DEBUG) std::cout << "inserting " << value << " at position " << 	
 			offset << std::endl;
@@ -295,7 +301,7 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 template <class T, class Allocator>
 typename myvector::iterator	myvector::erase(iterator pos) {
 	if (pos + 1 != this->end())
-		_range_copy(pos, pos + 1, end());
+		_copy_forward(pos, pos + 1, end());
 	this->_size -= 1;
 	_alloc.destroy(&_array[_size - 1]);
 	return pos;		
@@ -309,10 +315,15 @@ template <class T, class Allocator>
 typename myvector::iterator	myvector::erase(
 		iterator first, iterator last) {
 	if (first != last) {
-		size_type	elems_after = std::distance(this->end(), last);
-		if (last != this->end())
-			_range_copy(first, last, this->end());
-		_destroy_until((first + elems_after), this->end());
+		iterator		saved_end = this->_array + _size;
+		// iterator	_end = this->begin() + this->size();
+		size_type	elems_after = std::distance(saved_end, last);
+		// std::cout << "\nbegin: " << *begin() << ", size: " << size() << ", element at _end: " << *_end << std::endl;
+		// size_type	elems_after = this->size() - std::distance(last, this->begin());
+		// size_type	elems_after = std::distance(end(), last);
+		if (last != saved_end)
+			_copy_forward(first, last, saved_end);
+		_destroy_until((first + elems_after), saved_end);
 	}
 	return first;
 }
@@ -371,7 +382,7 @@ void	myvector::swap(vector& other) {
 //	Integer specialization
 template <class T, class Allocator>
 template <class Integer>
-void	myvector::_range_construct(Integer n, Integer value, ft::true_type) {
+void	myvector::_range_dispatch(Integer n, Integer value, ft::true_type) {
 	size_type	count = static_cast<size_type>(n);
 	_array = _alloc.allocate(count);
 	_size = count;
@@ -382,12 +393,12 @@ void	myvector::_range_construct(Integer n, Integer value, ft::true_type) {
 //	Iterator specialization
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::_range_construct(InputIterator first, InputIterator last, ft::false_type) {
+void	myvector::_range_dispatch(InputIterator first, InputIterator last, ft::false_type) {
 	try {
 		_size = std::distance(last, first);
 		_capacity = _size;
 		_array = _alloc.allocate(_size);
-		_range_copy(this->begin(), first, last);
+		_copy_backward(this->begin(), first, last);
 	}
 	catch (...) {
 		clear();
@@ -409,11 +420,25 @@ void	myvector::_destroy_until(iterator new_end, iterator old_end) {
 	}
 }
 
-//	Internal fn called by copy and range constructors, insert and erase.
+//	Internal fn called by erase.
+//	Use for size-contracting operations.
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::_range_copy(iterator pos, InputIterator first, InputIterator last) {
+void	myvector::_copy_forward(iterator pos, InputIterator first, InputIterator last) {
+	while (first != last) {
+		_alloc.construct(&*pos, *first);
+		++pos;
+		++first;
+	}
+}
+
+//	Internal fn called by copy and range constructors, insert.
+//	Use for size-expanding operations.
+//	Inserts elements in range [first,last] at `pos`, starting from the last.
+template <class T, class Allocator>
+template <class InputIterator>
+void	myvector::_copy_backward(iterator pos, InputIterator first, InputIterator last) {
 	difference_type to_copy = std::distance(last, first);
 	
 	for (; to_copy > 0; to_copy--) {

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:54 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/27 16:48:41 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/28 13:27:40 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 #define lex_comp lexicographical_compare
 
-void test_utils() {
+void	test_utils() {
 #ifndef SIMPLE
 	printHeader("testing utils");
 #endif

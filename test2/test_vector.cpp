@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/27 21:56:39 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/28 15:58:56 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,18 +42,22 @@ void	test_vec_empty(T &vector) {
 
 template <typename T>
 void	test_vec_erase(T &vector) {
-	vector.erase(vector.end() - 2);
-	vector.erase(vector.end() - 3, vector.end() - 1);
-	vector.erase(vector.begin() + 2, vector.begin() + 4);
+	typename T::iterator it = vector.end();
+
+	vector.erase(it - 2);
+	// printVector(vector);
+	it = vector.end();
+	vector.erase(it - 3, it - 1);
+	// printVector(vector);
+	it = vector.begin();
+	vector.erase(it + 2, it + 4);
 }
 
 template <typename T>
 void	test_vec_insert(T &vector) {
-	typename T::iterator it;
+	typename T::iterator it = vector.end();
 	
-	it = vector.end();
 	vector.insert(it - 1, 13);
-
 	it = vector.begin();
 	vector.insert(it + 2, 4, 7);
 }
@@ -142,6 +146,7 @@ void test_vector() {
 	
 	// insert test
 	benchmarkFunction_multirun(test_vec_insert<t_ivec>, base_vec, "insert", true);
+	// TODO: fix insert that's causing issues when erase is called and 
 
 	// resize test
 	benchmarkFunction_multirun(test_vec_resize<t_ivec>, copy_vec, "resize", true);
