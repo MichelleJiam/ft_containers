@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/28 16:21:52 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/28 17:23:46 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,8 +79,8 @@ class vector : public std::vector<T, Allocator> {
 		// Replaces current contents with elements constructed from
 		// elements in range [first,last] in the same order.
 		template <class InputIterator>
-  		void	assign(InputIterator first, InputIterator last,
-		  				typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
+  		void	assign(InputIterator first, InputIterator last);
+		  				// typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 
 		// Returns a copy of the allocator object associated with vector.
 		allocator_type	get_allocator(void) const;
@@ -129,8 +129,9 @@ class vector : public std::vector<T, Allocator> {
 		void	insert(iterator pos, size_type count, T const& value);
 
 		// Inserts elements in range [first,last] at `pos` in same order.
-		// template <class InputIterator>
-		// void	insert(iterator pos, InputIterator first, InputIterator last);
+		template <class InputIterator>
+		void	insert(iterator pos, InputIterator first, InputIterator last,
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*  = NULL);
 		// 				// typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 
 		// Erases (destroys) single element at `pos`, reducing size by 1.
@@ -166,13 +167,14 @@ class vector : public std::vector<T, Allocator> {
 
 		
 		template <class Integer>
-		void	_range_dispatch(Integer n, Integer value, std::true_type);
+		void	_range_dispatch(Integer n, Integer value, ft::true_type);
 		template <class InputIterator>
-		void	_range_dispatch(InputIterator first, InputIterator last, std::false_type);
+		void	_range_dispatch(InputIterator first, InputIterator last, ft::false_type);
+		void	_fill_assign(size_type count, const T& value);
 		template <class Integer>
-		void	_assign_dispatch(Integer n, Integer value, std::true_type);
+		void	_assign_dispatch(Integer n, Integer value, ft::true_type);
 		template <class InputIterator>
-		void	_assign_dispatch(InputIterator first, InputIterator last, std::false_type);
+		void	_assign_dispatch(InputIterator first, InputIterator last, ft::false_type);
 		void	_destroy_until(iterator new_end, iterator old_end);
 		template <class InputIterator>
 		void	_copy_forward(iterator pos, InputIterator first, InputIterator last);

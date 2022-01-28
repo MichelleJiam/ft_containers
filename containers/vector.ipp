@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/28 16:22:30 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/28 17:29:52 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,34 +125,21 @@ typename myvector::const_iterator	myvector::end(void) const {
 	return const_iterator(_array + _size);
 }
 
-
 //	Destroys current elements and replaces with newly constructed ones.
-//	Automatically reallcoates if new size > current capacity.
+//	Automatically reallocates if new size > current capacity.
 //	Iterator invalidation: all
 template <class T, class Allocator>
 void	myvector::assign(size_type count, const T& value) {
-	this->clear();
-	if (count == 0)
-		return ;
-	this->reserve(count);
-	this->insert(begin(), count, value);
+	_fill_assign(count, value);
 }
 
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::assign(InputIterator first, InputIterator last,
-							typename std::iterator_traits<InputIterator>::type*) { // TODO: change to ft
+void	myvector::assign(InputIterator first, InputIterator last) {
+							// typename std::iterator_traits<InputIterator>::type*) { // TODO: change to ft
 	// checks if integral type received. If so, it's not an iterator.
 	typedef typename ft::is_integral<InputIterator>::type	Integral;
 	_assign_dispatch(first, last, Integral());
-	
-	size_type	count = std::distance(first, last);
-	
-	this->clear();
-	if (count == 0)
-		return ;
-	this->reserve(count);
-	this->insert(begin(), first, last);
 }
 
 template <class T, class Allocator>
@@ -261,32 +248,32 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 }
 
 // TODO: implement is_integral and add within fn body
-// template <class T, class Allocator>
-// template <class InputIterator>
-// void	myvector::insert(iterator pos, InputIterator first, InputIterator last) {
-// 						// typename std::iterator_traits<InputIterator>::type*) { // TODO: enable_if/is_integral, change std:: to ft::
-// 	size_type	old_cap = this->capacity();
-// 	// size_type   elems_after = vec.end() - pos;
-// 	size_type   offset = pos - this->begin();
-// 	size_type	count = last - first;
+template <class T, class Allocator>
+template <class InputIterator>
+void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
+						typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*) {
+	size_type	old_cap = this->capacity();
+	// size_type   elems_after = vec.end() - pos;
+	size_type   offset = pos - this->begin();
+	size_type	count = last - first;
 
-// 	try {
-// 		// if (this->size() + count > this->capacity())
-// 		// 	this->reserve(this->size() + count);
-// 		// if (elems_after >= count)
-// 		// 	_range_copy(pos + count, pos, this->end());
-// 		// _expand_and_move(pos, count, offset);
-// 		if (this->size() + count > this->capacity())
-// 			_reallocate(this->size() + count);
-// 		_range_copy(this->begin() + offset, first, last);
-// 		this->size += count;
-// 	}
-// 	catch (...) {
-// 		if (old_cap < this->capacity())
-// 			_alloc.deallocate(&*(this->begin() + offset), this->capacity() - old_cap);
-// 		throw;
-// 	}
-// }
+	try {
+		// if (this->size() + count > this->capacity())
+		// 	this->reserve(this->size() + count);
+		// if (elems_after >= count)
+		// 	_range_copy(pos + count, pos, this->end());
+		// _expand_and_move(pos, count, offset);
+		if (this->size() + count > this->capacity())
+			_reallocate(this->size() + count);
+		_copy_backward(this->begin() + offset, first, last);
+		this->_size += count;
+	}
+	catch (...) {
+		if (old_cap < this->capacity())
+			_alloc.deallocate(&*(this->begin() + offset), this->capacity() - old_cap);
+		throw;
+	}
+}
 
 //	Because vectors use an array as their underlying storage, erasing elements
 //	in positions other than the vector end causes the container to relocate 
@@ -315,12 +302,8 @@ template <class T, class Allocator>
 typename myvector::iterator	myvector::erase(
 		iterator first, iterator last) {
 	if (first != last) {
-		iterator		saved_end = this->_array + _size;
-		// iterator	_end = this->begin() + this->size();
+		iterator	saved_end = this->_array + _size;
 		size_type	elems_after = std::distance(saved_end, last);
-		// std::cout << "\nbegin: " << *begin() << ", size: " << size() << ", element at _end: " << *_end << std::endl;
-		// size_type	elems_after = this->size() - std::distance(last, this->begin());
-		// size_type	elems_after = std::distance(end(), last);
 		if (last != saved_end)
 			_copy_forward(first, last, saved_end);
 		_destroy_until((first + elems_after), saved_end);
@@ -404,6 +387,39 @@ void	myvector::_range_dispatch(InputIterator first, InputIterator last, ft::fals
 		clear();
 		throw;
 	}
+}
+
+//	Intenral fn called by assign (fill) and _assign_dispatch (integer).
+template <class T, class Allocator>
+void	myvector::_fill_assign(size_type count, const T& value) {
+	this->clear();
+	std::cout << "fill_assign: count " << count << std::endl;
+	if (count == 0)
+		return ;
+	this->reserve(count);
+	this->insert(begin(), count, value);
+}
+
+//	Internal fn called by assign.
+//	Integer specialization
+template <class T, class Allocator>
+template <class Integer>
+void	myvector::_assign_dispatch(Integer n, Integer value, ft::true_type) {
+	_fill_assign(n, value);
+}
+
+//	Iterator specialization
+template <class T, class Allocator>
+template <class InputIterator>
+void	myvector::_assign_dispatch(InputIterator first, InputIterator last, ft::false_type) {
+	size_type	count = std::distance(last, first);
+	
+	this->clear();
+	std::cout << "assign_dispatch: count " << count << std::endl;
+	if (count == 0)
+		return ;
+	this->reserve(count);
+	this->insert(begin(), first, last);
 }
 
 //	Internal fn called by resize, erase.

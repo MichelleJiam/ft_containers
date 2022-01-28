@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/28 15:58:56 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/01/28 17:29:29 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,26 @@ void    printVector(T &base_vec, std::string const &test_name)
 }
 
 template <typename T>
+void	test_vec_assign(T &vector) {
+	T	vec1, vec2, vec3;
+
+	vec1.assign(7, vector[0]); // 7 ints
+	printVector(vec1);
+
+	typename T::iterator it = vec1.begin();
+	vec2.assign(it + 1, it + 6); // 5 central values from vec1
+	printVector(vec2);
+	int	i_array[] = {32, 1, 100};
+	
+	vec3.assign(i_array, i_array + 3); // from array
+	printVector(vec3);
+	assert(vec1.size() == 7 && vec2.size() == 5 && vec3.size() == 3);
+}
+
+template <typename T>
 void	test_vec_clear(T &vector) {
 	vector.clear();
 }
-
 
 template <typename T>
 void	test_vec_empty(T &vector) {
@@ -45,10 +61,8 @@ void	test_vec_erase(T &vector) {
 	typename T::iterator it = vector.end();
 
 	vector.erase(it - 2);
-	// printVector(vector);
 	it = vector.end();
 	vector.erase(it - 3, it - 1);
-	// printVector(vector);
 	it = vector.begin();
 	vector.erase(it + 2, it + 4);
 }
@@ -153,6 +167,9 @@ void test_vector() {
 
 	// erase test
 	benchmarkFunction_multirun(test_vec_erase<t_ivec>, base_vec, "erase", true);
+
+	// assign test
+	benchmarkFunction(test_vec_assign<t_ivec>, copy_vec, "assign", true);
 
 	// swap test
 	benchmarkFunction_multirun(test_vec_swap<t_ivec>, copy_vec, "swap", true);
