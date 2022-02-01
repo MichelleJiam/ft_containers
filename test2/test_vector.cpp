@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 19:08:51 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 20:38:56 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,15 @@ void    printVector(T &base_vec, std::string const &test_name)
 	for (unsigned i = 0; i < base_vec.size(); i++)
 		std::cout << ' ' << base_vec[i];
 	std::cout << " ]\n";
+}
+
+template <typename T>
+void	test_vec_elementAccess(T &vector) {
+	std::cout << std::endl;
+	std::cout << "vec[3]: " << vector[3] << std::endl;
+	std::cout << "vec.at(1): " << vector.at(1) << std::endl;
+	std::cout << "vec.front(): " << vector.front() << std::endl;
+	std::cout << "vec.back(): " << vector.back() << std::endl;
 }
 
 template <typename T>
@@ -187,4 +196,7 @@ void test_vector() {
 
 	// swap test
 	benchmarkFunction_multirun(test_vec_swap<t_ivec>, copy_vec, "swap", true);
+
+	// element access functions
+	benchmarkFunction_multirun(test_vec_elementAccess<t_ivec>, base_vec, "element access", true);
 }

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 19:09:43 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 20:32:20 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,9 @@ myvector::vector(size_type count, T const& value, Allocator const& alloc)
 //	on the iterators throw;
 //	allocator::allocate & allocator:construct may throw bad_alloc.
 template <class T, class Allocator>
-template <class InputIterator> //, typename = typename std::iterator_traits<InputIterator>::value_type>
+template <class InputIterator>
 myvector::vector(InputIterator first, InputIterator last,
 				Allocator const& alloc)
-				// typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*)
 		:	_alloc(alloc) {
 	try {
 		// checks if integral type received. If so, it's not an iterator.
@@ -137,27 +136,68 @@ template <class T, class Allocator>
 template <class InputIterator>
 void	myvector::assign(InputIterator first, InputIterator last,
 							typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*) {
-	// checks if integral type received. If so, it's not an iterator.
-	// typedef typename ft::is_integral<InputIterator>::type	Integral;
-	// _assign_dispatch(first, last, Integral());
 	_assign_range(first, last);
 }
 
 template <class T, class Allocator>
-typename myvector::allocator_type myvector::get_allocator(void) const {
+typename myvector::allocator_type	myvector::get_allocator(void) const {
 	return this->_alloc;
 }
 
 //	ELEMENT ACCESS FUNCTIONS
+//	Returns element at index `pos`. Does not check for out of bounds.
 template <class T, class Allocator>
-typename myvector::reference myvector::operator[](size_type pos) {
-	return (this->_array[pos]);
+typename myvector::reference	myvector::operator[](size_type pos) {
+	return this->_array[pos];
 }
 
+template <class T, class Allocator>
+typename myvector::const_reference	myvector::operator[](size_type pos) const {
+	return this->_array[pos];
+}
+
+//	Provides safer data access than [] by checking parameter before access.
+//	Exceptions: throws out_of_range if `pos` is invalid index.
+template <class T, class Allocator>
+typename myvector::reference	myvector::at(size_type pos) {
+	if (pos >= this->_size)
+		throw std::out_of_range("vector::at - index given is out of range");
+	return this->_array[pos];
+}
+
+template <class T, class Allocator>
+typename myvector::const_reference	myvector::at(size_type pos) const {
+	if (pos >= this->_size)
+		throw std::out_of_range("vector::at - index given is out of range");
+	return this->_array[pos];
+}
+
+//	Returns reference to data at the first element of the vector.
+//	Calling `front` on an empty container is undefined.
+template <class T, class Allocator>
+typename myvector::reference	myvector::front(void) {
+	return *begin();
+}
+
+template <class T, class Allocator>
+typename myvector::const_reference	myvector::front(void) const {
+	return *begin();
+}
+
+//	Returns reference to data at the last element of the vector.
+template <class T, class Allocator>
+typename myvector::reference	myvector::back(void) {
+	return *(end() - 1);
+}
+
+template <class T, class Allocator>
+typename myvector::const_reference	myvector::back(void) const {
+	return *(end() - 1);
+}
 
 //	CAPACITY FUNCTIONS
 template <class T, class Allocator>
-bool		myvector::empty(void) const {
+bool	myvector::empty(void) const {
 	if (this->_size == 0)
 		return true;
 	return false;

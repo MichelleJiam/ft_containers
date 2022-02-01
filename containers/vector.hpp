@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 18:33:28 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 20:18:45 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ class vector : public std::vector<T, Allocator> {
 		template <class InputIterator>
 		vector(InputIterator first, InputIterator last,
 				Allocator const& alloc = Allocator());
-				// typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL);
 		// copy: container with copies of each element in `other`
 		vector(vector const& other);
 		// assignment operator
@@ -87,13 +86,13 @@ class vector : public std::vector<T, Allocator> {
 
 		// ELEMENT ACCESS FUNCTIONS
 		reference		operator[](size_type pos);
-		// const_reference	operator[](size_type pos) const;
-		// reference		at(size_type pos);
-		// const_reference	at(size_type pos) const;
-		// reference		front(void);
-		// const_reference	front(void) const;
-		// reference		back(void);
-		// const_reference	back(void) const;
+		const_reference	operator[](size_type pos) const;
+		reference		at(size_type pos);
+		const_reference	at(size_type pos) const;
+		reference		front(void);
+		const_reference	front(void) const;
+		reference		back(void);
+		const_reference	back(void) const;
 
 		// CAPACITY FUNCTIONS
 		// Returns whether vector is empty (= size is 0).
@@ -132,7 +131,6 @@ class vector : public std::vector<T, Allocator> {
 		template <class InputIterator>
 		void	insert(iterator pos, InputIterator first, InputIterator last,
 					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*  = NULL);
-		// 				// typename std::iterator_traits<InputIterator>::type* = NULL); // TODO: change to ft::
 
 		// Erases (destroys) single element at `pos`, reducing size by 1.
 		iterator	erase(iterator pos);
