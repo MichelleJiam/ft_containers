@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/28 17:29:29 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 18:17:43 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,15 @@ void	test_vec_assign(T &vector) {
 	typename T::iterator it = vec1.begin();
 	vec2.assign(it + 1, it + 6); // 5 central values from vec1
 	printVector(vec2);
+
 	int	i_array[] = {32, 1, 100};
 	
 	vec3.assign(i_array, i_array + 3); // from array
 	printVector(vec3);
-	assert(vec1.size() == 7 && vec2.size() == 5 && vec3.size() == 3);
+
+	assert(vec1.size() == 7);
+	assert(vec2.size() == 5);
+	assert(vec3.size() == 3);
 }
 
 template <typename T>
@@ -72,8 +76,10 @@ void	test_vec_insert(T &vector) {
 	typename T::iterator it = vector.end();
 	
 	vector.insert(it - 1, 13);
+	printVector(vector);
 	it = vector.begin();
 	vector.insert(it + 2, 4, 7);
+	printVector(vector);
 }
 
 
@@ -160,7 +166,6 @@ void test_vector() {
 	
 	// insert test
 	benchmarkFunction_multirun(test_vec_insert<t_ivec>, base_vec, "insert", true);
-	// TODO: fix insert that's causing issues when erase is called and 
 
 	// resize test
 	benchmarkFunction_multirun(test_vec_resize<t_ivec>, copy_vec, "resize", true);

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/28 17:29:52 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 18:21:48 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,16 +130,17 @@ typename myvector::const_iterator	myvector::end(void) const {
 //	Iterator invalidation: all
 template <class T, class Allocator>
 void	myvector::assign(size_type count, const T& value) {
-	_fill_assign(count, value);
+	_assign_fill(count, value);
 }
 
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::assign(InputIterator first, InputIterator last) {
-							// typename std::iterator_traits<InputIterator>::type*) { // TODO: change to ft
+void	myvector::assign(InputIterator first, InputIterator last,
+							typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*) {
 	// checks if integral type received. If so, it's not an iterator.
-	typedef typename ft::is_integral<InputIterator>::type	Integral;
-	_assign_dispatch(first, last, Integral());
+	// typedef typename ft::is_integral<InputIterator>::type	Integral;
+	// _assign_dispatch(first, last, Integral());
+	_assign_range(first, last);
 }
 
 template <class T, class Allocator>
@@ -221,7 +222,7 @@ template <class T, class Allocator>
 void	myvector::insert(iterator pos, size_type count, T const& value) {
 	size_type		old_cap = this->capacity();
 	iterator		saved_end = this->_array + _size;
-	difference_type	offset = std::distance(pos, this->begin());
+	difference_type	offset = ft::distance(this->begin(), pos);
 
 	try {
 		// if (DEBUG) std::cout
@@ -303,7 +304,7 @@ typename myvector::iterator	myvector::erase(
 		iterator first, iterator last) {
 	if (first != last) {
 		iterator	saved_end = this->_array + _size;
-		size_type	elems_after = std::distance(saved_end, last);
+		size_type	elems_after = ft::distance(last, saved_end);
 		if (last != saved_end)
 			_copy_forward(first, last, saved_end);
 		_destroy_until((first + elems_after), saved_end);
@@ -378,7 +379,7 @@ template <class T, class Allocator>
 template <class InputIterator>
 void	myvector::_range_dispatch(InputIterator first, InputIterator last, ft::false_type) {
 	try {
-		_size = std::distance(last, first);
+		_size = ft::distance(first, last);
 		_capacity = _size;
 		_array = _alloc.allocate(_size);
 		_copy_backward(this->begin(), first, last);
@@ -389,37 +390,34 @@ void	myvector::_range_dispatch(InputIterator first, InputIterator last, ft::fals
 	}
 }
 
-//	Intenral fn called by assign (fill) and _assign_dispatch (integer).
+//	Intenral fn called by assign (fill).
 template <class T, class Allocator>
-void	myvector::_fill_assign(size_type count, const T& value) {
+void	myvector::_assign_fill(size_type count, const T& value) {
 	this->clear();
-	std::cout << "fill_assign: count " << count << std::endl;
+	// std::cout << "_assign_fill: count " << count << std::endl;
 	if (count == 0)
 		return ;
 	this->reserve(count);
 	this->insert(begin(), count, value);
 }
 
-//	Internal fn called by assign.
-//	Integer specialization
-template <class T, class Allocator>
-template <class Integer>
-void	myvector::_assign_dispatch(Integer n, Integer value, ft::true_type) {
-	_fill_assign(n, value);
-}
-
-//	Iterator specialization
+//	Internal fn called by assign (range).
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::_assign_dispatch(InputIterator first, InputIterator last, ft::false_type) {
-	size_type	count = std::distance(last, first);
+void	myvector::_assign_range(InputIterator first, InputIterator last) {
+	size_type	count = ft::distance(first, last);
 	
 	this->clear();
-	std::cout << "assign_dispatch: count " << count << std::endl;
+	// std::cout << "assign_range: count " << count << std::endl;
 	if (count == 0)
 		return ;
 	this->reserve(count);
-	this->insert(begin(), first, last);
+	while (first != last && count) {
+		push_back(*first);
+		first++;
+		count--;
+	}
+	// this->insert(begin(), first, last);
 }
 
 //	Internal fn called by resize, erase.
@@ -455,10 +453,10 @@ void	myvector::_copy_forward(iterator pos, InputIterator first, InputIterator la
 template <class T, class Allocator>
 template <class InputIterator>
 void	myvector::_copy_backward(iterator pos, InputIterator first, InputIterator last) {
-	difference_type to_copy = std::distance(last, first);
+	difference_type to_copy = ft::distance(first, last);
 	
 	for (; to_copy > 0; to_copy--) {
-		if (DEBUG) std::cout << "range_copy: constructing " << *(first + to_copy - 1) << " at " << std::distance((pos + to_copy - 1), this->begin()) << std::endl;
+		if (DEBUG) std::cout << "range_copy: constructing " << *(first + to_copy - 1) << " at " << ft::distance(this->begin(), (pos + to_copy - 1)) << std::endl;
 		_alloc.construct(&*(pos + to_copy - 1), *(first + to_copy - 1));
 	}
 }
