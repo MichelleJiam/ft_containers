@@ -6,12 +6,12 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 20:38:56 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 21:35:41 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
-#include "vector.hpp"
+#include "../containers/vector.hpp"
 
 typedef IMPL::vector<int> t_ivec;
 
@@ -35,6 +35,23 @@ void	test_vec_elementAccess(T &vector) {
 	std::cout << "vec.at(1): " << vector.at(1) << std::endl;
 	std::cout << "vec.front(): " << vector.front() << std::endl;
 	std::cout << "vec.back(): " << vector.back() << std::endl;
+}
+
+template <typename T>
+void	test_vec_relationalOps(T &vector) {
+	T	vec1(3, 42);
+	T	vec2(2, 13);
+
+	printVector(vec1);
+	printVector(vec2);
+	std::cout << std::boolalpha << std::endl;
+	std::cout << "vec1 == vec2: " << (vec1 == vec2) << std::endl;
+	std::cout << "vec1 != vec2: " << (vec1 != vec2) << std::endl;
+	std::cout << "vec1 < vec2: " << (vec1 < vec2) << std::endl;
+	std::cout << "vec1 <= vec2: " << (vec1 <= vec2) << std::endl;
+	std::cout << "vec1 > vec2: " << (vec1 > vec2) << std::endl;
+	std::cout << "vec1 >= vec2: " << (vec1 >= vec2) << std::endl;
+	std::cout << "vector != vec1: " << (vector != vec1) << std::endl;
 }
 
 template <typename T>
@@ -199,4 +216,7 @@ void test_vector() {
 
 	// element access functions
 	benchmarkFunction_multirun(test_vec_elementAccess<t_ivec>, base_vec, "element access", true);
+
+	// relational operators
+	benchmarkFunction_multirun(test_vec_relationalOps<t_ivec>, base_vec, "relational operators", false);
 }

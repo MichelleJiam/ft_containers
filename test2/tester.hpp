@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/27 21:56:09 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 21:35:29 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@
 #include <time.h>  // clock
 #include <iomanip> // setprecision
 
+#include <vector>
 #include "../containers/vector.hpp"
-#include "../utils/pair.hpp" // pair
+#include "../utils/pair.hpp"
 
 # define RED "\e[0;31m"
 # define GRN "\e[0;32m"

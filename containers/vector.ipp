@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 20:32:20 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 21:26:46 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ myvector::vector(vector const& other)
 //	ASSIGNMENT OPERATOR
 //	Iterator invalidation: all
 template <class T, class Allocator>
-ft::vector<T,Allocator>&	myvector::operator=(vector const& other) {
+myvector&	myvector::operator=(vector const& other) {
 	if (this != &other) {
 		this->assign(other.begin(), other.end());
 	}
@@ -255,7 +255,7 @@ void	myvector::clear(void) {
 template <class T, class Allocator>
 typename myvector::iterator	myvector::insert(iterator pos, T const& value) {
 	this->insert(pos, 1, value);
-	return (pos);
+	return pos;
 }
 
 template <class T, class Allocator>

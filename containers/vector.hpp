@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 20:18:45 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 21:38:31 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,16 @@
 
 #include <memory> // allocator
 #include <cstddef> // ptrdiff_t, size_t
-// #include <algorithm> // fill
+#include "../utils/equal.hpp"
 #include "../utils/iterator_utils.hpp"
+#include "../utils/lexicographical_compare.hpp"
 #include "../utils/random_access_iterator.hpp"
 #include "../utils/reverse_iterator.hpp"
 #include "../utils/type_traits.hpp"
 
-// TODO: remove
-#include <iterator>
-#include <vector>
-//
-
 namespace   ft {
 template < class T, class Allocator = std::allocator<T> >
-class vector : public std::vector<T, Allocator> {
+class vector {
 	public:
 		typedef T									value_type;
 		typedef Allocator							allocator_type;
@@ -66,7 +62,7 @@ class vector : public std::vector<T, Allocator> {
 		const_iterator			begin(void) const;
 		iterator				end(void);
 		const_iterator			end(void) const;
-		reverse_iterator		rbegin(void){return std::vector<T,Allocator>::rbegin();}
+		reverse_iterator		rbegin(void){return std::vector<T,Allocator>::rbegin();} //TODO: implement
 		const_reverse_iterator	rbegin(void) const{return std::vector<T,Allocator>::rbegin();}
 		reverse_iterator		rend(void){return std::vector<T,Allocator>::rend();}
 		const_reverse_iterator	rend(void) const{return std::vector<T,Allocator>::rend();}
@@ -79,7 +75,7 @@ class vector : public std::vector<T, Allocator> {
 		// elements in range [first,last] in the same order.
 		template <class InputIterator>
   		void	assign(InputIterator first, InputIterator last,
-		  				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*  = NULL);
+		  				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL);
 
 		// Returns a copy of the allocator object associated with vector.
 		allocator_type	get_allocator(void) const;
@@ -130,7 +126,7 @@ class vector : public std::vector<T, Allocator> {
 		// Inserts elements in range [first,last] at `pos` in same order.
 		template <class InputIterator>
 		void	insert(iterator pos, InputIterator first, InputIterator last,
-					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*  = NULL);
+					typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL);
 
 		// Erases (destroys) single element at `pos`, reducing size by 1.
 		iterator	erase(iterator pos);
@@ -168,7 +164,7 @@ class vector : public std::vector<T, Allocator> {
 		void	_range_dispatch(Integer n, Integer value, ft::true_type);
 		template <class InputIterator>
 		void	_range_dispatch(InputIterator first, InputIterator last, ft::false_type);
-		void	_assign_fill(size_type count, const T& value);
+		void	_assign_fill(size_type count, T const& value);
 		template <class InputIterator>
 		void	_assign_range(InputIterator first, InputIterator last);
 		void	_destroy_until(iterator new_end, iterator old_end);
@@ -181,29 +177,60 @@ class vector : public std::vector<T, Allocator> {
 		void	_reallocate(size_type new_size);
 };
 
-
 // NON-MEMBER FUNCTION OVERLOADS
-// template <class T, class Allocator>
-// bool operator==(vector<T,Allocator> const& lhs,vector<T,Allocator> const& rhs);
-// template <class T, class Allocator>
-// bool operator!=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
-// template <class T, class Allocator>
-// bool operator<(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
-// template <class T, class Allocator>
-// bool operator<=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
-// template <class T, class Allocator>
-// bool operator>(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
-// template <class T, class Allocator>
-// bool operator>=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs);
+// Equality comparison.  It is linear in the size of the vectors.
+// Vectors are considered equivalent if their sizes are equal,
+// and if corresponding elements compare equal.
+template <class T, class Allocator>
+bool operator==(vector<T,Allocator> const& lhs,vector<T,Allocator> const& rhs) {
+	return (lhs.size() == rhs.size()
+			&& ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+}
 
-// // Overload of member function `swap` that improves its performance by
-// // mutually transferring ownership over their assets to the other container
-// // (i.e., the containers exchange references to their data, without actually
-// // performing any element copy or movement).
-// template <class T, class Allocator>
-// void swap(vector<T,Allocator>& x, vector<T,Allocator>& y);
+// Based on operator==
+template <class T, class Allocator>
+bool operator!=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs) {
+	return !(lhs == rhs);
+}
+
+// Returns true is lhs is lexicographically less than rhs.
+// Elements must be comparable with <.
+template <class T, class Allocator>
+bool operator<(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs) {
+	return ft::lexicographical_compare(lhs.begin(), lhs.end(),
+										rhs.begin(), rhs.end());
+}
+
+// Based on operator <
+template <class T, class Allocator>
+bool operator<=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs) {
+	return !(rhs < lhs);
+}
+
+
+// Based on operator <
+template <class T, class Allocator>
+bool operator>(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs) {
+	return rhs < lhs;
+}
+
+// Based on operator <
+template <class T, class Allocator>
+bool operator>=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs) {
+	return !(lhs < rhs);
+}
+
+// Overload of member function `swap` that improves its performance by
+// mutually transferring ownership over their assets to the other container
+// (i.e., the containers exchange references to their data, without actually
+// performing any element copy or movement).
+template <class T, class Allocator>
+void swap(vector<T,Allocator>& x, vector<T,Allocator>& y) {
+	x.swap(y);
+}
 
 } // namespace ft
 
 #include "vector.ipp"
+
 #endif
