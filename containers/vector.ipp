@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 18:52:20 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 19:09:43 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -390,7 +390,6 @@ void	myvector::_range_dispatch(InputIterator first, InputIterator last, ft::fals
 template <class T, class Allocator>
 void	myvector::_assign_fill(size_type count, const T& value) {
 	this->clear();
-	// std::cout << "_assign_fill: count " << count << std::endl;
 	if (count == 0)
 		return ;
 	this->reserve(count);
@@ -404,16 +403,10 @@ void	myvector::_assign_range(InputIterator first, InputIterator last) {
 	size_type	count = ft::distance(first, last);
 	
 	this->clear();
-	// std::cout << "assign_range: count " << count << std::endl;
 	if (count == 0)
 		return ;
 	this->reserve(count);
-	while (first != last && count) {
-		push_back(*first);
-		first++;
-		count--;
-	}
-	// this->insert(begin(), first, last);
+	this->insert(begin(), first, last);
 }
 
 //	Internal fn called by resize, erase.

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 18:25:25 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 19:08:51 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,9 +117,13 @@ template <typename T>
 void	test_vec_swap(T &vector) {
 	T	vector_b(vector.size(), 13);
 
-	std::cout << "\nvector before swap:\n";
+	std::cout << "\nBEFORE swap vector 1:\n";
 	printVector(vector);
+	std::cout << "\nBEFORE swap vector 2:\n";
+	printVector(vector_b);
 	vector.swap(vector_b);
+	std::cout << "\nAFTER swap vector 2:\n";
+	printVector(vector_b);
 	assert(vector.size() == vector_b.size());
 }
 
@@ -179,7 +183,7 @@ void test_vector() {
 	benchmarkFunction_multirun(test_vec_erase<t_ivec>, base_vec, "erase", true);
 
 	// assign test
-	benchmarkFunction(test_vec_assign<t_ivec>, copy_vec, "assign", true);
+	benchmarkFunction_multirun(test_vec_assign<t_ivec>, copy_vec, "assign", false);
 
 	// swap test
 	benchmarkFunction_multirun(test_vec_swap<t_ivec>, copy_vec, "swap", true);
