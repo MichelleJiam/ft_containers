@@ -6,18 +6,15 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 21:26:46 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 21:54:39 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_IPP
 # define VECTOR_IPP
 
-#define DEBUG 0
+#define DEBUG 0 // TODO: remove and all debug messages
 #define myvector ft::vector<T,Allocator>
-
-// DEBUG
-// #define InputIterator typename vector<T,A>::iterator
 
 //	DEFAULT CONSTRUCTOR
 template <class T, class Allocator>
@@ -103,7 +100,9 @@ myvector::~vector(void) {
 		_alloc.deallocate(_array, _capacity);
 }
 
-// ITERATORS
+//	ITERATORS
+//	Returns iterator pointing to first element in vector.
+//	Iteration is done in ordinary element order.
 template <class T, class Allocator>
 typename myvector::iterator	myvector::begin(void) {
 	return iterator(_array);
@@ -114,6 +113,8 @@ typename myvector::const_iterator	myvector::begin(void) const {
 	return const_iterator(_array);
 }
 
+//	Returns iterator pointing to one past the last element in vector.
+//	Iteration is done in ordinary element order.
 template <class T, class Allocator>
 typename myvector::iterator	myvector::end(void) {
 	return iterator(_array + _size);
@@ -122,6 +123,30 @@ typename myvector::iterator	myvector::end(void) {
 template <class T, class Allocator>
 typename myvector::const_iterator	myvector::end(void) const {
 	return const_iterator(_array + _size);
+}
+
+//	Returns reverse iterator pointing to last element in vector.
+//	Iteration is done in reverse element order.
+template <class T, class Allocator>
+typename myvector::reverse_iterator	myvector::rbegin(void) {
+	return reverse_iterator(end());
+}
+
+template <class T, class Allocator>
+typename myvector::const_reverse_iterator	myvector::rbegin(void) const {
+	return const_reverse_iterator(end());
+}
+
+//	Returns reverse iterator pointing to one before the first element in vector.
+//	Iteration is done in reverse element order.
+template <class T, class Allocator>
+typename myvector::reverse_iterator	myvector::rend(void) {
+	return reverse_iterator(begin());
+}
+
+template <class T, class Allocator>
+typename myvector::const_reverse_iterator	myvector::rend(void) const {
+	return const_reverse_iterator(begin());
 }
 
 //	Destroys current elements and replaces with newly constructed ones.
@@ -349,7 +374,7 @@ typename myvector::iterator	myvector::erase(
 }
 
 //	Iterator invalidation:	If reallocation happens, all invalidated.
-//							If not, only end(). // TODO: check if only end is invalidated.
+//							If not, only end().
 //	Exceptions: strong guarantee, fn has no effect.
 //				May throw length_error if reallocation exceeds max_size.
 template <class T, class Allocator>
@@ -508,20 +533,6 @@ void	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
 		throw;
 	}
 }
-
-// template <class T, class Allocator>
-// void	myvector::_expand_and_move(iterator pos, size_type count,
-// 									size_type offset) {
-// 	size_type   elems_after = this->end() - pos;
-
-// 	if (DEBUG) std::cout << "expand_and_move: ";
-// 	if (this->size() + count > this->capacity()){
-// 		if (DEBUG) std::cout << "calling reserve with " << this->size() + count << std::endl;
-// 		this->reserve(this->size() + count);}
-// 	if (elems_after >= count){
-// 		if (DEBUG) std::cout << "copying right elements\n";
-// 		_range_copy(this->begin() + offset + count, pos, this->end());}
-// }
 
 //	Internal fn called by reserve and insert.
 //	Reallocates array to `new_cap` size, copying over any existing elements.

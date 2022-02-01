@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/26 21:11:29 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/28 15:13:56 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 21:51:53 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@ class reverse_iterator
 
 	public:
 		typedef	Iterator								iterator_type;
-		// typedef typename T								value_type;
-		// typedef typename Category						iterator_category;
 		typedef typename _traits_type::difference_type	difference_type;
 		typedef typename _traits_type::pointer			pointer;
 		typedef typename _traits_type::reference		reference;

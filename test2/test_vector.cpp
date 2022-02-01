@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 21:35:41 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 21:47:07 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,14 @@ void	test_vec_relationalOps(T &vector) {
 	std::cout << "vec1 > vec2: " << (vec1 > vec2) << std::endl;
 	std::cout << "vec1 >= vec2: " << (vec1 >= vec2) << std::endl;
 	std::cout << "vector != vec1: " << (vector != vec1) << std::endl;
+}
+
+template <typename T>
+void	test_vec_iterators(T &vector) {
+	std::cout << "begin: " << *vector.begin() << std::endl;
+	std::cout << "end - 1: " << *(vector.end() - 1) << std::endl;
+	std::cout << "rbegin: " << *vector.rbegin() << std::endl;
+	std::cout << "rend - 1: " << *(vector.rend() - 1) << std::endl;
 }
 
 template <typename T>
@@ -219,4 +227,7 @@ void test_vector() {
 
 	// relational operators
 	benchmarkFunction_multirun(test_vec_relationalOps<t_ivec>, base_vec, "relational operators", false);
+
+	// iterators
+	benchmarkFunction_multirun(test_vec_iterators<t_ivec>, base_vec, "iterators", true);
 }

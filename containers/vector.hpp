@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 21:38:31 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 21:49:01 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,10 @@ class vector {
 		const_iterator			begin(void) const;
 		iterator				end(void);
 		const_iterator			end(void) const;
-		reverse_iterator		rbegin(void){return std::vector<T,Allocator>::rbegin();} //TODO: implement
-		const_reverse_iterator	rbegin(void) const{return std::vector<T,Allocator>::rbegin();}
-		reverse_iterator		rend(void){return std::vector<T,Allocator>::rend();}
-		const_reverse_iterator	rend(void) const{return std::vector<T,Allocator>::rend();}
+		reverse_iterator		rbegin(void);
+		const_reverse_iterator	rbegin(void) const;
+		reverse_iterator		rend(void);
+		const_reverse_iterator	rend(void) const;
 
 		// Replaces current contents with `count` elements, each initialized
 		// to a copy of `value`.
@@ -173,7 +173,6 @@ class vector {
 		template <class InputIterator>
 		void	_range_copy_backward(iterator pos, InputIterator first, InputIterator last);
 		void	_fill_insert(iterator pos, size_type count, T const& value);
-		// void	_expand_and_move(iterator pos, size_type count, size_type offset);
 		void	_reallocate(size_type new_size);
 };
 
