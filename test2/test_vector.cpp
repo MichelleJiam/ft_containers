@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 18:17:43 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 18:25:25 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	test_vec_assign(T &vector) {
 
 	int	i_array[] = {32, 1, 100};
 	
-	vec3.assign(i_array, i_array + 3); // from array
+	vec3.assign(i_array, i_array + 3); // 3 ints from array
 	printVector(vec3);
 
 	assert(vec1.size() == 7);
@@ -77,8 +77,13 @@ void	test_vec_insert(T &vector) {
 	
 	vector.insert(it - 1, 13);
 	printVector(vector);
+
 	it = vector.begin();
 	vector.insert(it + 2, 4, 7);
+	printVector(vector);
+
+	T	anothervector(3, 42);
+	vector.insert(it + 1, anothervector.begin(), anothervector.end());
 	printVector(vector);
 }
 

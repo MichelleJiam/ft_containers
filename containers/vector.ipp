@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 18:21:48 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/01 18:52:20 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ myvector::vector(vector const& other)
 			_capacity(_size),
 			_array(_alloc.allocate(_size)) {
 	try {
-		_copy_backward(this->begin(), other.begin(), other.end());
+		_range_copy_backward(this->begin(), other.begin(), other.end());
 	}
 	catch (...) {
 		_alloc.deallocate(_array, _size);
@@ -232,7 +232,7 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 			_reallocate(this->size() ? this->size() * 2 : 1);
 		if (pos != saved_end)
 			// _range_copy(pos + count, pos, saved_end);
-			_copy_backward(this->_array + offset + count, pos, saved_end);
+			_range_copy_backward(this->_array + offset + count, pos, saved_end);
 		_fill_insert(this->_array + offset, count, value);
 		if (DEBUG) std::cout << "inserting " << value << " at position " << 	
 			offset << std::endl;
@@ -248,25 +248,21 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 	}
 }
 
-// TODO: implement is_integral and add within fn body
 template <class T, class Allocator>
 template <class InputIterator>
 void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
 						typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*) {
-	size_type	old_cap = this->capacity();
-	// size_type   elems_after = vec.end() - pos;
-	size_type   offset = pos - this->begin();
-	size_type	count = last - first;
+	size_type		old_cap = this->capacity();
+	iterator		saved_end = this->_array + _size;
+	difference_type	offset = ft::distance(this->begin(), pos);
+	difference_type	count = ft::distance(first, last);
 
 	try {
-		// if (this->size() + count > this->capacity())
-		// 	this->reserve(this->size() + count);
-		// if (elems_after >= count)
-		// 	_range_copy(pos + count, pos, this->end());
-		// _expand_and_move(pos, count, offset);
-		if (this->size() + count > this->capacity())
+		if (this->capacity() - this->size() < (size_t)count)
 			_reallocate(this->size() + count);
-		_copy_backward(this->begin() + offset, first, last);
+		if (pos != saved_end)
+			_range_copy_backward(this->_array + offset + count, pos, saved_end);
+		_range_copy_backward(pos, first, last);
 		this->_size += count;
 	}
 	catch (...) {
@@ -289,7 +285,7 @@ void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
 template <class T, class Allocator>
 typename myvector::iterator	myvector::erase(iterator pos) {
 	if (pos + 1 != this->end())
-		_copy_forward(pos, pos + 1, end());
+		_range_copy_forward(pos, pos + 1, end());
 	this->_size -= 1;
 	_alloc.destroy(&_array[_size - 1]);
 	return pos;		
@@ -306,7 +302,7 @@ typename myvector::iterator	myvector::erase(
 		iterator	saved_end = this->_array + _size;
 		size_type	elems_after = ft::distance(last, saved_end);
 		if (last != saved_end)
-			_copy_forward(first, last, saved_end);
+			_range_copy_forward(first, last, saved_end);
 		_destroy_until((first + elems_after), saved_end);
 	}
 	return first;
@@ -382,7 +378,7 @@ void	myvector::_range_dispatch(InputIterator first, InputIterator last, ft::fals
 		_size = ft::distance(first, last);
 		_capacity = _size;
 		_array = _alloc.allocate(_size);
-		_copy_backward(this->begin(), first, last);
+		_range_copy_backward(this->begin(), first, last);
 	}
 	catch (...) {
 		clear();
@@ -439,7 +435,7 @@ void	myvector::_destroy_until(iterator new_end, iterator old_end) {
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::_copy_forward(iterator pos, InputIterator first, InputIterator last) {
+void	myvector::_range_copy_forward(iterator pos, InputIterator first, InputIterator last) {
 	while (first != last) {
 		_alloc.construct(&*pos, *first);
 		++pos;
@@ -452,7 +448,7 @@ void	myvector::_copy_forward(iterator pos, InputIterator first, InputIterator la
 //	Inserts elements in range [first,last] at `pos`, starting from the last.
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::_copy_backward(iterator pos, InputIterator first, InputIterator last) {
+void	myvector::_range_copy_backward(iterator pos, InputIterator first, InputIterator last) {
 	difference_type to_copy = ft::distance(first, last);
 	
 	for (; to_copy > 0; to_copy--) {
