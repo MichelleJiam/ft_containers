@@ -6,12 +6,12 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 21:54:39 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/02 18:39:08 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_IPP
-# define VECTOR_IPP
+#define VECTOR_IPP
 
 #define DEBUG 0 // TODO: remove and all debug messages
 #define myvector ft::vector<T,Allocator>
@@ -93,9 +93,11 @@ myvector&	myvector::operator=(vector const& other) {
 }
 
 //	DESTRUCTOR
+//	The destructors of the elements are called and storage is deallocated.
+//	If the elements are pointers, the pointed-to objects are not destroyed.
 template <class T, class Allocator>
 myvector::~vector(void) {
-	// this->clear();
+	this->clear();
 	if (_array != NULL)
 		_alloc.deallocate(_array, _capacity);
 }
@@ -295,13 +297,37 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 		// 	<< "calling _fill_insert with begin + " << offset << std::endl;
 		if (this->capacity() - this->size() < count)
 			_reallocate(this->size() ? this->size() * 2 : 1);
-		if (pos != saved_end)
+		if (pos != saved_end) {
 			// _range_copy(pos + count, pos, saved_end);
-			_range_copy_backward(this->_array + offset + count, pos, saved_end);
-		_fill_insert(this->_array + offset, count, value);
+			// this->_array = _move_back(begin(), saved_end, size + count);
+	
+			// _initialise_mem(saved_end, count, 42); // invalid reads still happening
+
+			// for (size_type i = 0; i < _size + count; i++)
+			// 	std::cout << _array[i] << " ";
+			// std::cout << " | end of array, size: " << _size << "\n";
+			// _range_copy_backward(this->_array + offset + count, pos, saved_end);
+			size_type	array_cap = capacity();
+			pointer		tmp = _alloc.allocate(_capacity);
+			size_t		new_size = 0;
+			new_size += _range_copy_forward(tmp, begin(), begin() + offset);
+			new_size += _fill_insert(tmp + offset, count, value);
+			new_size += _range_copy_forward(tmp + offset + count, begin() + offset, end());
+
+			_destroy_until(this->begin(), this->end());
+			_alloc.deallocate(_array, _capacity);
+			this->_array = tmp;
+			this->_size = new_size;
+			this->_capacity = array_cap;
+			// for (size_type i = 0; i < _size; i++)
+			// 	std::cout << _array[i] << " ";
+			// std::cout << " | end of array\n";
+		}
+		else
+			this->_size += _fill_insert(this->_array + offset, count, value);
 		if (DEBUG) std::cout << "inserting " << value << " at position " << 	
 			offset << std::endl;
-		this->_size += count;
+		// this->_size += count;
 		// for (size_type i = 0; i < _size; i++)
 		// 	std::cout << _array[i] << " ";
 		// std::cout << " | end of array\n";
@@ -324,11 +350,25 @@ void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
 
 	try {
 		if (this->capacity() - this->size() < (size_t)count)
-			_reallocate(this->size() + count);
-		if (pos != saved_end)
-			_range_copy_backward(this->_array + offset + count, pos, saved_end);
-		_range_copy_backward(pos, first, last);
-		this->_size += count;
+			_reallocate(this->size() ? this->size() * 2 : 1);
+		if (pos != saved_end) {
+			// _range_copy_backward(this->_array + offset + count, pos, saved_end);
+			size_type	array_cap = capacity();
+			pointer		tmp = _alloc.allocate(_capacity);
+			size_t		new_size = 0;
+			new_size += _range_copy_forward(tmp, begin(), begin() + offset);
+			new_size += _range_copy_forward(tmp + offset, first, last);
+			new_size += _range_copy_forward(tmp + offset + count, begin() + offset, end());
+
+			_destroy_until(this->begin(), this->end());
+			_alloc.deallocate(_array, _capacity);
+			this->_array = tmp;
+			this->_size = new_size;
+			this->_capacity = array_cap;
+		}
+		else
+			this->_size += _range_copy_forward(this->_array + offset, first, last);
+		// this->_size += count;
 	}
 	catch (...) {
 		if (old_cap < this->capacity())
@@ -488,17 +528,45 @@ void	myvector::_destroy_until(iterator new_end, iterator old_end) {
 	}
 }
 
+//	Internal fn called by insert.
+//	Used to reallocate and reinitialise array before copying happens.
+template <class T, class Allocator>
+void	myvector::_initialise_mem(iterator pos, size_type count, T const&value) {
+	while (count) {
+		// std::cout << "initialise_mem: constructing " << *tmp_val << " at "
+		// 	<< pos - begin() << std::endl;
+		_alloc.construct(&*pos, value);
+		// this->_size++;
+		count--;
+	}
+}
+
+// template <class T, class Allocator>
+// typename myvector::pointer myvector::_reinitialise_array(iterator first, iterator last, size_type new_size) {
+// 	// pointer	new_array = _alloc.allocate(_capacity);
+// 	// for (size_type new_size = 0; first != last; new_size++, first++)
+// 	// 	_alloc.construct(new_array + new_size, *first);
+// 	// while (new_size > _size) {
+
+// 	// }
+// }
+
 //	Internal fn called by erase.
 //	Use for size-contracting operations.
 //	Inserts elements in range [first,last] at `pos`.
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::_range_copy_forward(iterator pos, InputIterator first, InputIterator last) {
+size_t	myvector::_range_copy_forward(iterator pos, InputIterator first, InputIterator last) {
+	size_type		copied = 0;
 	while (first != last) {
+		if (DEBUG) std::cout << "range_copy_for: constructing " << *(first) << " at "
+			<< ft::distance(this->begin(), pos) << std::endl;
 		_alloc.construct(&*pos, *first);
 		++pos;
 		++first;
+		++copied;
 	}
+	return copied;
 }
 
 //	Internal fn called by copy and range constructors, insert.
@@ -506,19 +574,22 @@ void	myvector::_range_copy_forward(iterator pos, InputIterator first, InputItera
 //	Inserts elements in range [first,last] at `pos`, starting from the last.
 template <class T, class Allocator>
 template <class InputIterator>
-void	myvector::_range_copy_backward(iterator pos, InputIterator first, InputIterator last) {
+size_t	myvector::_range_copy_backward(iterator pos, InputIterator first, InputIterator last) {
 	difference_type to_copy = ft::distance(first, last);
+	size_type		copied = 0;
 	
 	for (; to_copy > 0; to_copy--) {
-		if (DEBUG) std::cout << "range_copy: constructing " << *(first + to_copy - 1) << " at " << ft::distance(this->begin(), (pos + to_copy - 1)) << std::endl;
+		if (DEBUG) std::cout << "range_copy_back: constructing " << *(first + to_copy - 1) << " at " << ft::distance(this->begin(), (pos + to_copy - 1)) << std::endl;
 		_alloc.construct(&*(pos + to_copy - 1), *(first + to_copy - 1));
+		++copied;
 	}
+	return copied;
 }
 
 //	Internal fn called by fill constructor and insert (fill version).
 //	Inserts `count` elements with value `value` at `pos`.
 template <class T, class Allocator>
-void	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
+size_t	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
 	size_type constructed = 0;
 	
 	try {
@@ -526,6 +597,7 @@ void	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
 			_alloc.construct(&*(pos + constructed), value);
 			if (DEBUG) std::cout << "fill_insert: constructed " << *(pos + constructed) << std::endl;
 		}
+		return constructed;
 	}
 	catch (...) {
 		for (size_type i = 0; i < constructed; i++)

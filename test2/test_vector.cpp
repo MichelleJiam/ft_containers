@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 21:47:07 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/02 18:39:20 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,18 +107,21 @@ void	test_vec_erase(T &vector) {
 
 template <typename T>
 void	test_vec_insert(T &vector) {
-	typename T::iterator it = vector.end();
+	T	dupvector(vector);
+	typename T::iterator it = dupvector.end();
 	
-	vector.insert(it - 1, 13);
-	printVector(vector);
+	dupvector.insert(it - 1, 13);
+	printVector(dupvector);
 
-	it = vector.begin();
-	vector.insert(it + 2, 4, 7);
-	printVector(vector);
+	it = dupvector.begin();
+	dupvector.insert(it + 2, 4, 7);
+	printVector(dupvector);
 
 	T	anothervector(3, 42);
-	vector.insert(it + 1, anothervector.begin(), anothervector.end());
-	printVector(vector);
+	it = dupvector.begin();
+	anothervector.insert(anothervector.begin() + 1,
+							it, it + 2);
+	printVector(anothervector);
 }
 
 
@@ -191,8 +194,8 @@ void test_vector() {
 	benchmarkFunction_multirun(test_vec_popback<t_ivec>, base_vec, "pop_back", true);
 
 	// fill constructor test
-	benchmarkFunction_multirun(test_vec_constructors<t_ivec>, base_vec,
-						"fill/range/copy constructors", false);
+	// benchmarkFunction_multirun(test_vec_constructors<t_ivec>, base_vec,
+						// "fill/range/copy constructors", false);
 	// printTest("fill constructor");
 	// start = clock();
 	// t_ivec	fill_vec(4, 42);
