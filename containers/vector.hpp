@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/02 18:27:24 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/03 18:20:50 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,17 +164,13 @@ class vector {
 		void	_range_dispatch(Integer n, Integer value, ft::true_type);
 		template <class InputIterator>
 		void	_range_dispatch(InputIterator first, InputIterator last, ft::false_type);
+		template <class InputIterator>
+		size_t	_range_copy_forward(iterator pos, InputIterator first, InputIterator last);
 		void	_assign_fill(size_type count, T const& value);
 		template <class InputIterator>
 		void	_assign_range(InputIterator first, InputIterator last);
-		void	_destroy_until(iterator new_end, iterator old_end);
-		pointer	_reinitialise_array(iterator first, iterator last, size_type new_size);
-		void	_initialise_mem(iterator pos, size_type count, T const&value);
-		template <class InputIterator>
-		size_t	_range_copy_forward(iterator pos, InputIterator first, InputIterator last);
-		template <class InputIterator>
-		size_t	_range_copy_backward(iterator pos, InputIterator first, InputIterator last);
 		size_t	_fill_insert(iterator pos, size_type count, T const& value);
+		void	_destroy_until(iterator new_end, iterator old_end);
 		void	_reallocate(size_type new_size);
 };
 
