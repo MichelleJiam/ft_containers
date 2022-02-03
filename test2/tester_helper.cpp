@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:22 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/27 17:52:22 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/03 16:10:44 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,16 @@ void	printTest(std::string const test_name) {
 	std::cout << "\n" << header << "\n" << CYN;
 	alignedPrint(test_name, header_width);
 	std::cout << WHT << header << "\n";
+#endif
+}
+
+// Example test_case argument: "insert(begin + 1, [1], [2])"
+//		where [n] denotes value at address for visual simplicity
+void	printTestCase(std::string const test_case) {
+#ifndef SIMPLE
+	std::cout << "\nTest case: " << GRN << test_case << WHT << "\n";
+#else
+	std::cout << "\nTest case: " << test_case << "\n";
 #endif
 }
 

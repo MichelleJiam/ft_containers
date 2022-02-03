@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:54 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/28 13:27:40 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/03 16:14:52 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	test_utils() {
     int a[3] = {7, 42, 30};
 	IMPL::pair<int,int>	p = IMPL::make_pair(12, a[1]);
 	printTest("pair");
-	std::cout << "Making pair with values: " << 12 << "," << a[1] << std::endl;
+	printTestCase("make_pair(12, [42])");
 	std::cout << "Value of p is (" << p.first << "," << p.second << ")\n";
 
 	// lexicographical_compare test
@@ -45,8 +45,12 @@ void	test_utils() {
 	bool comp_int = IMPL::is_integral<int>::value;
 	bool comp_float = IMPL::is_integral<float>::value;
 	bool comp_it = IMPL::is_integral<IMPL::vector<int>::iterator>::value;
+	printTestCase("is_integral<char>");
 	std::cout << "char: " << comp_char << std::endl;
+	printTestCase("is_integral<int>");
 	std::cout << "int: " << comp_int << std::endl;
+	printTestCase("is_integral<float>");
 	std::cout << "float: " << comp_float << std::endl;
+	printTestCase("is_integral<vector::iterator>");
 	std::cout << "vector iter: " << comp_it << std::endl;
 }
