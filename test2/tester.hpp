@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 16:08:50 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/03 21:20:50 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ void	printHeader(std::string unit_name);
 void	printTest(std::string const test_name);
 // prints test case. see pre-function comment for example use.
 void	printTestCase(std::string const test_case);
-int		printResult(bool const passed);
+int		printResult(bool const passed);  // TODO: remove
 void	printPassing(int passed, int tests);
 template <typename T>
-void    printVector(T &base_vec, std::string const ctnr_name = std::string(),
+void    printVector(T& base_vec, std::string const ctnr_name = std::string(),
 						std::string const test_case = std::string());
 bool	mycomp(char const c1, char const c2);
 
@@ -75,7 +75,7 @@ bool	mycomp(char const c1, char const c2);
 // Prints the test name; optionally prints container contents
 // (toggled by boolean `print_at_end` param) and container name.
 template <typename T>
-void	benchmarkFunction(void (*testFunction)(T &vector), T &container,
+void	benchmarkFunction(void (*testFunction)(T& vector), T& container,
 						std::string const test_name, bool print_at_end,
 						std::string const ctnr_name = std::string()) {
 	printTest(test_name);
@@ -98,7 +98,7 @@ void	benchmarkFunction(void (*testFunction)(T &vector), T &container,
 // 1000 times on a temporary copy of the container to show cumulative performance
 // without affecting the container passed.
 template <typename T>
-void	benchmarkFunction_multirun(void (*testFunction)(T &vector), T &container,
+void	benchmarkFunction_multirun(void (*testFunction)(T& vector), T& container,
 						std::string const test_name, bool print_at_end,
 						std::string const ctnr_name = std::string()) {
 	benchmarkFunction(testFunction, container, test_name,
@@ -130,5 +130,6 @@ void	benchmarkFunction_multirun(void (*testFunction)(T &vector), T &container,
 // container test units
 void	test_vector();
 void	test_utils();
+void	test_stack();
 
 #endif

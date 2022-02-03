@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:22 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 16:10:44 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/03 21:12:19 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,9 @@ void	printTest(std::string const test_name) {
 //		where [n] denotes value at address for visual simplicity
 void	printTestCase(std::string const test_case) {
 #ifndef SIMPLE
-	std::cout << "\nTest case: " << GRN << test_case << WHT << "\n";
+	std::cout << "\nTest case: " << GRN << test_case << WHT << "\n\n";
 #else
-	std::cout << "\nTest case: " << test_case << "\n";
+	std::cout << "\nTest case: " << test_case << "\n\n";
 #endif
 }
 

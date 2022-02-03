@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 16:11:02 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/03 20:47:00 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ typedef IMPL::vector<int> t_ivec;
 // and optionally test case and container name.
 // See printTestCase for test_case argument example.
 template <typename T>
-void    printVector(T &base_vec, std::string const cntr_name,
+void    printVector(T& base_vec, std::string const cntr_name,
 					std::string const test_case) {
 	if (!test_case.empty())
 		printTestCase(test_case);
@@ -34,7 +34,7 @@ void    printVector(T &base_vec, std::string const cntr_name,
 }
 
 template <typename T>
-void	test_vec_elementAccess(T &vector) {
+void	test_vec_elementAccess(T& vector) {
 	std::cout << "vec[3]: " << vector[3] << std::endl;
 	std::cout << "vec.at(1): " << vector.at(1) << std::endl;
 	std::cout << "vec.front(): " << vector.front() << std::endl;
@@ -42,7 +42,7 @@ void	test_vec_elementAccess(T &vector) {
 }
 
 template <typename T>
-void	test_vec_relationalOps(T &vector) {
+void	test_vec_relationalOps(T& vector) {
 	T	vec1(3, 42);
 	T	vec2(2, 13);
 
@@ -59,7 +59,7 @@ void	test_vec_relationalOps(T &vector) {
 }
 
 template <typename T>
-void	test_vec_iterators(T &vector) {
+void	test_vec_iterators(T& vector) {
 	std::cout << "begin: " << *vector.begin() << std::endl;
 	std::cout << "end - 1: " << *(vector.end() - 1) << std::endl;
 	std::cout << "rbegin: " << *vector.rbegin() << std::endl;
@@ -67,7 +67,7 @@ void	test_vec_iterators(T &vector) {
 }
 
 template <typename T>
-void	test_vec_assign(T &vector) {
+void	test_vec_assign(T& vector) {
 	T	vec1, vec2, vec3;
 
 	vec1.assign(7, vector[0]); // 7 ints
@@ -88,18 +88,18 @@ void	test_vec_assign(T &vector) {
 }
 
 template <typename T>
-void	test_vec_clear(T &vector) {
+void	test_vec_clear(T& vector) {
 	vector.clear();
 }
 
 template <typename T>
-void	test_vec_empty(T &vector) {
+void	test_vec_empty(T& vector) {
 	std::cout << std::boolalpha
 		<< "is vector empty: " << vector.empty() << std::endl;
 }
 
 template <typename T>
-void	test_vec_erase(T &vector) {
+void	test_vec_erase(T& vector) {
 	typename T::iterator it = vector.end();
 
 	vector.erase(it - 2);
@@ -115,7 +115,7 @@ void	test_vec_erase(T &vector) {
 }
 
 template <typename T>
-void	test_vec_insert(T &vector) {
+void	test_vec_insert(T& vector) {
 	T	copyvector(vector);
 	typename T::iterator it = copyvector.end();
 	
@@ -143,19 +143,19 @@ void	test_vec_insert(T &vector) {
 
 
 template <typename T>
-void	test_vec_pushback(T &vector) {
+void	test_vec_pushback(T& vector) {
 	printTestCase("push_back([1-10])");
 	for (int i = 1; i <= 10; i++)
 		vector.push_back(i);
 }
 
 template <typename T>
-void	test_vec_popback(T &vector) {
+void	test_vec_popback(T& vector) {
 	vector.pop_back();
 }
 
 template <typename T>
-void	test_vec_reserve(T &vector) {
+void	test_vec_reserve(T& vector) {
 	size_t   oldcap = vector.capacity();
 
 	printTestCase("reserve(42)");
@@ -165,13 +165,13 @@ void	test_vec_reserve(T &vector) {
 }
 
 template <typename T>
-void	test_vec_resize(T &vector) {
+void	test_vec_resize(T& vector) {
 	printTestCase("resize(5, 42)");
 	vector.resize(5, 42);
 }
 
 template <typename T>
-void	test_vec_swap(T &vector) {
+void	test_vec_swap(T& vector) {
 	T	vector_b(vector.size(), 13);
 
 	printVector(vector, "vector 1 BEFORE swap");
@@ -182,7 +182,7 @@ void	test_vec_swap(T &vector) {
 }
 
 template <typename T>
-void	test_vec_constructors(T &vector) {
+void	test_vec_constructors(T& vector) {
 	T	fill_vec(1000, 42);
 	T	range_vec(fill_vec.begin(), fill_vec.end() - 2);
 	T	copy_vec(vector);

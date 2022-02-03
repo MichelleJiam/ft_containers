@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 18:20:05 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/03 20:10:21 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,9 +90,8 @@ myvector::vector(vector const& other)
 //	Iterator invalidation: all
 template <class T, class Allocator>
 myvector&	myvector::operator=(vector const& other) {
-	if (this != &other) {
+	if (this != &other)
 		this->assign(other.begin(), other.end());
-	}
 	return *this;
 }
 

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 18:20:50 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/03 20:58:22 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,14 @@ namespace   ft {
 template < class T, class Allocator = std::allocator<T> >
 class vector {
 	public:
-		typedef T									value_type;
-		typedef Allocator							allocator_type;
-		typedef	std::ptrdiff_t						difference_type;
-		typedef	std::size_t							size_type;
-		typedef typename Allocator::reference		reference;
-		typedef typename Allocator::const_reference	const_reference;
-		typedef typename Allocator::pointer			pointer;
-		typedef typename Allocator::const_pointer	const_pointer;
+		typedef T										value_type;
+		typedef Allocator								allocator_type;
+		typedef	std::ptrdiff_t							difference_type;
+		typedef	std::size_t								size_type;
+		typedef typename Allocator::reference			reference;
+		typedef typename Allocator::const_reference		const_reference;
+		typedef typename Allocator::pointer				pointer;
+		typedef typename Allocator::const_pointer		const_pointer;
 		typedef ft::random_access_iterator<value_type>			iterator;
 		typedef ft::random_access_iterator<value_type const>	const_iterator;
 		typedef ft::reverse_iterator<iterator>			reverse_iterator;
@@ -179,7 +179,7 @@ class vector {
 // Vectors are considered equivalent if their sizes are equal,
 // and if corresponding elements compare equal.
 template <class T, class Allocator>
-bool operator==(vector<T,Allocator> const& lhs,vector<T,Allocator> const& rhs) {
+bool operator==(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs) {
 	return (lhs.size() == rhs.size()
 			&& ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
 }
@@ -203,7 +203,6 @@ template <class T, class Allocator>
 bool operator<=(vector<T,Allocator> const& lhs, vector<T,Allocator> const& rhs) {
 	return !(rhs < lhs);
 }
-
 
 // Based on operator <
 template <class T, class Allocator>
