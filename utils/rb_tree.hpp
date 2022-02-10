@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/09 18:41:11 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/10 19:11:55 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,18 @@ enum rb_colour {
 	BLACK = true
 };
 
-template <class Val>
-struct	rb_tree_node {
-	typedef rb_tree_node*		node_ptr;
-	typedef const rb_tree_node*	const_node_ptr;
-	typedef rb_tree_node		node_type;
+// base class that doesn't know about Val (user data)
+// used for sentinal node to prevent unecessary memory usage
+struct	rb_node_base {
+	typedef rb_node_base*		node_ptr;
+	typedef const rb_node_base*	const_node_ptr;
 
 	rb_colour	colour;
 	node_ptr	parent;
 	node_ptr	left;
 	node_ptr	right;
+
+	rb_node_base();
 	
 	static node_ptr	min_node(node_ptr x) {
 		while (x->left != NULL)
@@ -57,36 +59,27 @@ struct	rb_tree_node {
 	}
 };
 
-// Helper type to manage default initialization of node count and header.
-// struct	rb_tree_header {
-// 	rb_tree_node	header;
-// 	size_t			node_count;
+// derived class that knows Val
+template <class Val>
+struct	rb_node : rb_node_base {
+	Val	value_type; // Val is a pair<Key,T> object
 
-// 	rb_tree_header() {
-// 		header.colour = RED;
-// 		_reset();
-// 	}
+	rb_node(Val val)
+		: colour(RED), parent(NULL), left(NULL), right(NULL), value_type(val) {}
 
-// 	void	_move_data(rb_tree_header& from) {
-// 		header.colour = from.header.colour;
-// 		header.parent = from.header.parent;
-// 		header.left = from.header.left;
-// 		header.right = from.header.right;
-// 		header.parent->parent = &header;
-// 		node_count = from.node_count;
+	rb_node(rb_node& other)
+		:	colour(other.colour),
+			parent(other.parent),
+			left(other.left),
+			right(other.right),
+			value_type(other.val) {}
 
-// 		from._reset();
-// 	}
-
-// 	void	_reset() {
-// 		header.parent = NULL;
-// 		header.left = &header;
-// 		header.right = &header;
-// 		node_count = 0;
-// 	}
-// };
+	~rb_node() {}
+}
 
 // iterators
+
+// uses a single sentinel to represent NULL to simplify boundary conditions
 
 template <class Key, class Val, class Compare, class Alloc>
 class rb_tree {
@@ -100,18 +93,35 @@ class rb_tree {
 		typedef std::size_t			size_type;
 		typedef std::ptrdiff_t		difference_type;
 		typedef Alloc				allocator_type;
-		
+
 	protected:
-		typedef rb_tree_node<Val>		node_type;
-		typedef const rb_tree_node<Val>	const_node_type;
-		typedef node_type*				node_ptr;
-		typedef const node_type*		const_node_ptr;
+		// typedef rb_node<Val>		node_type;
+		// typedef const rb_node<Val>	const_node_type;
+		// typedef node_type*				node_ptr;
+		// typedef const node_type*		const_node_ptr;
+		typedef rb_node*			node_ptr;
+		typedef rb_node_base*		base_ptr;
+		typedef const rb_node*		const_node_ptr;
 
-	private:
-		typedef typename Alloc::template rebind<node_type>::other	_node_alloc;
-
+		base_ptr	nil; // sentinel representing NULL
+		node_ptr	root; // root node
+		size_type	size;
 	
+	private:
+		typedef typename Alloc::template rebind<rb_node_base>::other
+				_base_type_alloc;
+		typedef typename Alloc::template rebind<rb_node>::other
+				_node_type_alloc;
+		
+		_base_type_alloc	sentinel_alloc;
+		_node_type_alloc	node_alloc;
 
+		
+		
+	rb_tree() {
+
+	}
+	
 };
 }
 
