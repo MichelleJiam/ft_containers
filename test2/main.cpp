@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/10 21:09:40 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/10 22:43:55 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,12 @@ int main() {
     test_vector();
     test_stack();
     
-    ft::rb_tree<int,int> RB;
+    ft::rb_tree<int, ft::pair<int, int> > RB;
     RB.debug_empty();
+
+    ft::pair<int,int> key1(1, 42);
+    RB.insert(key1);
+    RB.debug_single();
     
     system("leaks ft_bin");
     return 0;

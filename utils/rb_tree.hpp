@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/10 21:47:33 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/10 22:49:22 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define RB_TREE_HPP
 
 #include <cstddef> // ptrdiff_t, size_t
+
+// #define NIL rb_tree->_nil
 
 namespace   ft {
 enum rb_colour {
@@ -40,7 +42,7 @@ struct	rb_node_base {
 		: colour(col), parent(NULL), left(NULL), right(NULL) {}
 
 	// copy constructor
-	rb_node_base(rb_node_base& other)
+	rb_node_base(rb_node_base const& other)
 		:	colour(other.colour),
 			parent(other.parent),
 			left(other.left),
@@ -85,8 +87,10 @@ struct	rb_node : rb_node_base {
 	rb_node(Val val)
 		: rb_node_base(RED), value_type(val) {}
 
+	rb_node(rb_node_base const& base) : rb_node_base(base) {}
+
 	// copy constructor
-	rb_node(rb_node& other) : rb_node_base(other), value_type(other.val) {}
+	rb_node(rb_node const& other) : rb_node_base(other), value_type(other.value_type) {}
 
 	~rb_node() {}
 };
@@ -126,7 +130,8 @@ class rb_tree {
 	// Constructors & Destructor
 		rb_tree() : _root(NULL), _size(0), _key_compare() {
 			_nil = _create_base();
-			// _root = _create_node(NULL);
+			// _root = new rb_node<Val>(*_nil);
+			// _root = _create_node(*_nil);
 		}
 
 		rb_tree(Compare const& comp)
@@ -140,7 +145,26 @@ class rb_tree {
 		}
 
 		~rb_tree() {
-			_erase(_nil, _b_alloc);
+			_destroy(_nil, _b_alloc);
+		}
+
+	// DEBUGGING - REMOVE
+		void	debug_empty() {
+			std::cout << "nil colour is: " << (_nil->colour == RED ? "red" : "black") << std::endl;
+			std::cout << "size is: " << size() << std::endl;
+			std::cout << "empty? " << std::boolalpha << empty() << std::endl;
+			std::cout << std::endl;
+		}
+
+		void	debug_single() {
+			std::cout << "size is: " << size() << std::endl;
+			std::cout << "empty? " << std::boolalpha << empty() << std::endl;
+			std::cout << "root colour is: " << (_root->colour == RED ? "red" : "black") << std::endl;
+			std::cout << "root value: " << _root->value_type.first << ", " << _root->value_type.second << std::endl;
+			std::cout << "root parent colour is " << (_root->parent->colour == RED ? "red" : "black") << std::endl;
+			std::cout << "root leftC colour is " << (_root->left->colour == RED ? "red" : "black") << std::endl;
+			std::cout << "root rightC colour is " << (_root->right->colour == RED ? "red" : "black") << std::endl;
+			std::cout << std::endl;
 		}
 
 	// Accessors
@@ -160,11 +184,14 @@ class rb_tree {
 			return _n_alloc.max_size();
 		}
 
-		// TODO: remove
-		void	debug_empty() {
-			std::cout << "nil colour is: " << (_nil->colour == RED ? "red" : "black") << std::endl;
-			std::cout << "size is: " << size() << std::endl;
-			std::cout << "empty? " << std::boolalpha << empty() << std::endl;
+	// Modifiers
+		void	insert(value_type const& val) {
+			if (_root == NULL) // TODO: fix comparison to nil
+				// _root = new rb_node<Val>(val);
+				_root = _create_node(val);
+			else
+				std::cout << "bleep bloop - insert into non-empty tree not yet implemented\n";
+			_size += 1;
 		}
 
 	private:
@@ -182,13 +209,13 @@ class rb_tree {
 		node_ptr	_create_node(value_type const& val) {
 			node_ptr tmp = _n_alloc.allocate(1);
 			_n_alloc.construct(tmp, rb_node<Val>(val));
-			// tmp->parent = _nil; // TODO: inefficient? see if base constructor can be changed to do this
-			// _set_ends_to_nil(tmp);
+			tmp->parent = _nil; // TODO: inefficient? see if base constructor can be changed to do this
+			_set_ends_to_nil(tmp);
 			return tmp;
 		}
 
 		template <class T, class R_Alloc>
-		void	_erase(T& node_type, R_Alloc& alloc) {
+		void	_destroy(T& node_type, R_Alloc& alloc) {
 			alloc.destroy(node_type);
 			alloc.deallocate(node_type, 1);
 		}
