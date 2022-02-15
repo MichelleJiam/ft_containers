@@ -1,0 +1,35 @@
+Test:
+11, 2, 14, 1, 7, 15, 5, 8, 4
+Result:
+R----[7, five] (BLACK) | Parent is NIL
+   L----[2, two] (RED) | Parent is [7, five]
+   |  L----[1, four] (BLACK) | Parent is [2, two]
+   |  |  L----NIL (BLACK)
+   |  |  R----NIL (BLACK)
+   |  R----[5, seven] (BLACK) | Parent is [2, two]
+   |     L----[4, nine] (RED) | Parent is [5, seven]
+   |     |  L----NIL (BLACK)
+   |     |  R----NIL (BLACK)
+   |     R----NIL (BLACK)
+   R----[11, one] (RED) | Parent is [7, five]
+      L----[8, eight] (BLACK) | Parent is [11, one]
+      |  L----NIL (BLACK)
+      |  R----NIL (BLACK)
+      R----[14, three] (BLACK) | Parent is [11, one]
+         L----NIL (BLACK)
+         R----[15, six] (RED) | Parent is [14, three]
+            L----NIL (BLACK)
+            R----NIL (BLACK)
+
+Test:
+3, 21, 32, 15
+Result:
+R----[21, two] (BLACK) | Parent is NIL
+   L----[3, one] (BLACK) | Parent is [21, two]
+   |  L----NIL (BLACK)
+   |  R----[15, four] (RED) | Parent is [3, one]
+   |     L----NIL (BLACK)
+   |     R----NIL (BLACK)
+   R----[32, three] (BLACK) | Parent is [21, two]
+      L----NIL (BLACK)
+      R----NIL (BLACK)

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/15 17:23:12 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/15 22:47:50 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,19 @@ enum rb_colour {
 // base class that doesn't know about Val (user data)
 // used for sentinal node to prevent unecessary memory usage
 struct	rb_node_base {
-	typedef rb_node_base*		node_ptr;
-	typedef const rb_node_base*	const_node_ptr;
+	typedef rb_node_base*		base_ptr;
+	typedef const rb_node_base*	const_base_ptr;
 
 	rb_colour	colour;
-	node_ptr	parent;
-	node_ptr	left;
-	node_ptr	right;
+	base_ptr	parent;
+	base_ptr	left;
+	base_ptr	right;
 
 	// default constructor
 	rb_node_base() : colour(RED), parent(NULL), left(NULL), right(NULL) {}
 
 	// constructor with parent and children (for passing nil)
-	rb_node_base(node_ptr parent, node_ptr child)
+	rb_node_base(base_ptr parent, base_ptr child)
 		: colour(RED), parent(parent), left(child), right(child) {}
 	
 	// constructor with colour (for passing BLACK with sentinel)
@@ -54,25 +54,25 @@ struct	rb_node_base {
 
 	~rb_node_base() {}
 	
-	static node_ptr	minimum(node_ptr nil, node_ptr start) {
+	static base_ptr	minimum(base_ptr nil, base_ptr start) {
 		while (start->left != nil)
 			start = start->left;
 		return start;
 	}
 
-	static const_node_ptr	minimum(const_node_ptr nil, const_node_ptr start) {
+	static const_base_ptr	minimum(const_base_ptr nil, const_base_ptr start) {
 		while (start->left != nil)
 			start = start->left;
 		return start;
 	}
 
-	static node_ptr	mastartimum(node_ptr nil, node_ptr start) {
+	static base_ptr	maximum(base_ptr nil, base_ptr start) {
 		while (start->right != nil)
 			start = start->right;
 		return start;
 	}
 
-	static const_node_ptr	mastartimum(const_node_ptr nil, const_node_ptr start) {
+	static const_base_ptr	maximum(const_base_ptr nil, const_base_ptr start) {
 		while (start->right != nil)
 			start = start->right;
 		return start;
@@ -82,7 +82,10 @@ struct	rb_node_base {
 // derived class that knows Val
 template <class Val>
 struct	rb_node : rb_node_base {
-	Val	val; // Val is a pair<Key,T> object
+	typedef rb_node*	node_ptr;
+	typedef Val			value_type;
+	
+	value_type	val; // Val is a pair<Key,T> object
 
 	// default constructor
 	rb_node() : rb_node_base() {}
@@ -92,7 +95,7 @@ struct	rb_node : rb_node_base {
 		: rb_node_base(), val(val) {}
 
 	// constructor with val & parent & children (nil)
-	rb_node(Val const& val, rb_node_base* parent, rb_node_base* child)
+	rb_node(Val const& val, base_ptr parent, base_ptr child)
 		: rb_node_base(parent, child), val(val) {}
 		
 	// rb_node(rb_node_base const& base) : rb_node_base(base) {}
@@ -201,8 +204,7 @@ class rb_tree {
 
 		void	print_tree() {
 			std::cout << "Tree size: " << size() << std::endl;
-			// if (_root != _nil)
-				print_tree_helper(_root, "", true);
+			print_tree_helper(_root, "", true);
 			std::cout << std::endl;
 		}
 
@@ -225,15 +227,16 @@ class rb_tree {
 
 	// Modifiers
 		void	insert(value_type const& val) {
-			if (_root == _nil)
-				_root = _create_node(val, _nil);
-			else
-				_root = _insert_at(_root, _nil, val);
+			_insert_at(_nil, val);
 			_size += 1;
 		}
 
+		void	erase(value_type const& val) {
+			_delete_node(val);
+		}
+
 	private:
-		// convenience functions
+		// CONVENIENCE FNS
 		value_type const&	_get_val(base_ptr node) {
 			return static_cast<rb_node<Val>*>(node)->val;
 		}
@@ -241,7 +244,22 @@ class rb_tree {
 		key_type const&	_get_key(base_ptr node) {
 			return static_cast<rb_node<Val>*>(node)->val.first;
 		}
-		
+
+		base_ptr	_search_by_key(key_type const& key) {
+			base_ptr	tmp = _root;
+
+			while (tmp != _nil) {
+				if (_get_key(tmp) == key)
+					return tmp;
+				if (_key_compare(_get_key(tmp), key) == true)
+					tmp = tmp->right;
+				else
+					tmp = tmp->left;
+			}
+			return _nil;
+		}
+
+		// NODE MANAGEMENT
 		base_ptr	_create_nil() {
 			base_ptr tmp = _b_alloc.allocate(1);
 			_b_alloc.construct(tmp, rb_node_base(BLACK));
@@ -275,19 +293,164 @@ class rb_tree {
 			}
 		}
 
-		base_ptr	_insert_at(base_ptr root, base_ptr parent, value_type const& val) {
-			if (root == _nil)
-				return _create_node(val, parent);
-			if (_key_compare(val.first, _get_key(root)) == true) {
-				root->left = _insert_at(root->left, root, val);
+		// INSERTION & ROTATIONS
+		// called by _insert_at
+		base_ptr	_find_insert_pos(base_ptr new_node) {
+			base_ptr parent = _nil;
+			base_ptr tmp = this->_root;
+
+			while (tmp != _nil) {
+				parent = tmp;
+				if (_key_compare(_get_key(new_node), _get_key(tmp)) == true)
+					tmp = tmp->left;
+				else
+					tmp = tmp->right;
 			}
-			else {
-				root->right = _insert_at(root->right, root, val);
-			}
-			return root;
+			return parent;
 		}
 
+		// called by insert
+		void	_insert_at(base_ptr parent, value_type const& val) {
+			base_ptr node = _create_node(val, parent);
+			base_ptr new_parent = _find_insert_pos(node);
+			
+			node->parent = new_parent;
+			if (new_parent == _nil)
+				_root = node;
+			else if (_key_compare(_get_key(node), _get_key(new_parent)) == true)
+				new_parent->left = node;
+			else
+				new_parent->right = node;
+			_insert_rebalance(node);
+		}
 
+		// called by rotate fns
+		void	_relink_parent(base_ptr node, base_ptr new_child) {
+			new_child->parent = node->parent;
+			if (node->parent == _nil)
+				this->_root = new_child;
+			else if (node == node->parent->left)
+				node->parent->left = new_child;
+			else if (node == node->parent->right)
+				node->parent->right = new_child;
+		}
+
+		void	_left_rotate(base_ptr node) {
+			base_ptr node_b = node->right;
+
+			// turn node_b's left subtree into node's right subtree
+			node->right = node_b->left;
+			if (node_b->left != _nil)
+				node_b->left->parent = node;
+			_relink_parent(node, node_b);
+			node_b->left = node;
+			node->parent = node_b;
+		}
+
+		void	_right_rotate(base_ptr node) {
+			base_ptr node_b = node->left;
+
+			node->left = node_b->right;
+			if (node_b->right != _nil)
+				node_b->right->parent = node;
+			_relink_parent(node, node_b);
+			node_b->right = node;
+			node->parent = node_b;
+		}
+
+		// called by _parent_case if uncle node is red
+		base_ptr	_red_uncle_case(base_ptr uncl, base_ptr node) {
+			uncl->colour = BLACK;
+			node->parent->colour = BLACK;
+			node->parent->parent->colour = RED;
+			return node->parent->parent;
+		}
+
+		// called by _rebalance_tree for R_ Rotations
+		base_ptr	_right_parent_case(base_ptr node) {
+			base_ptr uncl = node->parent->parent->left;
+
+			if (uncl->colour == RED)
+				node = _red_uncle_case(uncl, node);
+			else { // if uncle is black
+				if (node == node->parent->left) { // Right Left Case
+					node = node->parent;
+					_right_rotate(node);
+				}
+				node->parent->colour = BLACK;
+				node->parent->parent->colour = RED;
+				_left_rotate(node->parent->parent); // Right Right Case
+			}
+			return node;
+		}
+
+		// called by _rebalance_tree for L_ Rotations
+		base_ptr	_left_parent_case(base_ptr node) {
+			base_ptr uncl = node->parent->parent->right;
+			
+			if (uncl->colour == RED)
+				node = _red_uncle_case(uncl, node);
+			else { // if uncle is black
+				if (node == node->parent->right) { // Left Right Case
+					node = node->parent;
+					_left_rotate(node);
+				}
+				node->parent->colour = BLACK;
+				node->parent->parent->colour = RED;
+				_right_rotate(node->parent->parent); // Left Left Case
+			}
+			return node;
+		}
+
+		// called by _insert to fix tree colour properties after insertion
+		void	_insert_rebalance(base_ptr node) {
+			while (node->parent->colour == RED) {
+				if (node->parent == node->parent->parent->right)
+					node = _right_parent_case(node);
+				else // if node's parent is on left side
+					node = _left_parent_case(node);
+				if (node == _root)
+					break;
+			}
+			_root->colour = BLACK;
+		}
+
+		// DELETION
+		// called by _delete_node
+		// Allows moving subtrees around RB tree by replacing one subtree
+		// with another, i.e. node_a's parent becomes node_b's and vice versa.
+		void	_transplant(base_ptr a, base_ptr b) {
+			if (a->parent == _nil)
+				_root = b;
+			else if (a == a->parent->left)
+				a->parent->left = b;
+			else
+				a->parent->right = b;
+			b->parent = a->parent;
+		}
+
+		void	_delete_node(value_type const& val) {
+			base_ptr z = _search_by_key(val.first);
+			
+			if (z == _nil) // key not found
+				return ;
+			base_ptr	y = z;
+			base_ptr	x;
+			rb_colour	y_original_colour = y->colour;
+			if (z->left == _nil) {
+				x = z->right;
+				_transplant(z, z->right);
+			}
+			else if (z->right == _nil) {
+				x = z->left;
+				_transplant(z, z->left);
+			}
+			else {
+				y = y->minimum(_nil, z->right);
+				y_original_colour = y.colour;
+				x = y->right;
+			}
+		}
 };
 }
 

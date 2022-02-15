@@ -6,13 +6,16 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/15 16:47:41 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/15 22:34:25 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
 
 #include "../utils/rb_tree.hpp" // TODO: remove
+#include <map>
+typedef IMPL::pair<int,std::string>	t_ispair;
+typedef std::pair<int,std::string>	t_ispair2;
 
 namespace std {
 	inline std::string get_name() { return "std"; }
@@ -30,21 +33,36 @@ int main() {
 	// test_vector();
 	// test_stack();
 	
-	ft::rb_tree<int, ft::pair<int, std::string> > RB;
-	// RB.debug_empty();
+	ft::rb_tree<int, t_ispair> RB;
+	RB.debug_empty();
 	RB.print_tree();
 
-	ft::pair<int, std::string> key1(42, "one");
-	RB.insert(key1);
+	RB.insert(t_ispair(11, "one"));
 	RB.print_tree();
 	
-	ft::pair<int, std::string> key2(13, "two");
-	RB.insert(key2);
+	RB.insert(t_ispair(2, "two"));
 	RB.print_tree();
 
-	ft::pair<int, std::string> key3(60, "three");
-	RB.insert(key3);
+	RB.insert(t_ispair(14, "three"));
 	RB.print_tree();
+
+	RB.insert(t_ispair(1, "four"));
+	RB.insert(t_ispair(7, "five"));
+	RB.insert(t_ispair(15, "six"));
+	RB.insert(t_ispair(5, "seven"));
+	RB.insert(t_ispair(8, "eight"));
+	RB.insert(t_ispair(4, "nine"));
+	RB.print_tree();
+
+	ft::rb_tree<int, t_ispair> RB2;
+	RB2.insert(t_ispair(3, "one"));
+	RB2.print_tree();
+	RB2.insert(t_ispair(21, "two"));
+	RB2.print_tree();
+	RB2.insert(t_ispair(32, "three"));
+	RB2.print_tree();
+	RB2.insert(t_ispair(15, "four"));
+	RB2.print_tree();
 	
 	// system("leaks ft_bin");
 	return 0;
