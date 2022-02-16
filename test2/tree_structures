@@ -1,5 +1,5 @@
-Test:
-11, 2, 14, 1, 7, 15, 5, 8, 4
+TEST 1
+Insert 11, 2, 14, 1, 7, 15, 5, 8, 4
 Result:
 R----[7, five] (BLACK) | Parent is NIL
    L----[2, two] (RED) | Parent is [7, five]
@@ -21,8 +21,8 @@ R----[7, five] (BLACK) | Parent is NIL
             L----NIL (BLACK)
             R----NIL (BLACK)
 
-Test:
-3, 21, 32, 15
+TEST 2
+Insert 3, 21, 32, 15
 Result:
 R----[21, two] (BLACK) | Parent is NIL
    L----[3, one] (BLACK) | Parent is [21, two]
@@ -31,5 +31,34 @@ R----[21, two] (BLACK) | Parent is NIL
    |     L----NIL (BLACK)
    |     R----NIL (BLACK)
    R----[32, three] (BLACK) | Parent is [21, two]
+      L----NIL (BLACK)
+      R----NIL (BLACK)
+
+TEST 3
+Insert 40, 60, 55, 65, 75, 57
+R----[55, three] (BLACK) | Parent is NIL
+   L----[40, one] (BLACK) | Parent is [55, three]
+   |  L----NIL (BLACK)
+   |  R----NIL (BLACK)
+   R----[65, four] (RED) | Parent is [55, three]
+      L----[60, two] (BLACK) | Parent is [65, four]
+      |  L----[57, six] (RED) | Parent is [60, two]
+      |  |  L----NIL (BLACK)
+      |  |  R----NIL (BLACK)
+      |  R----NIL (BLACK)
+      R----[75, five] (BLACK) | Parent is [65, four]
+         L----NIL (BLACK)
+         R----NIL (BLACK)
+
+Delete 40
+R----[65, four] (BLACK) | Parent is NIL
+   L----[57, six] (RED) | Parent is [65, four]
+   |  L----[55, three] (BLACK) | Parent is [57, six]
+   |  |  L----NIL (BLACK)
+   |  |  R----NIL (BLACK)
+   |  R----[60, two] (BLACK) | Parent is [57, six]
+   |     L----NIL (BLACK)
+   |     R----NIL (BLACK)
+   R----[75, five] (BLACK) | Parent is [65, four]
       L----NIL (BLACK)
       R----NIL (BLACK)

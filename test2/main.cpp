@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/15 22:34:25 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/16 17:56:17 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,19 @@ int main() {
 	RB2.print_tree();
 	RB2.insert(t_ispair(15, "four"));
 	RB2.print_tree();
+
+	ft::rb_tree<int, t_ispair> RB3;
+	RB3.insert(t_ispair(40, "one"));
+	RB3.insert(t_ispair(60, "two"));
+	RB3.insert(t_ispair(55, "three"));
+	RB3.insert(t_ispair(65, "four"));
+	RB3.insert(t_ispair(75, "five"));
+	RB3.insert(t_ispair(57, "six"));
+	RB3.print_tree();
+
+	RB3.erase(t_ispair(40, "one"));
+	RB3.print_tree();
 	
-	// system("leaks ft_bin");
+	system("leaks ft_bin");
 	return 0;
 }
