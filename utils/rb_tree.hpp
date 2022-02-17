@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/16 18:29:47 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/17 16:22:12 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,7 @@
 #define RB_TREE_HPP
 
 #include <cstddef> // ptrdiff_t, size_t
-
-// #define NIL rb_tree->_nil
+#include "iterator_utils.hpp" // iterator_tag
 
 namespace   ft {
 enum rb_colour {
@@ -55,7 +54,7 @@ struct	rb_node_base {
 	~rb_node_base() {}
 };
 
-// derived class that knows Val
+// derived class that knows Val, used for nodes with <key,t> data
 template <class Val>
 struct	rb_node : rb_node_base {
 	typedef rb_node*	node_ptr;
@@ -82,7 +81,6 @@ struct	rb_node : rb_node_base {
 	~rb_node() {}
 };
 
-// iterators
 #include <functional> // TODO: remove
 template <class Key, class Val, class Compare = std::less<Key>, // TODO: remove
 			class Alloc = std::allocator<Val> >
@@ -98,8 +96,8 @@ class rb_tree {
 		typedef std::ptrdiff_t			difference_type;
 		typedef Alloc					allocator_type;
 		
-		// typedef rb_iterator<Val>						iterator;
-		// typedef rb_const_iterator<Val>					const_iterator;
+		// typedef rb_iterator<value_type>					iterator;
+		// typedef rb_const_iterator<value_type>			const_iterator;
 		// typedef ft::reverse_iterator<iterator>			reverse_iterator;
 		// typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
@@ -265,54 +263,54 @@ class rb_tree {
 		}
 
 	// Set ops
-		iterator	find(key_type const& key) {
+		// iterator	find(key_type const& key) {
 
-		}
+		// }
 
-		const_iterator	find(key_type const& key) const {
+		// const_iterator	find(key_type const& key) const {
 			
-		}
+		// }
 
-		size_type	count(key_type const& key) const {
+		// size_type	count(key_type const& key) const {
 
-		}
+		// }
 
-		iterator	lower_bound(key_type const& key) {
+		// iterator	lower_bound(key_type const& key) {
 
-		}
+		// }
 
-		const_iterator	lower_bound(key_type const& key) const {
+		// const_iterator	lower_bound(key_type const& key) const {
 			
-		}
+		// }
 
-		iterator	upper_bound(key_type const& key) {
+		// iterator	upper_bound(key_type const& key) {
 
-		}
+		// }
 
-		const_iterator	upper_bound(key_type const& key) const {
+		// const_iterator	upper_bound(key_type const& key) const {
 			
-		}
+		// }
 
-		pair<iterator, iterator>	equal_range(key_type const& key) {
+		// pair<iterator, iterator>	equal_range(key_type const& key) {
 
-		}
+		// }
 
-		pair<const_iterator, const_iterator>	equal_range(key_type const& key) const {
+		// pair<const_iterator, const_iterator>	equal_range(key_type const& key) const {
 			
-		}
+		// }
 
 	private:
 		// UTILITIES
 		// does not check if node is _nil/NULL before casting.
 		// caller's responsibility to check before calling.
-		value_type const&	_get_val(base_ptr node) {
-			return static_cast<rb_node<Val>*>(node)->val;
+		reference	_get_val(base_ptr node) {
+			return static_cast<node_ptr>(node)->val;
 		}
 		
 		// does not check if node is _nil/NULL before casting.
 		// caller's responsibility to check before calling.
 		key_type const&	_get_key(base_ptr node) {
-			return static_cast<rb_node<Val>*>(node)->val.first;
+			return static_cast<node_ptr>(node)->val.first;
 		}
 
 		base_ptr	_find_min(base_ptr start) {
@@ -349,12 +347,14 @@ class rb_tree {
 		}
 
 		base_ptr	_create_node(value_type const& val, base_ptr parent) {
-			node_ptr tmp = _n_alloc.allocate(1);
-			_n_alloc.construct(tmp, rb_node<Val>(val));
-			tmp->parent = parent; // TODO: decide if want to change to declaring rb_node object on stack and using copy constructor through construct
-			tmp->left = _nil;
-			tmp->right = _nil;
-			return tmp;
+			rb_node<Val>	tmp(val, parent, _nil);
+			node_ptr		new_node = _n_alloc.allocate(1);
+			_n_alloc.construct(new_node, tmp);
+			// _n_alloc.construct(new_node, rb_node<Val>(val));
+			// tmp->parent = parent; // TODO: decide if want to change to declaring rb_node object on stack and using copy constructor through construct
+			// tmp->left = _nil;
+			// tmp->right = _nil;
+			return new_node;
 		}
 
 		// template <class T, class Alloc_T>
