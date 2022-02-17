@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/17 16:22:12 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/17 18:18:52 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,8 +189,19 @@ class rb_tree {
 				print_tree_helper(root->left, indent, false);
 				print_tree_helper(root->right, indent, true);
 			}
-			else
-				std::cout << "NIL" << " (" << sColour << ")" << std::endl;
+			else {
+				std::cout << "NIL" << " (" << sColour << ") ";
+				std::cout << "Parent is ";
+				if (root->parent == NULL) std::cout << "NULL";
+				else if (root->parent == _nil) std::cout << "NIL";
+				else std::cout << _get_val(root->parent).first
+						<< ", " << _get_val(root->parent).second;
+				std::cout << " | LChild is ";
+				if (root->left == NULL) std::cout << "NULL\n";
+				else if (root->left == _nil) std::cout << "NIL\n";
+				else std::cout << _get_val(root->left).first
+						<< ", " << _get_val(root->left).second << "\n";
+			}
 		}
 
 		void	print_tree() {
@@ -497,6 +508,7 @@ class rb_tree {
 					break;
 			}
 			_root->colour = BLACK;
+			_nil->parent = _root;
 		}
 
 		// DELETION
@@ -590,6 +602,7 @@ class rb_tree {
 					node = _del_reb_right_child_case(node, node->parent);
 			}
 			node->colour = BLACK;
+			_nil->parent = _root;
 		}
 
 		// helper called by _delete_node if node_to_delete has 2 children
@@ -645,6 +658,6 @@ class rb_tree {
 				_delete_rebalance(x);
 		}
 };
-}
+} // namespace ft
 
 #endif
