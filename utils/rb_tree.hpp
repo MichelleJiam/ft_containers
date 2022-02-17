@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/17 18:18:52 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/17 20:10:21 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,73 +14,10 @@
 #define RB_TREE_HPP
 
 #include <cstddef> // ptrdiff_t, size_t
-#include "iterator_utils.hpp" // iterator_tag
+#include "rb_node.hpp"
+#include "rb_iterator.hpp"
 
-namespace   ft {
-enum rb_colour {
-	RED = false,
-	BLACK = true
-};
-
-// base class that doesn't know about Val (user data)
-// used for sentinal node to prevent unecessary memory usage
-struct	rb_node_base {
-	typedef rb_node_base*		base_ptr;
-	typedef const rb_node_base*	const_base_ptr;
-
-	rb_colour	colour;
-	base_ptr	parent;
-	base_ptr	left;
-	base_ptr	right;
-
-	// default constructor
-	rb_node_base() : colour(RED), parent(NULL), left(NULL), right(NULL) {}
-
-	// constructor with parent and children (for passing nil)
-	rb_node_base(base_ptr parent, base_ptr child)
-		: colour(RED), parent(parent), left(child), right(child) {}
-	
-	// constructor with colour (for passing BLACK with sentinel)
-	rb_node_base(rb_colour col)
-		: colour(col), parent(NULL), left(NULL), right(NULL) {}
-
-	// copy constructor
-	rb_node_base(rb_node_base const& other)
-		:	colour(other.colour),
-			parent(other.parent),
-			left(other.left),
-			right(other.right) {}
-
-	~rb_node_base() {}
-};
-
-// derived class that knows Val, used for nodes with <key,t> data
-template <class Val>
-struct	rb_node : rb_node_base {
-	typedef rb_node*	node_ptr;
-	typedef Val			value_type;
-	
-	value_type	val; // Val is a pair<Key,T> object
-
-	// default constructor
-	rb_node() : rb_node_base() {}
-	
-	// constructor with val
-	rb_node(Val const& val)
-		: rb_node_base(), val(val) {}
-
-	// constructor with val & parent & children (nil)
-	rb_node(Val const& val, base_ptr parent, base_ptr child)
-		: rb_node_base(parent, child), val(val) {}
-		
-	// rb_node(rb_node_base const& base) : rb_node_base(base) {}
-
-	// copy constructor
-	rb_node(rb_node const& other) : rb_node_base(other), val(other.val) {}
-
-	~rb_node() {}
-};
-
+namespace ft {
 #include <functional> // TODO: remove
 template <class Key, class Val, class Compare = std::less<Key>, // TODO: remove
 			class Alloc = std::allocator<Val> >
@@ -96,10 +33,10 @@ class rb_tree {
 		typedef std::ptrdiff_t			difference_type;
 		typedef Alloc					allocator_type;
 		
-		// typedef rb_iterator<value_type>					iterator;
-		// typedef rb_const_iterator<value_type>			const_iterator;
-		// typedef ft::reverse_iterator<iterator>			reverse_iterator;
-		// typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef rb_iterator<value_type>					iterator;
+		typedef rb_iterator<value_type const>			const_iterator;
+		typedef ft::reverse_iterator<iterator>			reverse_iterator;
+		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 	protected:
 		typedef rb_node<Val>*			node_ptr;
@@ -215,37 +152,37 @@ class rb_tree {
 			return _key_compare;
 		}
 
-		// iterator	begin() {
+		iterator	begin() {
+			return iterator(_find_min(_root));
+		}
 
-		// }
+		const_iterator	begin() const {
+			return const_iterator(_find_min(_root));
+		}
 
-		// const_iterator	begin() const {
+		iterator	end() {
+			return iterator(_nil);
+		}
+
+		const_iterator	end() const {
+			return const_iterator(_nil);
+		}
+
+		reverse_iterator	rbegin() {
+
+		}
+
+		const_reverse_iterator	rbegin() const {
 			
-		// }
+		}
 
-		// iterator	end() {
+		reverse_iterator	rend() {
 			
-		// }
+		}
 
-		// const_iterator	end() const {
+		const_reverse_iterator	rend() const {
 			
-		// }
-
-		// reverse_iterator	rbegin() {
-
-		// }
-
-		// const_reverse_iterator	rbegin() const {
-			
-		// }
-
-		// reverse_iterator	rend() {
-			
-		// }
-
-		// const_reverse_iterator	rend() const {
-			
-		// }
+		}
 
 		bool	empty() const {
 			return _size == 0;

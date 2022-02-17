@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 20:47:00 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/17 20:25:10 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,10 @@ void	test_vec_iterators(T& vector) {
 	std::cout << "end - 1: " << *(vector.end() - 1) << std::endl;
 	std::cout << "rbegin: " << *vector.rbegin() << std::endl;
 	std::cout << "rend - 1: " << *(vector.rend() - 1) << std::endl;
+	std::cout << "iterating from begin to end: ";
+	for (t_ivec::iterator it = vector.begin(); it != vector.end(); ++it)
+		std::cout << *it << " ";
+	std::cout << std::endl;
 }
 
 template <typename T>
