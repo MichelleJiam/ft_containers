@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/25 18:41:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/25 18:46:14 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,11 +112,11 @@ std::cout << "=== Testing insert on RB ===\n\n";
 		std::cout << rit1->first << " ";
 	std::cout << std::endl;
 
-	// std::cout << "ft iterating backwards using rbegin & rend:\t";
-	// ft::rb_tree<int, t_ispair>::reverse_iterator rit2;
-	// for (rit2 = RB2.rbegin(); rit2 != RB2.rend(); ++rit2)
-	// 	std::cout << rit2->first << " ";
-	// std::cout << std::endl;
+	std::cout << "ft iterating backwards using rbegin & rend:\t";
+	ft::rb_tree<int, t_ispair>::reverse_iterator rit2;
+	for (rit2 = RB2.rbegin(); rit2 != RB2.rend(); ++rit2)
+		std::cout << rit2->first << " ";
+	std::cout << std::endl;
 }
 
 int main() {
@@ -124,9 +124,9 @@ int main() {
 	// std::cout << "version: " << IMPL::get_name() << std::endl;
 
 	// test_utils();
-	test_vector();
+	// test_vector();
 	// test_stack();
-	// test_rb();
+	test_rb();
 	
 	// system("leaks ft_bin");
 	return 0;

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/26 21:11:29 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/25 18:37:20 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/25 18:47:47 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,7 @@ class reverse_iterator
 		}
 		// returns a pointer to the value at _current (if dereferenceable).
 		pointer		operator->(void) const {
-			Iterator	tmp = _current;
-			--tmp;
-			return tmp;
+			return &(operator*());
 		}
 		// returns value at _current + `n`
 		reference	operator[](difference_type n) const {
