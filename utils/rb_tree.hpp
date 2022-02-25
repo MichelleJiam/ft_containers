@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/17 20:10:21 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/25 18:17:06 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,19 +169,19 @@ class rb_tree {
 		}
 
 		reverse_iterator	rbegin() {
-
+			return reverse_iterator(end());
 		}
 
 		const_reverse_iterator	rbegin() const {
-			
+			return const_reverse_iterator(end());
 		}
 
 		reverse_iterator	rend() {
-			
+			return reverse_iterator(begin());
 		}
 
 		const_reverse_iterator	rend() const {
-			
+			return const_reverse_iterator(begin());
 		}
 
 		bool	empty() const {

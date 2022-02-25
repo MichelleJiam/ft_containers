@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/19 17:11:17 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/17 15:57:16 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/25 18:41:02 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,7 @@ class random_access_iterator
 
 		protected:
 			pointer	_current;
-	};
+};
 
 // NON-MEMBER FUNCTIONS
 // returns distance in address between 2 iterators.
@@ -119,6 +119,14 @@ typename random_access_iterator<T>::difference_type operator-(
 		random_access_iterator<T> const& rhs) {
 	return rhs.base() - lhs.base();
 }
+
+template <class T>
+typename random_access_iterator<T>::difference_type operator+(
+		typename random_access_iterator<T>::difference_type n,
+		random_access_iterator<T> const& i) {
+	return random_access_iterator<T>(i.base() + n);
+}
+
 
 // boolean comparison operators
 template <class T>

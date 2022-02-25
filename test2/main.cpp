@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/17 21:37:56 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/25 18:41:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,15 +25,8 @@ namespace ft {
 	inline std::string get_name() { return "ft"; }
 } // TODO: remove
 
-int main() {
-
-	// std::cout << "version: " << IMPL::get_name() << std::endl;
-
-	// test_utils();
-	// test_vector();
-	// test_stack();
-	
-	std::cout << "=== Testing insert on RB ===\n\n";
+void	test_rb() {
+std::cout << "=== Testing insert on RB ===\n\n";
 	std::cout << "Insert 11, 2, 14, 1, 7, 15, 5, 8, 4\n";
 	std::cout << "Result:\n";
 	ft::rb_tree<int, t_ispair> RB;
@@ -89,30 +82,52 @@ int main() {
 	map.insert(std::pair<int,std::string>(3, "one"));
 	map.insert(std::pair<int,std::string>(32, "three"));
 	map.insert(std::pair<int,std::string>(15, "four"));
-	std::cout << "std begin returns key: " << map.begin()->first << std::endl; // returns 3
-	std::cout << "iterating until end: ";
+	std::cout << "std begin returns key:\t" << map.begin()->first << std::endl; // returns 3
+	std::cout << "iterating until end:\t";
 	for (std::map<int, std::string>::iterator it = map.begin(); it != map.end(); ++it)
 		std::cout << it->first << " ";
-	std::cout << std::endl << std::endl;
+	std::cout << std::endl;
 
-	std::cout << "ft begin returns key: " << RB2.begin()->first << std::endl;
-	std::cout << "iterating until end: ";
+	std::cout << "ft begin returns key:\t" << RB2.begin()->first << std::endl;
+	std::cout << "iterating until end:\t";
 	for (ft::rb_tree<int, t_ispair>::iterator it = RB2.begin(); it != RB2.end(); ++it)
 		std::cout << it->first << " ";
 	std::cout << std::endl;
 
-	std::cout << "std iterating backwards from end: ";
+	std::cout << "std iterating backwards from end:\t";
 	std::map<int, std::string>::iterator it1 = map.end();
 	for (--it1; it1 != map.begin(); --it1)
 		std::cout << it1->first << " ";
-	std::cout << it1->first << std::endl;
+	std::cout << (*it1).first << std::endl;
 
-	std::cout << "ft iterating backwards from end: ";
+	std::cout << "ft iterating backwards from end:\t";
 	ft::rb_tree<int, t_ispair>::iterator it2 = RB2.end();
 	for (it2--; it2 != RB2.begin(); --it2)
 		std::cout << it2->first << " ";
-	std::cout << it2->first << std::endl;
+	std::cout << (*it2).first << std::endl;
 
+	std::cout << "std iterating backwards using rbegin & rend:\t";
+	std::map<int, std::string>::reverse_iterator rit1;
+	for (rit1 = map.rbegin(); rit1 != map.rend(); ++rit1)
+		std::cout << rit1->first << " ";
+	std::cout << std::endl;
+
+	// std::cout << "ft iterating backwards using rbegin & rend:\t";
+	// ft::rb_tree<int, t_ispair>::reverse_iterator rit2;
+	// for (rit2 = RB2.rbegin(); rit2 != RB2.rend(); ++rit2)
+	// 	std::cout << rit2->first << " ";
+	// std::cout << std::endl;
+}
+
+int main() {
+
+	// std::cout << "version: " << IMPL::get_name() << std::endl;
+
+	// test_utils();
+	test_vector();
+	// test_stack();
+	// test_rb();
+	
 	// system("leaks ft_bin");
 	return 0;
 }
