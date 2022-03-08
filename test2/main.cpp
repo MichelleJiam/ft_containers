@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 19:27:12 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 19:36:51 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -155,6 +155,9 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	else
 		std::cout << "15 not found in map\n";
 
+	std::cout << "\n=== Testing count ===\n\n";	
+	std::cout << "count(15)\nSTD output:\t" << map.count(15) << std::endl;
+	std::cout << "FT output:\t" << RB2.count(15) << std::endl;
 }
 
 int main() {

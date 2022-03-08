@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 19:24:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 19:45:36 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -234,9 +234,9 @@ class rb_tree {
 			return found;
 		}
 
-		// size_type	count(key_type const& key) const {
-
-		// }
+		size_type	count(key_type const& key) const {
+			return _search_by_key(key) == _nil ? 0 : 1;
+		}
 
 		// iterator	lower_bound(key_type const& key) {
 
@@ -266,13 +266,13 @@ class rb_tree {
 		// UTILITIES
 		// does not check if node is _nil/NULL before casting.
 		// caller's responsibility to check before calling.
-		reference	_get_val(base_ptr node) {
+		reference	_get_val(base_ptr node) const {
 			return static_cast<node_ptr>(node)->val;
 		}
 		
 		// does not check if node is _nil/NULL before casting.
 		// caller's responsibility to check before calling.
-		key_type const&	_get_key(base_ptr node) {
+		key_type const&	_get_key(base_ptr node) const {
 			return static_cast<node_ptr>(node)->val.first;
 		}
 
@@ -289,7 +289,7 @@ class rb_tree {
 		}
 		
 		// used by _delete_node
-		base_ptr	_search_by_key(key_type const& key) {
+		base_ptr	_search_by_key(key_type const& key) const {
 			base_ptr	tmp = _root;
 
 			while (tmp != _nil) {
