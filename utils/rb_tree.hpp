@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 21:33:23 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 22:28:24 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,13 +254,16 @@ class rb_tree {
 			return const_iterator(*_upper_bound(key));
 		}
 
-		// pair<iterator, iterator>	equal_range(key_type const& key) {
-
-		// }
-
-		// pair<const_iterator, const_iterator>	equal_range(key_type const& key) const {
-			
-		// }
+		pair<iterator, iterator>	equal_range(key_type const& key) {
+			iterator	lower = lower_bound(key);
+			iterator	upper = upper_bound(key);
+			return ft::make_pair<iterator, iterator>(lower, upper);
+		}
+		// TODO: check if const cast is working
+		pair<const_iterator, const_iterator>	equal_range(key_type const& key) const {
+			return ft::make_pair<const_iterator, const_iterator>(
+					lower_bound(key), upper_bound(key));
+		}
 
 	private:
 		// UTILITIES
@@ -332,6 +335,24 @@ class rb_tree {
 			}
 			return iterator(node);
 		}
+
+		// iterator	_equal_range(key_type const& key) {
+		// 	// base_ptr	tmp = _root;
+		// 	// base_ptr	node = _nil;
+
+		// 	// while (tmp != _nil) {
+		// 	// 	if (_key_compare(_get_key(tmp), key) == true)
+		// 	// 		tmp = tmp->right;
+		// 	// 	else if (_key_compare(key, _get_key(tmp)) == true) {
+		// 	// 		node = tmp;
+		// 	// 		tmp = tmp->left;
+		// 	// 	}
+		// 	// 	else {
+		// 	// 		base_ptr
+		// 	// 	}
+		// 	// }
+		// 	(void)key;
+		// }
 
 		// NODE MANAGEMENT
 		base_ptr	_create_nil() {

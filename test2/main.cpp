@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 21:44:40 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 22:27:00 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,17 @@ namespace ft {
 } // TODO: remove
 
 template <typename Iterator>
-void	print_key_or_null(Iterator it, Iterator end) {
+void	print_keyval_or_null(Iterator it, Iterator end, bool newline = true, bool printkey = true) {
 	if (it == end)
-		std::cout << "NULL" << std::endl;
-	else
-		std::cout << it->first << std::endl;
+		std::cout << "NULL";
+	else {
+		if (printkey)
+			std::cout << it->first;
+		else
+			std::cout << it->second;
+	}
+	if (newline)
+			std::cout << std::endl;
 }
 
 void	test_rb() {
@@ -139,13 +145,13 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	std::cout << "find(42)\nSTD output:\t";
 	std::map<int, std::string>::iterator search1 = map.find(42);
 	if (search1 != map.end())
-		std::cout << "Found 42 at " << search1->second << std::endl;
+		std::cout << "Found 42 with value " << search1->second << std::endl;
 	else
 		std::cout << "42 not found in map\n";
 	std::cout << "FT output:\t";
 	ft::rb_tree<int, t_ispair>::iterator search2 = RB2.find(42);
 	if (search2 != RB2.end())
-		std::cout << "Found 42 at " << search2->second << std::endl;
+		std::cout << "Found 42 with value " << search2->second << std::endl;
 	else
 		std::cout << "42 not found in map\n";
 	
@@ -153,13 +159,13 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	std::cout << std::endl;
 	std::cout << "find(15)\nSTD output:\t";
 	if (search1 != map.end())
-		std::cout << "Found 15 at " << search1->second << std::endl;
+		std::cout << "Found 15 with value " << search1->second << std::endl;
 	else
 		std::cout << "15 not found in map\n";
 	search2 = RB2.find(15);
 	std::cout << "FT output:\t";
 	if (search2 != RB2.end())
-		std::cout << "Found 15 at " << search2->second << std::endl;
+		std::cout << "Found 15 with value " << search2->second << std::endl;
 	else
 		std::cout << "15 not found in map\n";
 
@@ -169,21 +175,50 @@ std::cout << "=== Testing insert on RB ===\n\n";
 
 	std::cout << "\n=== Testing lower/upper_bound ===\n\n";
 	std::cout << "lower_bound(15)\nSTD output:\t";
-		print_key_or_null(map.lower_bound(15), map.end());
+		print_keyval_or_null(map.lower_bound(15), map.end());
 	std::cout << "FT output:\t";
-		print_key_or_null(RB2.lower_bound(15), RB2.end());
+		print_keyval_or_null(RB2.lower_bound(15), RB2.end());
 	std::cout << "lower_bound(32)\nSTD output:\t";
-		print_key_or_null(map.lower_bound(32), map.end());
+		print_keyval_or_null(map.lower_bound(32), map.end());
 	std::cout << "FT output:\t";
-		print_key_or_null(RB2.lower_bound(32), RB2.end());
+		print_keyval_or_null(RB2.lower_bound(32), RB2.end());
 	std::cout << "\nupper_bound(15)\nSTD output:\t";
-		print_key_or_null(map.upper_bound(15), map.end());
+		print_keyval_or_null(map.upper_bound(15), map.end());
 	std::cout << "FT output:\t";
-		print_key_or_null(RB2.upper_bound(15), RB2.end());
+		print_keyval_or_null(RB2.upper_bound(15), RB2.end());
 	std::cout << "upper_bound(32)\nSTD output:\t";
-		print_key_or_null(map.upper_bound(32), map.end());
+		print_keyval_or_null(map.upper_bound(32), map.end());
 	std::cout << "FT output:\t";
-		print_key_or_null(RB2.upper_bound(32), RB2.end());
+		print_keyval_or_null(RB2.upper_bound(32), RB2.end());
+
+	std::cout << "\n=== Testing equal_range ===\n\n";
+	std::cout << "equal_range(15)\nSTD output:\t" << "lower: ";
+		print_keyval_or_null(map.equal_range(15).first, map.end(), false);
+		std::cout << " upper: " << map.equal_range(15).second->first << std::endl;
+	std::cout << "FT output:\t" << "lower: ";
+		print_keyval_or_null(RB2.equal_range(15).first, RB2.end(), false);
+		std::cout << " upper: "; print_keyval_or_null(RB2.equal_range(15).second, RB2.end());
+
+	std::cout << "equal_range(3)\nSTD output:\t" << "lower: ";
+		print_keyval_or_null(map.equal_range(3).first, map.end(), false);
+		std::cout << " upper: "; print_keyval_or_null(map.equal_range(3).second, map.end());
+	std::cout << "FT output:\t" << "lower: ";
+		print_keyval_or_null(RB2.equal_range(3).first, RB2.end(), false);
+		std::cout << " upper: "; print_keyval_or_null(RB2.equal_range(3).second, RB2.end());
+		
+	std::cout << "equal_range(32)\nSTD output:\t" << "lower: ";
+		print_keyval_or_null(map.equal_range(32).first, map.end(), false);
+		std::cout << " upper: "; print_keyval_or_null(map.equal_range(32).second, map.end());
+	std::cout << "FT output:\t" << "lower: ";
+		print_keyval_or_null(RB2.equal_range(32).first, RB2.end(), false);
+		std::cout << " upper: "; print_keyval_or_null(RB2.equal_range(32).second, RB2.end());
+
+	std::cout << "equal_range(210)\nSTD output:\t" << "lower: ";
+		print_keyval_or_null(map.equal_range(210).first, map.end(), false);
+		std::cout << " upper: "; print_keyval_or_null(map.equal_range(210).second, map.end());
+	std::cout << "FT output:\t" << "lower: ";
+		print_keyval_or_null(RB2.equal_range(210).first, RB2.end(), false);
+		std::cout << " upper: "; print_keyval_or_null(RB2.equal_range(210).second, RB2.end());
 }
 
 int main() {
