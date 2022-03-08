@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 19:36:51 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 21:44:40 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,14 @@ namespace std {
 namespace ft {
 	inline std::string get_name() { return "ft"; }
 } // TODO: remove
+
+template <typename Iterator>
+void	print_key_or_null(Iterator it, Iterator end) {
+	if (it == end)
+		std::cout << "NULL" << std::endl;
+	else
+		std::cout << it->first << std::endl;
+}
 
 void	test_rb() {
 std::cout << "=== Testing insert on RB ===\n\n";
@@ -158,6 +166,24 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	std::cout << "\n=== Testing count ===\n\n";	
 	std::cout << "count(15)\nSTD output:\t" << map.count(15) << std::endl;
 	std::cout << "FT output:\t" << RB2.count(15) << std::endl;
+
+	std::cout << "\n=== Testing lower/upper_bound ===\n\n";
+	std::cout << "lower_bound(15)\nSTD output:\t";
+		print_key_or_null(map.lower_bound(15), map.end());
+	std::cout << "FT output:\t";
+		print_key_or_null(RB2.lower_bound(15), RB2.end());
+	std::cout << "lower_bound(32)\nSTD output:\t";
+		print_key_or_null(map.lower_bound(32), map.end());
+	std::cout << "FT output:\t";
+		print_key_or_null(RB2.lower_bound(32), RB2.end());
+	std::cout << "\nupper_bound(15)\nSTD output:\t";
+		print_key_or_null(map.upper_bound(15), map.end());
+	std::cout << "FT output:\t";
+		print_key_or_null(RB2.upper_bound(15), RB2.end());
+	std::cout << "upper_bound(32)\nSTD output:\t";
+		print_key_or_null(map.upper_bound(32), map.end());
+	std::cout << "FT output:\t";
+		print_key_or_null(RB2.upper_bound(32), RB2.end());
 }
 
 int main() {

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 19:45:36 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 21:33:23 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,21 +238,21 @@ class rb_tree {
 			return _search_by_key(key) == _nil ? 0 : 1;
 		}
 
-		// iterator	lower_bound(key_type const& key) {
+		iterator	lower_bound(key_type const& key) {
+			return _lower_bound(key);
+		}
 
-		// }
+		const_iterator	lower_bound(key_type const& key) const {
+			return const_iterator(*_lower_bound(key));
+		}
 
-		// const_iterator	lower_bound(key_type const& key) const {
-			
-		// }
+		iterator	upper_bound(key_type const& key) {
+			return _upper_bound(key);
+		}
 
-		// iterator	upper_bound(key_type const& key) {
-
-		// }
-
-		// const_iterator	upper_bound(key_type const& key) const {
-			
-		// }
+		const_iterator	upper_bound(key_type const& key) const {
+			return const_iterator(*_upper_bound(key));
+		}
 
 		// pair<iterator, iterator>	equal_range(key_type const& key) {
 
@@ -301,6 +301,36 @@ class rb_tree {
 					tmp = tmp->left;
 			}
 			return _nil;
+		}
+
+		iterator	_lower_bound(key_type const& key) {
+			base_ptr	tmp = _root;
+			base_ptr	node = _nil;
+
+			while (tmp != _nil) {
+				if (_key_compare(_get_key(tmp), key) == false) {
+					node = tmp;
+					tmp = tmp->left;
+				}
+				else
+					tmp = tmp->right;
+			}
+			return iterator(node);
+		}
+
+		iterator	_upper_bound(key_type const& key) {
+			base_ptr	tmp = _root;
+			base_ptr	node = _nil;
+
+			while (tmp != _nil) {
+				if (_key_compare(key, _get_key(tmp)) == true) {
+					node = tmp;
+					tmp = tmp->left;
+				}
+				else
+					tmp = tmp->right;
+			}
+			return iterator(node);
 		}
 
 		// NODE MANAGEMENT
