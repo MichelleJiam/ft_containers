@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 18:18:27 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 19:27:12 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,15 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	RB2.print_tree();
 	RB2.insert(t_ispair(32, "three"));
 	RB2.print_tree();
-	RB2.insert(t_ispair(15, "four"));
+	ft::rb_tree<int, t_ispair>::iterator insert_ret = RB2.insert(t_ispair(15, "four"));
 	RB2.print_tree();
+	std::cout << "insert(15, four) returns: " << insert_ret->first << " " << insert_ret->second << std::endl;
+	
+	std::cout << "Inserting duplicate 21 key with value \'forty-two\'\n";
+	insert_ret = RB2.insert(t_ispair(21, "forty-two"));
+	std::cout << "insert(21, forty-two) returns: " << insert_ret->first << " " << insert_ret->second << std::endl;
 
-	std::cout << "=== Testing erase on RB3 ===\n\n";
+	std::cout << "\n=== Testing erase on RB3 ===\n\n";
 	std::cout << "Insert 40, 60, 55, 65, 75, 57\n";
 	std::cout << "Result:\n";
 	ft::rb_tree<int, t_ispair> RB3;
@@ -121,6 +126,35 @@ std::cout << "=== Testing insert on RB ===\n\n";
 			rit4 != RB2.rend(); ++rit4)
 		std::cout << rit4->first << " ";
 	std::cout << std::endl;
+
+	std::cout << "\n=== Testing find ===\n\n";
+	std::cout << "find(42)\nSTD output:\t";
+	std::map<int, std::string>::iterator search1 = map.find(42);
+	if (search1 != map.end())
+		std::cout << "Found 42 at " << search1->second << std::endl;
+	else
+		std::cout << "42 not found in map\n";
+	std::cout << "FT output:\t";
+	ft::rb_tree<int, t_ispair>::iterator search2 = RB2.find(42);
+	if (search2 != RB2.end())
+		std::cout << "Found 42 at " << search2->second << std::endl;
+	else
+		std::cout << "42 not found in map\n";
+	
+	search1 = map.find(15);
+	std::cout << std::endl;
+	std::cout << "find(15)\nSTD output:\t";
+	if (search1 != map.end())
+		std::cout << "Found 15 at " << search1->second << std::endl;
+	else
+		std::cout << "15 not found in map\n";
+	search2 = RB2.find(15);
+	std::cout << "FT output:\t";
+	if (search2 != RB2.end())
+		std::cout << "Found 15 at " << search2->second << std::endl;
+	else
+		std::cout << "15 not found in map\n";
+
 }
 
 int main() {

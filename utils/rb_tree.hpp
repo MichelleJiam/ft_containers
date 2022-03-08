@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/25 18:17:06 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 19:24:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,9 +201,22 @@ class rb_tree {
 			_erase(this->_root);
 		}
 
-		void	insert(value_type const& val) {
-			_insert_at(_nil, val);
-			_size += 1;
+		// single
+		iterator	insert(value_type const& val) {
+			base_ptr search = _search_by_key(val.first);
+			if (search == _nil) {
+				base_ptr inserted = _insert_at(_nil, val);
+				_size += 1;
+				return iterator(inserted);
+			}
+			else
+				return iterator(search);
+		}
+
+		// with position hint
+		iterator	insert(iterator position, value_type const& val) {
+			(void)position;
+			return insert(val);
 		}
 
 		void	erase(value_type const& val) {
@@ -211,13 +224,15 @@ class rb_tree {
 		}
 
 	// Set ops
-		// iterator	find(key_type const& key) {
+		iterator	find(key_type const& key) {
+			iterator found(_search_by_key(key));
+			return found;
+		}
 
-		// }
-
-		// const_iterator	find(key_type const& key) const {
-			
-		// }
+		const_iterator	find(key_type const& key) const {
+			const_iterator found(_search_by_key(key));
+			return found;
+		}
 
 		// size_type	count(key_type const& key) const {
 
@@ -273,6 +288,7 @@ class rb_tree {
 			return start;
 		}
 		
+		// used by _delete_node
 		base_ptr	_search_by_key(key_type const& key) {
 			base_ptr	tmp = _root;
 
@@ -341,7 +357,7 @@ class rb_tree {
 		}
 
 		// called by insert
-		void	_insert_at(base_ptr parent, value_type const& val) {
+		base_ptr	_insert_at(base_ptr parent, value_type const& val) {
 			base_ptr node = _create_node(val, parent);
 			base_ptr new_parent = _find_insert_pos(node);
 			
@@ -354,6 +370,7 @@ class rb_tree {
 			else
 				new_parent->right = node;
 			_insert_rebalance(node);
+			return node;
 		}
 
 		// helper called by rotate fns
@@ -577,6 +594,7 @@ class rb_tree {
 			return x;
 		}
 
+		// called by erase
 		void	_delete_node(value_type const& val) {
 			base_ptr node_to_delete = _search_by_key(val.first);
 			if (node_to_delete == _nil) // key not found
