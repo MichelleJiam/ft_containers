@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/17 15:56:42 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/17 21:42:37 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 18:09:22 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,22 +98,26 @@ class	rb_iterator : public ft::iterator<ft::bidirectional_iterator_tag, T>{
 			return &static_cast<node_ptr>(_node)->val;
 		}
 
+		// ++a
 		self&	operator++() {
 			_node = _rb_increment(_node);
 			return *this;
 		}
 
+		// a++
 		self	operator++(int) {
 			self	tmp = *this;
 			_node = _rb_increment(_node);
 			return tmp;
 		}
 
+		// --a
 		self&	operator--() {
 			_node = _rb_decrement(_node);
 			return *this;
 		}
 
+		// a++
 		self	operator--(int) {
 			self	tmp = *this;
 			_node = _rb_decrement(_node);
