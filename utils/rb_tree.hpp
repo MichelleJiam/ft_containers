@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/10 21:12:05 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/10 21:27:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,9 @@ class rb_tree {
 		}
 
 		~rb_tree() {
-			_erase_from(this->_root);
+			if (_size > 0)
+				clear();
+			_drop_node(_nil);
 		}
 
 	// DEBUGGING - REMOVE
@@ -222,7 +224,7 @@ class rb_tree {
 
 		// erase element at `position`
 		void	erase(iterator position) {
-			if (position == end())
+			if (position == end() || position.base() == NULL)
 				return ;
 			_delete_node(position.base());
 

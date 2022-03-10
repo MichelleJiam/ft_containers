@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/10 21:15:45 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/10 21:27:44 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -335,6 +335,6 @@ int main() {
 	// test_stack();
 	test_rb();
 	
-	// system("leaks ft_bin");
+	system("leaks ft_bin");
 	return 0;
 }
