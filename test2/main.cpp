@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 22:27:00 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/10 21:15:45 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include "../utils/rb_tree.hpp" // TODO: remove
 #include <map>
 typedef IMPL::pair<int,std::string>	t_ispair;
+typedef IMPL::pair<char,int>		t_cipair;
 typedef std::pair<int,std::string>	t_ispair2;
 
 namespace std {
@@ -26,17 +27,59 @@ namespace ft {
 } // TODO: remove
 
 template <typename Iterator>
-void	print_keyval_or_null(Iterator it, Iterator end, bool newline = true, bool printkey = true) {
+void	print_keyval_or_null(Iterator it, Iterator end, bool newline = true, int which = 1) {
 	if (it == end)
 		std::cout << "NULL";
 	else {
-		if (printkey)
+		if (which == 1)
 			std::cout << it->first;
 		else
 			std::cout << it->second;
 	}
 	if (newline)
 			std::cout << std::endl;
+}
+
+// template <typename It>
+// void	printMap_helper(It root, std::string indent, bool last, It nil = NULL) {
+// 	std::cout << indent;
+// 	if (last) {
+// 		std::cout << "R----";
+// 		indent += "   ";
+// 	}
+// 	else {
+// 		std::cout << "L----";
+// 		indent += "|  ";
+// 	}
+// 	// std::string sColour = root->colour ? "BLACK" : "RED";
+// 	if (root != nil) {
+// 		std::cout << "[" << print_keyval_or_null(root, nil, false) << ", "
+// 			<< print_keyval_or_null(root, nil, false, 2) << "] "; //<< "(" << sColour << ")";
+// 		print_tree_helper(root->_M_left, indent, false, nil);
+// 		print_tree_helper(root->_M_right, indent, true, nil);
+// 	}
+// 	else {
+// 		std::cout << "NIL" << " (" << sColour << ") ";
+// 		std::cout << " | LChild is ";
+// 		if (root->left == nil) std::cout << "NIL\n";
+// 		else std::cout << print_keyval_or_null((root.base())->_M_left, nil, false)
+// 				<< ", " << print_keyval_or_null((root.base())->_M_left, nil, true, 2);
+// 	}
+// }
+
+template <typename T>
+void    printMap(T& base_map, std::string const cntr_name,
+					std::string const test_case) {
+	if (!test_case.empty())
+		printTestCase(test_case);
+	if (!cntr_name.empty())
+		std::cout << "[ " << cntr_name << " ]\n";
+	std::cout << "size: " << base_map.size() << std::endl;
+	std::cout << "contents:\n";
+	// printMap_helper<std::map<int, std::string>::iterator>(base_map.begin(), "", true, base_map.end());
+	for (typename T::const_iterator it = base_map.begin(); it != base_map.end(); ++it)
+		std::cout << "\t" << it->first << " " << it->second << std::endl;
+	std::cout << std::endl;
 }
 
 void	test_rb() {
@@ -82,6 +125,7 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	std::cout << "Insert 40, 60, 55, 65, 75, 57\n";
 	std::cout << "Result:\n";
 	ft::rb_tree<int, t_ispair> RB3;
+	std::map<int, std::string>	map0;
 	RB3.insert(t_ispair(40, "one"));
 	RB3.insert(t_ispair(60, "two"));
 	RB3.insert(t_ispair(55, "three"));
@@ -89,10 +133,71 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	RB3.insert(t_ispair(75, "five"));
 	RB3.insert(t_ispair(57, "six"));
 	RB3.print_tree();
-	std::cout << "Delete 40\n";
+	map0.insert(std::pair<int,std::string>(40, "one"));
+	map0.insert(std::pair<int,std::string>(60, "two"));
+	map0.insert(std::pair<int,std::string>(55, "three"));
+	map0.insert(std::pair<int,std::string>(65, "four"));
+	map0.insert(std::pair<int,std::string>(75, "five"));
+	map0.insert(std::pair<int,std::string>(57, "six"));
+	printMap<std::map<int, std::string> >(map0, "STD map", "insert 40, 60, 55, 65, 75, 57");
+	std::cout << "Delete 40\n"; // delete with key
 	std::cout << "Result:\n";
-	RB3.erase(t_ispair(40, "one"));
+	RB3.erase(40);
 	RB3.print_tree();
+	map0.erase(40);
+	printMap<std::map<int, std::string> >(map0, "STD map", "delete 40");
+	std::cout << "Delete 75 with pos\n"; // delete with pos
+	std::cout << "Result:\n";
+	RB3.erase(RB3.find(75));
+	RB3.print_tree();
+	map0.erase(map0.find(75));
+	printMap<std::map<int, std::string> >(map0, "STD map", "delete 75 with pos");
+	std::cout << "Delete 57 to end\n"; // delete with range
+	std::cout << "Result:\n";
+	ft::rb_tree<int, t_ispair>::iterator it0 = RB3.find(57);
+	RB3.erase(it0, RB3.end());
+	RB3.print_tree();
+	map0.erase(map0.find(57), map0.end());
+	printMap<std::map<int, std::string> >(map0, "STD map", "delete 57 to end");
+
+	std::cout << "char/int map erase test\n";
+	ft::rb_tree<char, t_cipair> map2;
+	map2.insert(t_cipair('a', 10));
+	map2.insert(t_cipair('b', 20));
+	map2.insert(t_cipair('c', 30));
+	map2.insert(t_cipair('d', 40));
+	map2.insert(t_cipair('e', 50));
+	map2.insert(t_cipair('f', 60));
+	map2.print_tree();
+	ft::rb_tree<char, t_cipair>::iterator itmap2 = map2.find('b');
+	map2.erase (itmap2);	// erasing by iterator
+	map2.erase ('c');	// erasing by key
+	std::cout << "Erase b & c\n"; 
+	map2.print_tree();
+	std::cout << "Erase range a to end\n"; 
+	itmap2 = map2.find ('a');
+	map2.erase (itmap2, map2.end());
+	map2.print_tree();
+	std::map<char,int> mymap;
+	mymap['a']=10;
+	mymap['b']=20;
+	mymap['c']=30;
+	mymap['d']=40;
+	mymap['e']=50;
+	mymap['f']=60;
+	std::map<char,int>::iterator it = mymap.find('b');
+	mymap.erase (it);                   // erasing by iterator
+	mymap.erase ('c');                  // erasing by key
+	it=mymap.find ('a');
+	mymap.erase ( it, mymap.end() );    // erasing by range
+	printMap<std::map<char,int> >(mymap, "STD map", "erase range a to end");
+
+	std::cout << "=== Testing clear on RB ===\n\n";
+	std::cout << "Before clear:\n";
+	RB.print_tree();
+	RB.clear();
+	std::cout << "After clear:\n";
+	RB.print_tree();
 
 	std::cout << "=== Testing accessors on RB2 ===\n\n";
 	RB2.print_tree();

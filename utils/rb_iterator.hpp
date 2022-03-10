@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/17 15:56:42 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 18:09:22 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/10 21:17:48 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,18 +40,20 @@ class	rb_iterator : public ft::iterator<ft::bidirectional_iterator_tag, T>{
 		}
 
 		base_ptr	_rb_increment(base_ptr x) {
-			if (!_is_nil(x->right)) { // if x is not end node
+			if (_is_nil(x)) // if x is sentinel
+				x = x->parent; // sentinel's parent is root
+			else if (!_is_nil(x->right)) { // if x is not end node
 				x = x->right;
 				while (!_is_nil(x->left)) // move downwards
 					x = x->left;
-			}
+			}			
 			else { // if x is end node
-				base_ptr y = x->parent;
-				while (x == y->right) {
+				base_ptr	y = x->parent;
+				while (!_is_nil(y) && x == y->right) {
 					x = y;
 					y = y->parent;
 				}
-				if (x->right != y) // moving upwards
+				// if (x->right != y) // moving upwards
 					x = y;
 			}
 			return x;
@@ -98,26 +100,26 @@ class	rb_iterator : public ft::iterator<ft::bidirectional_iterator_tag, T>{
 			return &static_cast<node_ptr>(_node)->val;
 		}
 
-		// ++a
+		// ++it
 		self&	operator++() {
 			_node = _rb_increment(_node);
 			return *this;
 		}
 
-		// a++
+		// it++
 		self	operator++(int) {
 			self	tmp = *this;
 			_node = _rb_increment(_node);
 			return tmp;
 		}
 
-		// --a
+		// --it
 		self&	operator--() {
 			_node = _rb_decrement(_node);
 			return *this;
 		}
 
-		// a++
+		// it++
 		self	operator--(int) {
 			self	tmp = *this;
 			_node = _rb_decrement(_node);

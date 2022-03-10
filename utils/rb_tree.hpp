@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/08 22:28:24 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/10 21:12:05 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ class rb_tree {
 		}
 
 		~rb_tree() {
-			_erase(this->_root);
+			_erase_from(this->_root);
 		}
 
 	// DEBUGGING - REMOVE
@@ -198,7 +198,8 @@ class rb_tree {
 
 	// Modifiers
 		void	clear() {
-			_erase(this->_root);
+			// _erase_from(this->_root);
+			erase(begin(), end());
 		}
 
 		// single
@@ -219,8 +220,32 @@ class rb_tree {
 			return insert(val);
 		}
 
-		void	erase(value_type const& val) {
-			_delete_node(val);
+		// erase element at `position`
+		void	erase(iterator position) {
+			if (position == end())
+				return ;
+			_delete_node(position.base());
+
+		}
+
+		// erase element with given key
+		size_type	erase(key_type const& key) {
+			return _delete_node(_search_by_key(key));
+		}
+
+		// erase range
+		void	erase(iterator first, iterator last) {
+			// if (first == begin() && last == end())
+			// 	clear();
+			// else {
+				while (first != last){// && first != end() && first.base() != _nil) {
+					// std::cout << "\nerasing " << first->first << std::endl; // shows delete f twice
+					erase(first++);
+					// print_tree();
+					// std::cout << "first is now " << first->first << std::endl;
+					// std::cout << "bool check : " << std::boolalpha << (first.base() == _nil) << std::endl;
+				}
+			// }
 		}
 
 	// Set ops
@@ -256,7 +281,7 @@ class rb_tree {
 
 		pair<iterator, iterator>	equal_range(key_type const& key) {
 			iterator	lower = lower_bound(key);
-			iterator	upper = upper_bound(key);
+			iterator	upper = upper_bound(key);	// TODO: remove superfluous code to return?
 			return ft::make_pair<iterator, iterator>(lower, upper);
 		}
 		// TODO: check if const cast is working
@@ -336,24 +361,6 @@ class rb_tree {
 			return iterator(node);
 		}
 
-		// iterator	_equal_range(key_type const& key) {
-		// 	// base_ptr	tmp = _root;
-		// 	// base_ptr	node = _nil;
-
-		// 	// while (tmp != _nil) {
-		// 	// 	if (_key_compare(_get_key(tmp), key) == true)
-		// 	// 		tmp = tmp->right;
-		// 	// 	else if (_key_compare(key, _get_key(tmp)) == true) {
-		// 	// 		node = tmp;
-		// 	// 		tmp = tmp->left;
-		// 	// 	}
-		// 	// 	else {
-		// 	// 		base_ptr
-		// 	// 	}
-		// 	// }
-		// 	(void)key;
-		// }
-
 		// NODE MANAGEMENT
 		base_ptr	_create_nil() {
 			base_ptr tmp = _b_alloc.allocate(1);
@@ -380,10 +387,10 @@ class rb_tree {
 			_size -= 1;
 		}
 
-		// erase from `start` onwards without rebalancing
-		void	_erase(base_ptr start) {
-			while (start != _nil) {
-				_erase(start->right);
+		// called by clear. erases from `start` onwards without rebalancing
+		void	_erase_from(base_ptr start) { // TODO: fix? causes segfault
+			while (start != _nil && start != NULL) {
+				_erase_from(start->right);
 				base_ptr next = start->left;
 				_drop_node(start);
 				start = next;
@@ -646,10 +653,9 @@ class rb_tree {
 		}
 
 		// called by erase
-		void	_delete_node(value_type const& val) {
-			base_ptr node_to_delete = _search_by_key(val.first);
-			if (node_to_delete == _nil) // key not found
-				return ;
+		size_type	_delete_node(base_ptr node_to_delete) {
+			if (node_to_delete == _nil) // invalid key/pos given
+				return 0;
 
 			base_ptr	x = _nil;
 			rb_colour	saved_colour = node_to_delete->colour;
@@ -662,6 +668,7 @@ class rb_tree {
 			_drop_node(node_to_delete);
 			if (saved_colour == BLACK) // if y is BLACK, RB properties may have been violated
 				_delete_rebalance(x);
+			return 1;
 		}
 };
 } // namespace ft
