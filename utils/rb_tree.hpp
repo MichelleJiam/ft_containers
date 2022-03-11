@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/11 18:31:18 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/11 18:32:49 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -202,7 +202,7 @@ class rb_tree {
 		void	clear() {
 			_erase_from(_root);
 			_nullify_root();
-			// erase(begin(), end());
+			// erase(begin(), end()); // TODO: remove
 		}
 
 		// single
