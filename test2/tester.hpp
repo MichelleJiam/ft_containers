@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 21:20:50 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/10 20:42:41 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,10 @@
 
 #include <vector>
 #include "../containers/vector.hpp"
+#include <stack>
+#include "../containers/stack.hpp"
+#include <map>
+#include "../containers/map.hpp"
 #include "../utils/pair.hpp"
 
 # define RED "\e[0;31m"

@@ -1,0 +1,120 @@
+=== Testing insert on RB ===
+Insert 11, 2, 14, 1, 7, 15, 5, 8, 4
+Result:
+nil colour is: black
+size is: 0
+empty? true
+Tree size: 0
+R----NIL (BLACK)
+
+Tree size: 1
+R----[11, one] (BLACK) | Parent is NIL
+   L----NIL (BLACK)
+   R----NIL (BLACK)
+
+Tree size: 2
+R----[11, one] (BLACK) | Parent is NIL
+   L----[2, two] (RED) | Parent is [11, one]
+   |  L----NIL (BLACK)
+   |  R----NIL (BLACK)
+   R----NIL (BLACK)
+
+Tree size: 3
+R----[11, one] (BLACK) | Parent is NIL
+   L----[2, two] (RED) | Parent is [11, one]
+   |  L----NIL (BLACK)
+   |  R----NIL (BLACK)
+   R----[14, three] (RED) | Parent is [11, one]
+      L----NIL (BLACK)
+      R----NIL (BLACK)
+
+Tree size: 9
+R----[7, five] (BLACK) | Parent is NIL
+   L----[2, two] (RED) | Parent is [7, five]
+   |  L----[1, four] (BLACK) | Parent is [2, two]
+   |  |  L----NIL (BLACK)
+   |  |  R----NIL (BLACK)
+   |  R----[5, seven] (BLACK) | Parent is [2, two]
+   |     L----[4, nine] (RED) | Parent is [5, seven]
+   |     |  L----NIL (BLACK)
+   |     |  R----NIL (BLACK)
+   |     R----NIL (BLACK)
+   R----[11, one] (RED) | Parent is [7, five]
+      L----[8, eight] (BLACK) | Parent is [11, one]
+      |  L----NIL (BLACK)
+      |  R----NIL (BLACK)
+      R----[14, three] (BLACK) | Parent is [11, one]
+         L----NIL (BLACK)
+         R----[15, six] (RED) | Parent is [14, three]
+            L----NIL (BLACK)
+            R----NIL (BLACK)
+
+=== Testing insert on RB2 ===
+Insert 3, 21, 32, 15
+Result:
+Tree size: 1
+R----[3, one] (BLACK) | Parent is NIL
+   L----NIL (BLACK)
+   R----NIL (BLACK)
+
+Tree size: 2
+R----[3, one] (BLACK) | Parent is NIL
+   L----NIL (BLACK)
+   R----[21, two] (RED) | Parent is [3, one]
+      L----NIL (BLACK)
+      R----NIL (BLACK)
+
+Tree size: 3
+R----[21, two] (BLACK) | Parent is NIL
+   L----[3, one] (RED) | Parent is [21, two]
+   |  L----NIL (BLACK)
+   |  R----NIL (BLACK)
+   R----[32, three] (RED) | Parent is [21, two]
+      L----NIL (BLACK)
+      R----NIL (BLACK)
+
+Tree size: 4
+R----[21, two] (BLACK) | Parent is NIL
+   L----[3, one] (BLACK) | Parent is [21, two]
+   |  L----NIL (BLACK)
+   |  R----[15, four] (RED) | Parent is [3, one]
+   |     L----NIL (BLACK)
+   |     R----NIL (BLACK)
+   R----[32, three] (BLACK) | Parent is [21, two]
+      L----NIL (BLACK)
+      R----NIL (BLACK)
+
+=== Testing erase on RB3 ===
+Insert 40, 60, 55, 65, 75, 57
+Result:
+Tree size: 6
+R----[55, three] (BLACK) | Parent is NIL
+   L----[40, one] (BLACK) | Parent is [55, three]
+   |  L----NIL (BLACK)
+   |  R----NIL (BLACK)
+   R----[65, four] (RED) | Parent is [55, three]
+      L----[60, two] (BLACK) | Parent is [65, four]
+      |  L----[57, six] (RED) | Parent is [60, two]
+      |  |  L----NIL (BLACK)
+      |  |  R----NIL (BLACK)
+      |  R----NIL (BLACK)
+      R----[75, five] (BLACK) | Parent is [65, four]
+         L----NIL (BLACK)
+         R----NIL (BLACK)
+
+Delete 40
+Result:
+Tree size: 5
+R----[65, four] (BLACK) | Parent is NIL
+   L----[57, six] (RED) | Parent is [65, four]
+   |  L----[55, three] (BLACK) | Parent is [57, six]
+   |  |  L----NIL (BLACK)
+   |  |  R----NIL (BLACK)
+   |  R----[60, two] (BLACK) | Parent is [57, six]
+   |     L----NIL (BLACK)
+   |     R----NIL (BLACK)
+   R----[75, five] (BLACK) | Parent is [65, four]
+      L----NIL (BLACK)
+      R----NIL (BLACK)
+
+begin returns key: 3

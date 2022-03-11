@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/26 21:11:29 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/01 21:51:53 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/25 18:47:47 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +64,7 @@ class reverse_iterator
 		}
 		// returns a pointer to the value at _current (if dereferenceable).
 		pointer		operator->(void) const {
-			Iterator	tmp = _current;
-			--tmp;
-			return tmp;
+			return &(operator*());
 		}
 		// returns value at _current + `n`
 		reference	operator[](difference_type n) const {
@@ -116,8 +114,62 @@ class reverse_iterator
 		}
 
 	protected:
-		Iterator								_current;
+		Iterator	_current;
 };
+
+// NON-MEMBER FUNCTIONS
+// boolean comparison operators
+template <class T>
+bool	operator==(reverse_iterator<T> const& lhs,
+					reverse_iterator<T> const& rhs) {
+	return lhs.base() == rhs.base();
+}
+
+template <class T>
+bool	operator!=(reverse_iterator<T> const& lhs,
+					reverse_iterator<T> const& rhs) {
+	return lhs.base() != rhs.base();
+}
+
+template <class T>
+bool	operator<(reverse_iterator<T> const& lhs,
+					reverse_iterator<T> const& rhs) {
+	return lhs.base() < rhs.base();
+}
+
+template <class T>
+bool	operator>(reverse_iterator<T> const& lhs,
+					reverse_iterator<T> const& rhs) {
+	return lhs.base() > rhs.base();
+}
+
+template <class T>
+bool	operator<=(reverse_iterator<T> const& lhs,
+					reverse_iterator<T> const& rhs) {
+	return lhs.base() <= rhs.base();
+}
+
+template <class T>
+bool	operator>=(reverse_iterator<T> const& lhs,
+					reverse_iterator<T> const& rhs) {
+	return lhs.base() >= rhs.base();
+}
+
+// returns distance in address between 2 iterators.
+template <class T>
+typename reverse_iterator<T>::difference_type operator-(
+		reverse_iterator<T> const& lhs,
+		reverse_iterator<T> const& rhs) {
+	return rhs.base() - lhs.base();
+}
+
+template <class T>
+typename reverse_iterator<T>::difference_type operator+(
+		typename reverse_iterator<T>::difference_type n,
+		reverse_iterator<T> const& x) {
+	return reverse_iterator<T>(x.base() - n);
+}
+
 } // namespace ft
 
 #endif

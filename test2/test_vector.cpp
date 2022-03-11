@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 20:47:00 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/25 18:43:41 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,19 @@ void	test_vec_relationalOps(T& vector) {
 template <typename T>
 void	test_vec_iterators(T& vector) {
 	std::cout << "begin: " << *vector.begin() << std::endl;
+	std::cout << "begin + 1: " << *(vector.begin() + 1) << std::endl;
 	std::cout << "end - 1: " << *(vector.end() - 1) << std::endl;
 	std::cout << "rbegin: " << *vector.rbegin() << std::endl;
+	std::cout << "rbegin + 1: " << *(vector.rbegin() + 1) << std::endl;
 	std::cout << "rend - 1: " << *(vector.rend() - 1) << std::endl;
+	std::cout << "iterating from begin to end: ";
+	for (t_ivec::iterator it = vector.begin(); it != vector.end(); ++it)
+		std::cout << *it << " ";
+	std::cout << std::endl;
+	std::cout << "iterating backwards from rbegin to rend: ";
+	for (t_ivec::reverse_iterator rit = vector.rbegin(); rit != vector.rend(); ++rit)
+		std::cout << *rit << " ";
+	std::cout << std::endl;
 }
 
 template <typename T>

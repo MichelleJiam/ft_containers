@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 15:59:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/12 16:46:49 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/02/15 22:29:40 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ struct pair {
 // Convenience wrapper for creating a pair from two objects.
 // Returns newly-constructed pair<> object containing given values.
 template <class T1, class T2>
-typename ft::pair<T1,T2> make_pair(T1 x, T2 y) {
-	return ft::pair<T1,T2>(x, y);
+pair<T1,T2> make_pair(T1 x, T2 y) {
+	return pair<T1,T2>(x, y);
 }
 
 // Comparison operators

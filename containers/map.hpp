@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/09 16:27:08 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/09 18:33:20 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/08 22:28:53 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ class map {
 		typedef rb_tree<key_type, value_type, key_compare, allocator_type>
 					_tree_type;
 
+		_tree_type	_tree;
+
 	public:
 		typedef typename Allocator::reference			reference;
 		typedef typename Allocator::const_reference		const_reference;
@@ -47,7 +49,41 @@ class map {
 		typedef ft::reverse_iterator<iterator>			reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
+		iterator	find(key_type const& key) {
+			return _tree.find(key);
+		}
 
+		const_iterator	find(key_type const& key) const {
+			return _tree.find(key);
+		}
+
+		size_type	count(key_type const& key) const {
+			return _tree.count(key);
+		}
+
+		iterator	lower_bound(key_type const& key) {
+			return _tree.lower_bound(key);
+		}
+
+		const_iterator	lower_bound(key_type const& key) const {
+			return _tree.lower_bound(key);
+		}
+
+		iterator	upper_bound(key_type const& key) {
+			return _tree.upper_bound(key);
+		}
+
+		const_iterator	upper_bound(key_type const& key) const {
+			return _tree.upper_bound(key);
+		}
+
+		pair<iterator, iterator>	equal_range(key_type const& key) {
+			return _tree.equal_range(key);
+		}
+
+		pair<const_iterator, const_iterator>	equal_range(key_type const& key) const {
+			return _tree.equal_range(key);
+		}
 };
 } // namespace ft
 
