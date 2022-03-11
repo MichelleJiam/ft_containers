@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/10 21:27:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/11 18:31:18 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,8 +200,9 @@ class rb_tree {
 
 	// Modifiers
 		void	clear() {
-			// _erase_from(this->_root);
-			erase(begin(), end());
+			_erase_from(_root);
+			_nullify_root();
+			// erase(begin(), end());
 		}
 
 		// single
@@ -237,17 +238,12 @@ class rb_tree {
 
 		// erase range
 		void	erase(iterator first, iterator last) {
-			// if (first == begin() && last == end())
-			// 	clear();
-			// else {
-				while (first != last){// && first != end() && first.base() != _nil) {
-					// std::cout << "\nerasing " << first->first << std::endl; // shows delete f twice
+			if (first == begin() && last == end())
+				clear();
+			else {
+				while (first != last)
 					erase(first++);
-					// print_tree();
-					// std::cout << "first is now " << first->first << std::endl;
-					// std::cout << "bool check : " << std::boolalpha << (first.base() == _nil) << std::endl;
-				}
-			// }
+			}
 		}
 
 	// Set ops
@@ -389,8 +385,14 @@ class rb_tree {
 			_size -= 1;
 		}
 
+		// called by clear to reset _root and its parent to _nil for empty tree
+		void	_nullify_root() {
+			_root = _nil;
+			_root->parent = _nil;
+		}
+
 		// called by clear. erases from `start` onwards without rebalancing
-		void	_erase_from(base_ptr start) { // TODO: fix? causes segfault
+		void	_erase_from(base_ptr start) {
 			while (start != _nil && start != NULL) {
 				_erase_from(start->right);
 				base_ptr next = start->left;
