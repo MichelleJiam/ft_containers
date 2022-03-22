@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/10 21:27:44 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/22 22:48:39 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 typedef IMPL::pair<int,std::string>	t_ispair;
 typedef IMPL::pair<char,int>		t_cipair;
 typedef std::pair<int,std::string>	t_ispair2;
+typedef	ft::map<int, std::string>	t_ismap;
 
 namespace std {
 	inline std::string get_name() { return "std"; }
@@ -324,6 +325,17 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	std::cout << "FT output:\t" << "lower: ";
 		print_keyval_or_null(RB2.equal_range(210).first, RB2.end(), false);
 		std::cout << " upper: "; print_keyval_or_null(RB2.equal_range(210).second, RB2.end());
+
+	std::cout << "\n=== Testing ft::map ===\n\n";
+	t_ismap	ft_map0;
+	std::cout << "is ft::map empty: " << ft_map0.empty() << std::endl;
+	ft::pair<t_ismap::iterator, bool> insert_ret2 = ft_map0.insert(ft::pair<int,std::string>(21, "two"));
+	std::cout << "new element inserted: " << insert_ret2.second << " | element: " << insert_ret2.first->first << std::endl;
+	std::cout << "new size: " << ft_map0.size() << std::endl;
+	std::cout << std::endl;
+
+	// TODO:
+	// - test map/tree op= for correct copying (of different types?) + memory leaks (from sentinel)
 }
 
 int main() {

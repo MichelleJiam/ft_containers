@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/02 14:30:57 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 20:57:56 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/22 21:58:25 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,57 +26,57 @@ class stack {
 		typedef typename Container::const_reference	const_reference;
 	
 	// CONSTRUCTORS & ASSIGNMENT OPERATORS
-	// default & copy constructor
-	// Copy-constructs with contents of `cont`, if given,
-	// otherwise constructs an empty container.
-	explicit stack(Container const& cont = Container())
-		: c(cont) {}
-	
-	// copy constructor taking another stack object
-	// Copy-constructs with contents of other.c.
-	stack(stack const& other) : c(other.c) {}
+		// default & copy constructor
+		// Copy-constructs with contents of `cont`, if given,
+		// otherwise constructs an empty container.
+		explicit stack(Container const& cont = Container())
+			: c(cont) {}
+		
+		// copy constructor taking another stack object
+		// Copy-constructs with contents of other.c.
+		stack(stack const& other) : c(other.c) {}
 
-	// assignment operator
-	stack& operator=(stack const& other) {
-		if (this != &other)
-			c = other.c;
-		return *this;
-	}
+		// assignment operator
+		stack& operator=(stack const& other) {
+			if (this != &other)
+				c = other.c;
+			return *this;
+		}
 	
 	// DESTRUCTOR
-	~stack(void) {}
+		~stack() {}
 
 	// ELEMENT ACCESS FUNCTIONS
-	// Returns top most element in container.
-	reference		top(void) {
-		return c.back();
-	}
+		// Returns top most element in container.
+		reference		top(void) {
+			return c.back();
+		}
 
-	const_reference	top(void) const {
-		return c.back();
-	}
+		const_reference	top(void) const {
+			return c.back();
+		}
 
 	// CAPACITY FUNCTIONS
-	// Checks if container has no elements.
-	bool	empty(void) const {
-		return c.empty();
-	}
+		// Checks if container has no elements.
+		bool	empty(void) const {
+			return c.empty();
+		}
 
-	// Returns number of elements in container.
-	size_type	size(void) const {
-		return c.size();
-	}
+		// Returns number of elements in container.
+		size_type	size(void) const {
+			return c.size();
+		}
 
 	// MODIFIERS
-	// Adds given element to top of the stack.
-	void	push(value_type const& value) {
-		c.push_back(value);
-	}
+		// Adds given element to top of the stack.
+		void	push(value_type const& value) {
+			c.push_back(value);
+		}
 
-	// Removes top element.
-	void	pop(void) {
-		c.pop_back();
-	}
+		// Removes top element.
+		void	pop(void) {
+			c.pop_back();
+		}
 
 	protected:
 		Container			c;

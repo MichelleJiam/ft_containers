@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 20:58:22 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/22 21:52:05 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,20 +42,24 @@ class vector {
 		// CONSTRUCTORS & ASSIGNMENT OPERATORS
 		// default: empty container
 		explicit vector(Allocator const& alloc = Allocator());
+		
 		// fill: container with `count` elements, each a copy of `value`
 		explicit vector(size_type count, T const& value = T(),
 						Allocator const& alloc = Allocator());
+		
 		// range: container with first-last elements
 		template <class InputIterator>
 		vector(InputIterator first, InputIterator last,
 				Allocator const& alloc = Allocator());
+		
 		// copy: container with copies of each element in `other`
 		vector(vector const& other);
+		
 		// assignment operator
 		vector&	operator=(vector const& other);
 
 		// DESTRUCTOR
-		~vector(void);
+		~vector();
 
 		// ITERATORS
 		iterator				begin(void);

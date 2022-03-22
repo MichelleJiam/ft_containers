@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/11 18:32:49 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/22 22:17:56 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,16 @@ class rb_tree {
 
 		rb_tree&	operator=(rb_tree const& other) {
 			if (this != &other) {
-				_root = other._root;
-				if (_root != _nil) {
-					_root->parent = _nil;
-					
+				if (!empty())
+					clear();
+				_key_compare = other._key_compare;
+				if (other._root != _nil) {
+					_root = other._root;
+					// need to reassign allocators too?
+					insert(other.begin(), other.end());
 				}			
 			}
+			return *this;
 		}
 
 		~rb_tree() {
@@ -149,6 +153,11 @@ class rb_tree {
 			std::cout << std::endl;
 		}
 
+	// Allocator
+		allocator_type	get_allocator() const {
+			return _alloc;
+		}
+	
 	// Accessors
 		Compare key_comp() const {
 			return _key_compare;
@@ -221,6 +230,15 @@ class rb_tree {
 		iterator	insert(iterator position, value_type const& val) {
 			(void)position;
 			return insert(val);
+		}
+
+		// range
+		template <class InputIterator>
+		void	insert(InputIterator first, InputIterator last) {
+			while (first != last) {
+				insert(*first);
+				++first;
+			}
 		}
 
 		// erase element at `position`
