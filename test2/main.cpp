@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 14:29:57 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 19:57:05 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -332,10 +332,16 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	ft::pair<t_ismap::iterator, bool> insert_ret2 = ft_map0.insert(t_ispair(21, "two"));
 	std::cout << "new element inserted: " << insert_ret2.second << " | value: " << insert_ret2.first->first << std::endl;
 	std::cout << "size: " << ft_map0.size() << std::endl;
+
 	insert_ret2 = ft_map0.insert(t_ispair(21, "three"));
 	std::cout << "new element inserted: " << insert_ret2.second << " | value: " << insert_ret2.first->first << std::endl;
 	std::cout << "size: " << ft_map0.size() << std::endl;
+
+	std::cout << "ft_map0['21'] is " << ft_map0[21] << std::endl;
+	std::cout << "ft_map0['42'] is " << ft_map0[42] << std::endl;
+	std::cout << "size: " << ft_map0.size() << std::endl;
 	std::cout << std::endl;
+
 
 	// TODO:
 	// - test map/tree op= for correct copying (of different types?) + memory leaks (from sentinel)

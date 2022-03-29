@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/09 16:27:08 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/22 22:47:02 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 19:55:31 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,23 +93,83 @@ class map {
 		~map()  {}
 
 	// ITERATORS
+		// Returns a read/write iterator pointing to first pair in the map.
+		// Iteration is done in ascending order according to the keys.
+		iterator	begin() {
+			return _tree.begin();
+		}
+
+		// Returns a read-only iterator pointing to first pair in the map.
+		// Iteration is done in ascending order according to the keys.
+		const_iterator	begin() const {
+			return _tree.begin();
+		}
+
+		// Returns a read/write iterator pointing to one past the last pair
+		// in the map. Iteration is done in ascending order according to the keys.
+		iterator	end() {
+			return _tree.end();
+		}
+
+		// Returns a read-only iterator pointing to one past the last pair
+		// in the map. Iteration is done in ascending order according to the keys.
+		const_iterator	end() const {
+			return _tree.cend();
+		}
+
+		// Returns a read/write reverse iterator pointing to the last pair
+		// in the map. Iteration is done in descending order according to the keys.
+		reverse_iterator	rbegin() {
+			return _tree.rbegin();
+		}
+
+		// Returns a read-only reverse iterator pointing to the last pair
+		// in the map. Iteration is done in descending order according to the keys.
+		const_reverse_iterator	rbegin() const {
+			return _tree.rbegin();
+		}
+
+		// Returns a read/write reverse iterator pointing to one before the
+		// first pair in the map. Iteration is done in descending order
+		// according to the keys.
+		reverse_iterator	rend() {
+			return _tree.rend();
+		}
+
+		// Returns a read-only reverse iterator pointing to one before the
+		// first pair in the map. Iteration is done in descending order
+		// according to the keys.
+		const_reverse_iterator	rend() const {
+			return _tree.rend();
+		}
 
 		
 	// CAPACITY FUNCTIONS
+		// Returns true if the map is empty.
 		bool	empty() const {
 			return _tree.empty();
 		}
 
+		// Returns size of map.
 		size_type	size() const {
 			return _tree.size();
 		}
 
+		// Returns maximum size of map.
 		size_type	max_size() const {
 			return _tree.max_size();
 		}
 
 	// ELEMENT ACCESS FUNCTIONS
-
+		// Allows subscript access to map data.
+		// Returns a reference to value associated with key `k` or
+		// default value of a newly-created key if `k` doesn't yet exist.
+		mapped_type&	operator[](key_type const& key) {
+			iterator	it = lower_bound(key);
+			if (it == end() || key_comp()(key, (*it).first) == true)
+				it = insert(it, value_type(key, mapped_type()));
+			return (*it).second;
+		}
 
 	// MODIFIERS
 		// single
@@ -131,9 +191,21 @@ class map {
 		}
 
 	// OBSERVERS
-		
+		// Returns key comparison object out of which map was constructed.
+		key_compare	key_comp() const {
+			return _tree.key_comp();
+		}
+
+		// Returns value comparison object built from key comparison object.
+		// Can be used to compare 2 elements to see if the first key goes
+		// before the second.
+		value_compare	value_comp() const {
+			return value_compare(_tree.key_comp());
+		}
 
 	// OPERATIONS
+		// Tries to locate an element in map.
+		// Returns iterator to found element or end() if not found.
 		iterator	find(key_type const& key) {
 			return _tree.find(key);
 		}
@@ -142,10 +214,16 @@ class map {
 			return _tree.find(key);
 		}
 
+		// Returns number of elements with given key.
+		// Only makes sense for multimaps as maps do not allow duplicate
+		// keys and will always return either 0 (absent) or 1 (present).
 		size_type	count(key_type const& key) const {
 			return _tree.count(key);
 		}
 
+		// Returns iterator to first element of a subsequence matching `key`.
+		// If none, returns first element with a greater value than `key`,
+		// or end() if no such element exists.
 		iterator	lower_bound(key_type const& key) {
 			return _tree.lower_bound(key);
 		}
@@ -154,6 +232,8 @@ class map {
 			return _tree.lower_bound(key);
 		}
 
+		// Returns iterator to first element greater than `key`,
+		// or end() if no such element exists.
 		iterator	upper_bound(key_type const& key) {
 			return _tree.upper_bound(key);
 		}
@@ -162,6 +242,12 @@ class map {
 			return _tree.upper_bound(key);
 		}
 
+		// Returns a pair of iterators pointing to subsequence matching
+		// given key.
+		// Doesn't make much sense for map as unique keys => range of 1 element.
+		// If no matches are found, returns 2 iterators pointing to the
+		// first element whose key goes after `key` according to internal
+		// comparison object (key_comp).
 		pair<iterator, iterator>	equal_range(key_type const& key) {
 			return _tree.equal_range(key);
 		}
