@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/10 16:55:50 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 20:32:57 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ typedef IMPL::pair<int,std::string>	t_ispair; // TODO: fix, won't compile unless
 typedef IMPL::map<int, std::string>	t_ismap;
 typedef IMPL::map<char, int>		t_cimap;
 
-void	test_map_erase(void) {
+void	test_map_erase() {
 	printTest("erase");
 
 	t_ismap	map;
@@ -48,6 +48,10 @@ void	test_map_erase(void) {
 	it = map2.find ('e');
 	map2.erase (it, map2.end());
 	// map2.print_tree();
+}
+
+void	test_map_constructors() {
+	
 }
 
 void test_map() {

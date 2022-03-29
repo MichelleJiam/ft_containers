@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/10 20:42:41 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 21:00:12 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,14 +74,24 @@ void    printVector(T& base_vec, std::string const ctnr_name = std::string(),
 						std::string const test_case = std::string());
 bool	mycomp(char const c1, char const c2);
 
+// used to print the contents of a container, e.g. after tests.
+template <typename T>
+void	printAtEnd(void (*printFunction)(T& container,
+										std::string const cntr_name,
+										std::string const test_case),
+					T& container, std::string const cntr_name,
+					std::string const test_case = std::string()) {
+	std::cout << "\nCurrent state of container: " << std::endl;
+	printFunction(container, cntr_name, test_case);
+}
+
 // times a single execution of a function on the container
 // that's been passed as reference.
 // Prints the test name; optionally prints container contents
 // (toggled by boolean `print_at_end` param) and container name.
 template <typename T>
-void	benchmarkFunction(void (*testFunction)(T& vector), T& container,
-						std::string const test_name, bool print_at_end,
-						std::string const ctnr_name = std::string()) {
+void	benchmarkFunction(void (*testFunction)(T& container), T& container,
+							std::string const test_name) {
 	printTest(test_name);
 	
 	clock_t start = clock();
@@ -92,21 +102,15 @@ void	benchmarkFunction(void (*testFunction)(T& vector), T& container,
 		<< ((end - start) / (double)CLOCKS_PER_SEC) * 1000 << " milliseconds."
 		<< std::endl;
 	std::cout.unsetf(std::ios::fixed);	// restores cout to general format
-	if (print_at_end) {
-		std::cout << std::endl;
-		printVector(container, ctnr_name);
-	}
 }
 
 // runs single-run benchmarking on referenced container, then runs function
 // 1000 times on a temporary copy of the container to show cumulative performance
 // without affecting the container passed.
 template <typename T>
-void	benchmarkFunction_multirun(void (*testFunction)(T& vector), T& container,
-						std::string const test_name, bool print_at_end,
-						std::string const ctnr_name = std::string()) {
-	benchmarkFunction(testFunction, container, test_name,
-						print_at_end, ctnr_name);
+void	benchmarkFunction_multirun(void (*testFunction)(T& container), T& container,
+									std::string const test_name) {
+	benchmarkFunction(testFunction, container, test_name);
 	
 	// saving cout buffer for restoring later
 	std::streambuf	*orig_buf = std::cout.rdbuf();

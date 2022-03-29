@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/25 18:43:41 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 20:59:31 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -210,58 +210,59 @@ void test_vector() {
 	t_ivec		base_vec;
 	
 	// push_back test
-	benchmarkFunction_multirun(test_vec_pushback<t_ivec>, base_vec,
-								"push_back", true, "vector");
-	// // benchmarkFunction(base_vec.push_back)
+	benchmarkFunction_multirun(test_vec_pushback<t_ivec>, base_vec, "push_back");
+	printAtEnd(printVector<t_ivec>, base_vec, "vector");
 
 	// empty test
-	benchmarkFunction_multirun(test_vec_empty<t_ivec>, base_vec, "empty",
-								true, "vector");
+	benchmarkFunction_multirun(test_vec_empty<t_ivec>, base_vec, "empty");
+	printAtEnd(printVector<t_ivec>, base_vec, "vector");
 	
 	// pop_back test
-	benchmarkFunction_multirun(test_vec_popback<t_ivec>, base_vec, "pop_back",
-								true, "vector");
+	benchmarkFunction_multirun(test_vec_popback<t_ivec>, base_vec, "pop_back");
+	printAtEnd(printVector<t_ivec>, base_vec, "vector");
 
 	// fill constructor test
 	benchmarkFunction_multirun(test_vec_constructors<t_ivec>, base_vec,
-								"fill/range/copy constructors", false);
+								"fill/range/copy constructors");
 
 	// clear test
 	t_ivec	copy_vec(base_vec);
-	benchmarkFunction_multirun(test_vec_clear<t_ivec>, copy_vec, "clear",
-								true, "vector");
+	benchmarkFunction_multirun(test_vec_clear<t_ivec>, copy_vec, "clear");
+	printAtEnd(printVector<t_ivec>, copy_vec, "vector");
 	
 	// reserve test
-	benchmarkFunction_multirun(test_vec_reserve<t_ivec>, base_vec, "reserve",
-								true, "vector");
+	benchmarkFunction_multirun(test_vec_reserve<t_ivec>, base_vec, "reserve");
+	printAtEnd(printVector<t_ivec>, base_vec, "vector");
 	
 	// insert test
-	benchmarkFunction_multirun(test_vec_insert<t_ivec>, base_vec, "insert", false);
+	benchmarkFunction_multirun(test_vec_insert<t_ivec>, base_vec, "insert");
 
 	// resize test
-	benchmarkFunction_multirun(test_vec_resize<t_ivec>, copy_vec, "resize",
-								true, "vector");
+	benchmarkFunction_multirun(test_vec_resize<t_ivec>, copy_vec, "resize");
+	printAtEnd(printVector<t_ivec>, copy_vec, "vector");
 
 	// erase test
-	benchmarkFunction_multirun(test_vec_erase<t_ivec>, base_vec, "erase",
-								true, "vector");
+	benchmarkFunction_multirun(test_vec_erase<t_ivec>, base_vec, "erase");
+	printAtEnd(printVector<t_ivec>, base_vec, "vector");
 
 	// assign test
-	benchmarkFunction_multirun(test_vec_assign<t_ivec>, copy_vec, "assign", false);
+	benchmarkFunction_multirun(test_vec_assign<t_ivec>, copy_vec, "assign");
 
 	// swap test
-	benchmarkFunction_multirun(test_vec_swap<t_ivec>, copy_vec, "swap",
-								true, "vector 1 AFTER swap");
+	benchmarkFunction_multirun(test_vec_swap<t_ivec>, copy_vec, "swap");
+	printAtEnd(printVector<t_ivec>, copy_vec, "vector 1 AFTER swap");
 
 	// element access functions
 	benchmarkFunction_multirun(test_vec_elementAccess<t_ivec>, base_vec, 
-								"element access", true, "vector");
+								"element access");
+	printAtEnd(printVector<t_ivec>, base_vec, "vector");
 
 	// relational operators
 	benchmarkFunction_multirun(test_vec_relationalOps<t_ivec>, base_vec,
-								"relational operators", false);
+								"relational operators");
 
 	// iterators
 	benchmarkFunction_multirun(test_vec_iterators<t_ivec>, base_vec,
-								"iterators", true, "vector");
+								"iterators");
+	printAtEnd(printVector<t_ivec>, base_vec, "vector");
 }
