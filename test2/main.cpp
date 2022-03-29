@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/22 22:48:39 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 14:29:57 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #include "../utils/rb_tree.hpp" // TODO: remove
 #include <map>
-typedef IMPL::pair<int,std::string>	t_ispair;
+typedef ft::pair<int,std::string>	t_ispair;
 typedef IMPL::pair<char,int>		t_cipair;
 typedef std::pair<int,std::string>	t_ispair2;
 typedef	ft::map<int, std::string>	t_ismap;
@@ -329,9 +329,12 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	std::cout << "\n=== Testing ft::map ===\n\n";
 	t_ismap	ft_map0;
 	std::cout << "is ft::map empty: " << ft_map0.empty() << std::endl;
-	ft::pair<t_ismap::iterator, bool> insert_ret2 = ft_map0.insert(ft::pair<int,std::string>(21, "two"));
-	std::cout << "new element inserted: " << insert_ret2.second << " | element: " << insert_ret2.first->first << std::endl;
-	std::cout << "new size: " << ft_map0.size() << std::endl;
+	ft::pair<t_ismap::iterator, bool> insert_ret2 = ft_map0.insert(t_ispair(21, "two"));
+	std::cout << "new element inserted: " << insert_ret2.second << " | value: " << insert_ret2.first->first << std::endl;
+	std::cout << "size: " << ft_map0.size() << std::endl;
+	insert_ret2 = ft_map0.insert(t_ispair(21, "three"));
+	std::cout << "new element inserted: " << insert_ret2.second << " | value: " << insert_ret2.first->first << std::endl;
+	std::cout << "size: " << ft_map0.size() << std::endl;
 	std::cout << std::endl;
 
 	// TODO:
