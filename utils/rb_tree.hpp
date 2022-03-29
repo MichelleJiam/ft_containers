@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/22 22:17:56 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 20:14:29 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define RB_TREE_HPP
 
 #include <cstddef> // ptrdiff_t, size_t
+#include <utility> // swap
 #include "rb_node.hpp"
 #include "rb_iterator.hpp"
 
@@ -262,6 +263,14 @@ class rb_tree {
 				while (first != last)
 					erase(first++);
 			}
+		}
+
+		void	swap(rb_tree& other) {
+			std::swap(_root, other._root);
+			std::swap(_nil, other._nil);
+			std::swap(_size, other._size);
+			std::swap(_key_compare, other._key_compare);
+			std::swap(_n_alloc, other._n_alloc);
 		}
 
 	// Set ops

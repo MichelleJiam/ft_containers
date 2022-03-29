@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/09 16:27:08 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 19:55:31 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 20:15:17 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,6 +188,33 @@ class map {
 		template <class InputIterator>
 		void	insert(InputIterator first, InputIterator last) {
 			_tree.insert(first, last);
+		}
+
+		// Erases an element pointed to by given iterator.
+		// If element itself is a pointer, pointed-to data is not touched.
+		void	erase(iterator position) {
+			_tree.erase(position);
+		}
+
+		// Erases all elements with given key. Returns number of elements erased.
+		size_type	erase(key_type const& key) {
+			return _tree.erase(key);
+		}
+
+		// Erases elements between first and last.
+		void	erase(iterator first, iterator last) {
+			_tree.erase(first, last);
+		}
+
+		// Swaps elements between two maps.
+		// Whether allocators are swapped depends on the allocator traits.
+		void	swap(map& other) {
+			_tree.swap(other._tree);
+		}
+
+		// Erases all elements in a map.
+		void	clear() {
+			_tree.clear();
 		}
 
 	// OBSERVERS

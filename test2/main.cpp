@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 19:57:05 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 20:22:32 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -329,19 +329,33 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	std::cout << "\n=== Testing ft::map ===\n\n";
 	t_ismap	ft_map0;
 	std::cout << "is ft::map empty: " << ft_map0.empty() << std::endl;
-	ft::pair<t_ismap::iterator, bool> insert_ret2 = ft_map0.insert(t_ispair(21, "two"));
-	std::cout << "new element inserted: " << insert_ret2.second << " | value: " << insert_ret2.first->first << std::endl;
+	ft::pair<t_ismap::iterator, bool> insert_ret2 = ft_map0.insert(t_ispair(21, "twenty-one"));
+	std::cout << "new element inserted: " << insert_ret2.second << " | value: "
+		<< insert_ret2.first->first << std::endl;
 	std::cout << "size: " << ft_map0.size() << std::endl;
 
 	insert_ret2 = ft_map0.insert(t_ispair(21, "three"));
-	std::cout << "new element inserted: " << insert_ret2.second << " | value: " << insert_ret2.first->first << std::endl;
+	std::cout << "new element inserted: " << insert_ret2.second << " | value: "
+		<< insert_ret2.first->first << std::endl;
 	std::cout << "size: " << ft_map0.size() << std::endl;
 
 	std::cout << "ft_map0['21'] is " << ft_map0[21] << std::endl;
 	std::cout << "ft_map0['42'] is " << ft_map0[42] << std::endl;
 	std::cout << "size: " << ft_map0.size() << std::endl;
-	std::cout << std::endl;
+	ft_map0[42] = "forty-two";
 
+	t_ismap	ft_map1;
+	ft_map1[13] = "thirteen";
+	std::cout << "before swap:\nmap0 size: " << ft_map0.size() << " | map1 size: " << ft_map1.size()
+		<< "\nmap0.begin(): " << ft_map0.begin()->first << ", " << ft_map0.begin()->second
+		<< " | map1.begin(): " << ft_map1.begin()->first << ", " << ft_map1.begin()->second
+		<< std::endl;
+	ft_map0.swap(ft_map1);
+	std::cout << "after swap:\nmap0 size: " << ft_map0.size() << " | map1 size: " << ft_map1.size()
+		<< "\nmap0.begin(): " << ft_map0.begin()->first << ", " << ft_map0.begin()->second
+		<< " | map1.begin(): " << ft_map1.begin()->first << ", " << ft_map1.begin()->second
+		<< std::endl;
+	std::cout << std::endl;
 
 	// TODO:
 	// - test map/tree op= for correct copying (of different types?) + memory leaks (from sentinel)
