@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 21:00:12 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 22:10:10 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ void	benchmarkFunction(void (*testFunction)(T& container), T& container,
 // 1000 times on a temporary copy of the container to show cumulative performance
 // without affecting the container passed.
 template <typename T>
-void	benchmarkFunction_multirun(void (*testFunction)(T& container), T& container,
-									std::string const test_name) {
+void	benchmarkFunction_multirun(void (*testFunction)(T& container),
+									T& container, std::string const test_name) {
 	benchmarkFunction(testFunction, container, test_name);
 	
 	// saving cout buffer for restoring later
@@ -118,10 +118,11 @@ void	benchmarkFunction_multirun(void (*testFunction)(T& container), T& container
 	std::cout.rdbuf(NULL);
 
 	clock_t start = clock();
-	// run test on a fresh vector 1000 times
+	// run test on a fresh container 1000 times
 	for (size_t i = 0; i < 1000; i++) {
-		T	tmp_vec(20, 42);
-		testFunction(tmp_vec);
+		T	tmp_container(20, 42);
+		// (void)container_to_copy;
+		testFunction(tmp_container);
 	}
 	clock_t	end = clock();
 

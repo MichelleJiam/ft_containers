@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 20:59:31 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 22:29:21 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void	test_vec_elementAccess(T& vector) {
 	std::cout << "vec.at(1): " << vector.at(1) << std::endl;
 	std::cout << "vec.front(): " << vector.front() << std::endl;
 	std::cout << "vec.back(): " << vector.back() << std::endl;
+	printVector(vector, "vector");
 }
 
 template <typename T>
@@ -74,6 +75,7 @@ void	test_vec_iterators(T& vector) {
 	for (t_ivec::reverse_iterator rit = vector.rbegin(); rit != vector.rend(); ++rit)
 		std::cout << *rit << " ";
 	std::cout << std::endl;
+	printVector(vector, "vector");
 }
 
 template <typename T>
@@ -100,12 +102,14 @@ void	test_vec_assign(T& vector) {
 template <typename T>
 void	test_vec_clear(T& vector) {
 	vector.clear();
+	printVector(vector, "vector");
 }
 
 template <typename T>
 void	test_vec_empty(T& vector) {
 	std::cout << std::boolalpha
 		<< "is vector empty: " << vector.empty() << std::endl;
+	printVector(vector, "vector");
 }
 
 template <typename T>
@@ -121,7 +125,7 @@ void	test_vec_erase(T& vector) {
 
 	it = vector.begin();
 	vector.erase(it + 2, it + 4);
-	printVector(vector, "vector", "erase(begin + 2, begin + 4)");
+	printVector(vector, "vector", "erase(begin + 1, begin + 3)");
 }
 
 template <typename T>
@@ -157,11 +161,13 @@ void	test_vec_pushback(T& vector) {
 	printTestCase("push_back([1-10])");
 	for (int i = 1; i <= 10; i++)
 		vector.push_back(i);
+	printVector(vector, "vector");
 }
 
 template <typename T>
 void	test_vec_popback(T& vector) {
 	vector.pop_back();
+	printVector(vector, "vector");
 }
 
 template <typename T>
@@ -172,12 +178,14 @@ void	test_vec_reserve(T& vector) {
 	vector.reserve(42);
 	std::cout << "\nvector capacity was " << oldcap
 		<< ", is now " << vector.capacity() << ".\n";
+	printVector(vector, "vector");
 }
 
 template <typename T>
 void	test_vec_resize(T& vector) {
 	printTestCase("resize(5, 42)");
 	vector.resize(5, 42);
+	printVector(vector, "vector");
 }
 
 template <typename T>
@@ -189,6 +197,7 @@ void	test_vec_swap(T& vector) {
 	vector.swap(vector_b);
 	printVector(vector_b, "vector 2 AFTER swap");
 	assert(vector.size() == vector_b.size());
+	printVector(vector, "vector 1 AFTER swap");
 }
 
 template <typename T>
@@ -207,62 +216,52 @@ void test_vector() {
 	printHeader("testing vector");
 #endif
 
-	t_ivec		base_vec;
+	t_ivec				base_vec;
 	
 	// push_back test
-	benchmarkFunction_multirun(test_vec_pushback<t_ivec>, base_vec, "push_back");
-	printAtEnd(printVector<t_ivec>, base_vec, "vector");
+	benchmarkFunction_multirun<t_ivec>(test_vec_pushback, base_vec, "push_back");
 
 	// empty test
-	benchmarkFunction_multirun(test_vec_empty<t_ivec>, base_vec, "empty");
-	printAtEnd(printVector<t_ivec>, base_vec, "vector");
+	benchmarkFunction_multirun<t_ivec>(test_vec_empty, base_vec, "empty");
 	
 	// pop_back test
-	benchmarkFunction_multirun(test_vec_popback<t_ivec>, base_vec, "pop_back");
-	printAtEnd(printVector<t_ivec>, base_vec, "vector");
+	benchmarkFunction_multirun<t_ivec>(test_vec_popback, base_vec, "pop_back");
 
 	// fill constructor test
-	benchmarkFunction_multirun(test_vec_constructors<t_ivec>, base_vec,
+	benchmarkFunction_multirun<t_ivec>(test_vec_constructors, base_vec,
 								"fill/range/copy constructors");
 
 	// clear test
 	t_ivec	copy_vec(base_vec);
-	benchmarkFunction_multirun(test_vec_clear<t_ivec>, copy_vec, "clear");
-	printAtEnd(printVector<t_ivec>, copy_vec, "vector");
+	benchmarkFunction_multirun<t_ivec>(test_vec_clear, copy_vec, "clear");
 	
 	// reserve test
-	benchmarkFunction_multirun(test_vec_reserve<t_ivec>, base_vec, "reserve");
-	printAtEnd(printVector<t_ivec>, base_vec, "vector");
+	benchmarkFunction_multirun<t_ivec>(test_vec_reserve, base_vec, "reserve");
 	
 	// insert test
-	benchmarkFunction_multirun(test_vec_insert<t_ivec>, base_vec, "insert");
+	benchmarkFunction_multirun<t_ivec>(test_vec_insert, base_vec, "insert");
 
 	// resize test
-	benchmarkFunction_multirun(test_vec_resize<t_ivec>, copy_vec, "resize");
-	printAtEnd(printVector<t_ivec>, copy_vec, "vector");
+	benchmarkFunction_multirun<t_ivec>(test_vec_resize, copy_vec, "resize");
 
 	// erase test
-	benchmarkFunction_multirun(test_vec_erase<t_ivec>, base_vec, "erase");
-	printAtEnd(printVector<t_ivec>, base_vec, "vector");
+	benchmarkFunction_multirun<t_ivec>(test_vec_erase, base_vec, "erase");
 
 	// assign test
-	benchmarkFunction_multirun(test_vec_assign<t_ivec>, copy_vec, "assign");
+	benchmarkFunction_multirun<t_ivec>(test_vec_assign, copy_vec, "assign");
 
 	// swap test
-	benchmarkFunction_multirun(test_vec_swap<t_ivec>, copy_vec, "swap");
-	printAtEnd(printVector<t_ivec>, copy_vec, "vector 1 AFTER swap");
+	benchmarkFunction_multirun<t_ivec>(test_vec_swap, copy_vec, "swap");
 
 	// element access functions
-	benchmarkFunction_multirun(test_vec_elementAccess<t_ivec>, base_vec, 
+	benchmarkFunction_multirun<t_ivec>(test_vec_elementAccess, base_vec, 
 								"element access");
-	printAtEnd(printVector<t_ivec>, base_vec, "vector");
 
 	// relational operators
-	benchmarkFunction_multirun(test_vec_relationalOps<t_ivec>, base_vec,
+	benchmarkFunction_multirun<t_ivec>(test_vec_relationalOps, base_vec,
 								"relational operators");
 
 	// iterators
-	benchmarkFunction_multirun(test_vec_iterators<t_ivec>, base_vec,
+	benchmarkFunction_multirun<t_ivec>(test_vec_iterators, base_vec,
 								"iterators");
-	printAtEnd(printVector<t_ivec>, base_vec, "vector");
 }

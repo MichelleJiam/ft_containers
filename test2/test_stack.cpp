@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/03 20:21:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 21:18:44 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 22:02:43 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,34 @@ void    printStack(T& stack, std::string const cntr_name,
 	std::cout << std::endl;
 }
 
-void    test_stack_pop(void) {
-	printTest("pop");
+template <typename T>
+void    test_stack_pop(T& stack) {
+	// printTest("pop");
 	
-	t_istack    stack;
+	// t_istack    stack;
 
-	for (int i = 1; i <= 10; i++)
-		stack.push(i);
+	// for (int i = 1; i <= 10; i++)
+	// 	stack.push(i);
 	stack.pop();
 	printStack(stack, "stack", "pop()");
 }
 
-void    test_stack_push(void) {
-	printTest("push");
+template <typename T>
+void    test_stack_push(T& stack) {
+	// printTest("push");
 	
-	t_istack    stack;
+	// t_istack    stack;
 
-	for (int i = 1; i <= 10; i++)
+	for (int i = 1; i <= 6; i++)
 		stack.push(i);
-	printStack(stack, "stack", "push([1-10])");
+	printStack(stack, "stack", "push([1-5])");
 }
 
-void    test_stack_constructors(void) {
-	printTest("default/copy constructors");
-	
-	t_istack    		stack1;
-	printStack(stack1, "empty stack", "default constructor with no argument");
+template <typename T>
+void    test_stack_constructors(T& stack) {
+	// printTest("default/copy constructors");
+
+	printStack(stack, "empty stack", "default constructor with no argument");
 
 	IMPL::vector<int>	vec(5, 42);
 	t_istack			stack2(vec);
@@ -65,8 +67,8 @@ void    test_stack_constructors(void) {
 	t_istack			stack3(stack2);
 	printStack(stack2, "copy stack 2", "copy constructor with another stack object");
 
-	stack1 = stack3;
-	printStack(stack1, "formerly-empty stack", "empty stack = copy stack 2");
+	stack = stack3;
+	printStack(stack, "formerly-empty stack", "empty stack = copy stack 2");
 }
 
 void test_stack() {
@@ -74,7 +76,13 @@ void test_stack() {
 	printHeader("testing stack");
 #endif
 
-	test_stack_constructors();
-	test_stack_push();
-	test_stack_pop();
+	t_istack	base_stack;
+
+	// test_stack_constructors();
+	// benchmarkFunction_multirun(test_stack_constructors<t_istack>, base_stack,
+	// 	base_stack, "default/copy constructors");
+	// // test_stack_push(base_stack);
+	// benchmarkFunction_multirun(test_stack_push<t_istack>, base_stack, base_stack, "push");
+	// // test_stack_pop();
+	// benchmarkFunction_multirun(test_stack_pop<t_istack>, base_stack, base_stack, "pop");
 }

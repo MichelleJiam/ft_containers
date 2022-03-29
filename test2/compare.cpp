@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/25 18:52:21 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 21:19:33 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 22:30:05 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,9 @@ void    compareTimes(std::string std_line, std::string ft_line) {
 
 	float	time_diff = ft_time / std_time;
 	std::cout << "ft version is ";
-	if (time_diff > 1.0)
+	if (time_diff > 20.0)
+		std::cout << RED << "more than 20 times slower.\n" << WHT;
+	else if (time_diff > 1.0)
 		std::cout << time_diff << " slower than std version.\n";
 	else if (time_diff < 1.0)
 		std::cout  << (std_time / ft_time) << " faster than std version.\n";
@@ -63,13 +65,10 @@ int main() {
 			new_test = 1;
 			std::cout << "\nTesting: " << GRN << test_name << WHT << std::endl;
 		}
-		else if (std_line.find("Duration of operation") != std::string::npos)
-			continue;
-		else if (std_line.find("Duration of 1000 operations") != std::string::npos)
-			compareTimes(std_line, ft_line);
-		else if (std_line.compare(ft_line) != 0) {
+		else if (std_line.compare(ft_line) != 0
+			&& std_line.find("Duration") == std::string::npos) {
 			if (new_test) {
-				std::cout << RED << "\nFailed test: " << WHT << test_name << std::endl;
+				std::cout << RED << "TEST FAILED" << WHT << " | Diff: " << std::endl;
 				failed++;
 			}
 			std::cout << "std container:\t" << std_line << std::endl;
@@ -77,6 +76,11 @@ int main() {
 			status = 1;
 			new_test = 0;
 		}
+		else if (std_line.find("Duration of operation") != std::string::npos)
+			continue;
+		else if (std_line.find("Duration of 1000 operations") != std::string::npos
+			&& new_test == 1) // doesn't print times if test fails
+			compareTimes(std_line, ft_line);
 	}
 	printPassing(tests - failed, tests);
 	return status;
