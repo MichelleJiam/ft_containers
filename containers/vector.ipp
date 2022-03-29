@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 20:10:21 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 21:36:32 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -402,13 +402,16 @@ typename myvector::iterator	myvector::erase(
 template <class T, class Allocator>
 void	myvector::push_back(T const& value) {
 	if (DEBUG) std::cout << "push_back: calling insert with (" << 0 + _size << ", " << value << ")\n";
-	insert(_array + _size, value);
+	if (this->capacity() == this->size())
+		_reallocate(this->size() ? this->size() * 2 : 1);
+	_alloc.construct(_array + _size, value);
+	this->_size += 1;
 }
 
 //	Iterator invalidation:	element erased and end().
 template <class T, class Allocator>
 void	myvector::pop_back(void) {
-	_alloc.destroy(&_array[_size - 1]);
+	_alloc.destroy(_array + (_size - 1));
 	this->_size -= 1;
 }
 
