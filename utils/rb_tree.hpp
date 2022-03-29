@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 20:14:29 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 20:31:38 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@
 #include "rb_iterator.hpp"
 
 namespace ft {
-#include <functional> // TODO: remove
-template <class Key, class Val, class Compare = std::less<Key>, // TODO: remove
+template <class Key, class Val, class Compare,
 			class Alloc = std::allocator<Val> >
 class rb_tree {
 	public:
@@ -61,7 +60,7 @@ class rb_tree {
 	
 	public:
 	// Constructors & Destructor
-		rb_tree(Compare const& comp = Compare(), Alloc const& alloc = Alloc()) // TODO: remove default args
+		rb_tree(Compare const& comp, Alloc const& alloc)
 			: _alloc(alloc), _size(0), _key_compare(comp) {
 			_nil = _create_nil();
 			_root = _nil;
