@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 20:22:32 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/29 20:26:26 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -354,7 +354,12 @@ std::cout << "=== Testing insert on RB ===\n\n";
 	std::cout << "after swap:\nmap0 size: " << ft_map0.size() << " | map1 size: " << ft_map1.size()
 		<< "\nmap0.begin(): " << ft_map0.begin()->first << ", " << ft_map0.begin()->second
 		<< " | map1.begin(): " << ft_map1.begin()->first << ", " << ft_map1.begin()->second
-		<< std::endl;
+		<< std::endl << std::endl;
+
+	std::cout << "map1.erase(42) returns: " << ft_map1.erase(42) << std::endl;
+	std::cout << "size: " << ft_map1.size() << std::endl;
+	ft_map0.clear();
+	std::cout << "size of map0 after clear: " << ft_map0.size() << std::endl;
 	std::cout << std::endl;
 
 	// TODO:
