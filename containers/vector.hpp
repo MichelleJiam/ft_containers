@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/22 21:52:05 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/30 15:48:27 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ class vector {
 		typedef ft::reverse_iterator<iterator>			reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
-		// CONSTRUCTORS & ASSIGNMENT OPERATORS
+	// CONSTRUCTORS & ASSIGNMENT OPERATORS
 		// default: empty container
 		explicit vector(Allocator const& alloc = Allocator());
 		
@@ -58,10 +58,10 @@ class vector {
 		// assignment operator
 		vector&	operator=(vector const& other);
 
-		// DESTRUCTOR
+	// DESTRUCTOR
 		~vector();
 
-		// ITERATORS
+	// ITERATORS
 		iterator				begin(void);
 		const_iterator			begin(void) const;
 		iterator				end(void);
@@ -71,20 +71,10 @@ class vector {
 		reverse_iterator		rend(void);
 		const_reverse_iterator	rend(void) const;
 
-		// Replaces current contents with `count` elements, each initialized
-		// to a copy of `value`.
-		void	assign(size_type count, T const& value);
-
-		// Replaces current contents with elements constructed from
-		// elements in range [first,last] in the same order.
-		template <class InputIterator>
-  		void	assign(InputIterator first, InputIterator last,
-		  				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL);
-
 		// Returns a copy of the allocator object associated with vector.
 		allocator_type	get_allocator(void) const;
 
-		// ELEMENT ACCESS FUNCTIONS
+	// ELEMENT ACCESS FUNCTIONS
 		reference		operator[](size_type pos);
 		const_reference	operator[](size_type pos) const;
 		reference		at(size_type pos);
@@ -94,7 +84,7 @@ class vector {
 		reference		back(void);
 		const_reference	back(void) const;
 
-		// CAPACITY FUNCTIONS
+	// CAPACITY FUNCTIONS
 		// Returns whether vector is empty (= size is 0).
 		bool	empty(void) const;
 
@@ -113,7 +103,17 @@ class vector {
 		// This is not necessarily equal to container size.
 		size_type	capacity(void) const;
 
-		// MODIFIERS
+	// MODIFIERS
+		// Replaces current contents with `count` elements, each initialized
+		// to a copy of `value`.
+		void	assign(size_type count, T const& value);
+
+		// Replaces current contents with elements constructed from
+		// elements in range [first,last] in the same order.
+		template <class InputIterator>
+  		void	assign(InputIterator first, InputIterator last,
+		  				typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL);
+
 		// Removes (destroys) all elements from vector, leaving size of 0.
 		// Reallocation is not guaranteed and capacity is not guaranteed
 		// to change.
