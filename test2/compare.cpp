@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/25 18:52:21 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 22:30:05 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/30 17:41:47 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@
 void    compareTimes(std::string std_line, std::string ft_line) {
 	float	ft_time, std_time;
 
-	sscanf(ft_line.substr(ft_line.find(": ") + 2).c_str(), "%f", &ft_time);
-	sscanf(std_line.substr(std_line.find(": ") + 2).c_str(), "%f", &std_time);
+	sscanf(ft_line.substr(ft_line.find(":\t") + 2).c_str(), "%f", &ft_time);
+	sscanf(std_line.substr(std_line.find(":\t") + 2).c_str(), "%f", &std_time);
 
 	float	time_diff = ft_time / std_time;
 	std::cout << "ft version is ";
@@ -76,10 +76,10 @@ int main() {
 			status = 1;
 			new_test = 0;
 		}
-		else if (std_line.find("Duration of operation") != std::string::npos)
+		else if (std_line.find("single operation") != std::string::npos)
 			continue;
-		else if (std_line.find("Duration of 1000 operations") != std::string::npos
-			&& new_test == 1) // doesn't print times if test fails
+		else if (std_line.find("stress operation") != std::string::npos
+					&& new_test == 1) // doesn't print times if test fails
 			compareTimes(std_line, ft_line);
 	}
 	printPassing(tests - failed, tests);
