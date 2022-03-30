@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/03 20:21:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 22:02:43 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/30 17:03:59 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,10 @@ void test_stack() {
 	t_istack	base_stack;
 
 	// test_stack_constructors();
-	// benchmarkFunction_multirun(test_stack_constructors<t_istack>, base_stack,
+	// benchmarkFunction_stress(test_stack_constructors<t_istack>, base_stack,
 	// 	base_stack, "default/copy constructors");
 	// // test_stack_push(base_stack);
-	// benchmarkFunction_multirun(test_stack_push<t_istack>, base_stack, base_stack, "push");
+	// benchmarkFunction_stress(test_stack_push<t_istack>, base_stack, base_stack, "push");
 	// // test_stack_pop();
-	// benchmarkFunction_multirun(test_stack_pop<t_istack>, base_stack, base_stack, "pop");
+	// benchmarkFunction_stress(test_stack_pop<t_istack>, base_stack, base_stack, "pop");
 }

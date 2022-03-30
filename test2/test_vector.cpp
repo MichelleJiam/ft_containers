@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 22:29:21 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/30 18:09:24 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,116 +79,6 @@ void	test_vec_iterators(T& vector) {
 }
 
 template <typename T>
-void	test_vec_assign(T& vector) {
-	T	vec1, vec2, vec3;
-
-	vec1.assign(7, vector[0]); // 7 ints
-	printVector(vec1, "vector 1", "assign(7, [42])");
-
-	typename T::iterator it = vec1.begin();
-	vec2.assign(it + 1, it + 6); // 5 central values from vec1
-	printVector(vec2, "vector 2", "assign(vec1.begin + 1, vec1.begin + 6)");
-
-	int	i_array[] = {32, 1, 100};
-	
-	vec3.assign(i_array, i_array + 3); // 3 ints from array
-	printVector(vec3, "vector 3", "assign(array[0], array[3])");
-
-	assert(vec1.size() == 7);
-	assert(vec2.size() == 5);
-	assert(vec3.size() == 3);
-}
-
-template <typename T>
-void	test_vec_clear(T& vector) {
-	vector.clear();
-	printVector(vector, "vector");
-}
-
-template <typename T>
-void	test_vec_empty(T& vector) {
-	std::cout << std::boolalpha
-		<< "is vector empty: " << vector.empty() << std::endl;
-	printVector(vector, "vector");
-}
-
-template <typename T>
-void	test_vec_erase(T& vector) {
-	typename T::iterator it = vector.end();
-
-	vector.erase(it - 2);
-	printVector(vector, "vector", "erase(end - 2)");
-
-	it = vector.end();
-	vector.erase(it - 3, it - 1);
-	printVector(vector, "vector", "erase(end - 3, end - 1)");
-
-	it = vector.begin();
-	vector.erase(it + 2, it + 4);
-	printVector(vector, "vector", "erase(begin + 1, begin + 3)");
-}
-
-template <typename T>
-void	test_vec_insert(T& vector) {
-	T	copyvector(vector);
-	typename T::iterator it = copyvector.end();
-	
-	copyvector.insert(it, 88);
-	printVector(copyvector, "copyvector", "insert(end, 88)");
-
-	it = copyvector.end();
-	copyvector.insert(it - 1, 13);
-	printVector(copyvector, "copyvector", "insert(end - 1, 13)");
-
-	it = copyvector.begin();
-	copyvector.insert(it + 2, 4, 7);
-	printVector(copyvector, "copyvector", "insert(begin + 2, 4, 7)");
-
-	T	anothervector(3, 42);
-	it = copyvector.begin();
-	anothervector.insert(anothervector.begin() + 1,
-							it, it + 2);
-	printVector(anothervector, "anothervector", "insert(begin + 1, [1], [2])");
-
-	it = anothervector.begin();
-	anothervector.insert(it, 100);
-	printVector(anothervector, "anothervector", "insert(begin, 100)");
-}
-
-
-template <typename T>
-void	test_vec_pushback(T& vector) {
-	printTestCase("push_back([1-10])");
-	for (int i = 1; i <= 10; i++)
-		vector.push_back(i);
-	printVector(vector, "vector");
-}
-
-template <typename T>
-void	test_vec_popback(T& vector) {
-	vector.pop_back();
-	printVector(vector, "vector");
-}
-
-template <typename T>
-void	test_vec_reserve(T& vector) {
-	size_t   oldcap = vector.capacity();
-
-	printTestCase("reserve(42)");
-	vector.reserve(42);
-	std::cout << "\nvector capacity was " << oldcap
-		<< ", is now " << vector.capacity() << ".\n";
-	printVector(vector, "vector");
-}
-
-template <typename T>
-void	test_vec_resize(T& vector) {
-	printTestCase("resize(5, 42)");
-	vector.resize(5, 42);
-	printVector(vector, "vector");
-}
-
-template <typename T>
 void	test_vec_swap(T& vector) {
 	T	vector_b(vector.size(), 13);
 
@@ -201,14 +91,167 @@ void	test_vec_swap(T& vector) {
 }
 
 template <typename T>
-void	test_vec_constructors(T& vector) {
-	T	fill_vec(1000, 42);
+void	test_vec_constructors(unsigned long times) {
+	T	fill_vec(times, 42);
 	T	range_vec(fill_vec.begin(), fill_vec.end() - 2);
-	T	copy_vec(vector);
+	T	copy_vec(range_vec);
 	
-	assert(fill_vec.size() == 1000
-			&& range_vec.size() == 998
-			&& copy_vec.size() == vector.size());
+	assert(fill_vec.size() == times
+			&& range_vec.size() == (times) - 2
+			&& copy_vec.size() == range_vec.size());
+}
+
+template <typename T>
+void	test_vec_pushback(unsigned long times) {
+	printTestCase("push_back([1-10])");
+
+	T	vector;
+
+	for (size_t i = 1; i <= times; i++)
+		vector.push_back(i);
+
+	assert(vector.size() == times);
+
+	if (times < INT_MAX / 100)	// only print vector contents when not stress testing
+		printVector(vector, "vector");
+}
+
+template <typename T>
+void	test_vec_popback(unsigned long times) {
+	printTestCase("pop_back() x times");
+
+	T	vector(times, 42);
+
+	for (size_t i = 1; i <= times; i++)
+		vector.pop_back();
+
+	assert(vector.size() == 0);
+
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector");
+}
+
+template <typename T>
+void	test_vec_empty(unsigned long times) {
+	printTestCase("empty() on vector containing 2 elements");
+
+	T	vector(2, 42);
+
+	(void)times;
+	std::cout << std::boolalpha
+		<< "is vector empty: " << vector.empty() << std::endl;
+	printVector(vector, "vector");
+}
+
+template <typename T>
+void	test_vec_clear(unsigned long times) {
+	printTestCase("clear() on vector of [times] size");
+
+	T	vector(times, 42);
+	vector.clear();
+
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector");
+}
+
+template <typename T>
+void	test_vec_reserve(unsigned long times) {
+	printTestCase("reserve([times])");
+	
+	T		vector;
+	size_t	oldcap = vector.capacity();
+
+	vector.reserve(times);
+	std::cout << "\nvector capacity was " << oldcap
+		<< ", is now " << vector.capacity() << ".\n";
+	
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector");
+}
+
+template <typename T>
+void	test_vec_resize(unsigned long times) {
+	printTestCase("resize(times, 42)");
+
+	T	vector(4, 20);
+
+	vector.resize(times, 42);
+
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector");
+}
+
+template <typename T>
+void	test_vec_insert(unsigned long times) {
+	T						vector(times, 42);
+	typename T::iterator	it = vector.end();
+	
+	vector.insert(it, 88);
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector", "insert(end, 88)");
+
+	it = vector.end();
+	vector.insert(it - 1, 13);
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector", "insert(end - 1, 13)");
+
+	it = vector.begin();
+	vector.insert(it + 2, 4, 7);
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector", "insert(begin + 2, 4, 7)");
+
+	T	anothervector(3, 21);
+	it = vector.begin();
+	anothervector.insert(anothervector.begin() + 1,
+							it, it + 2);
+	if (times < INT_MAX / 100)
+		printVector(anothervector, "anothervector", "insert(begin + 1, [42], [42])");
+
+	it = anothervector.begin();
+	anothervector.insert(it, 100);
+	if (times < INT_MAX / 100)
+		printVector(anothervector, "anothervector", "insert(begin, 100)");
+}
+
+template <typename T>
+void	test_vec_erase(unsigned long times) {
+	T						vector(times, 42);
+	typename T::iterator	it = vector.end();
+
+	vector.erase(it - 2);
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector", "erase(end - 2)");
+
+	it = vector.end();
+	vector.erase(it - 3, it - 1);
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector", "erase(end - 3, end - 1)");
+
+	it = vector.begin();
+	vector.erase(it + 2, it + 4);
+	if (times < INT_MAX / 100)
+		printVector(vector, "vector", "erase(begin + 1, begin + 3)");
+}
+
+template <typename T>
+void	test_vec_assign(unsigned long times) {
+	T	vector(times, 42);
+	T	vec1, vec2, vec3;
+
+	vec1.assign(7, vector[0]); // 7 ints
+	printVector(vec1, "vector 1", "assign(7, [42])");
+
+	typename T::iterator it = vec1.begin();
+	vec2.assign(it + 1, it + 6); // 5 central values from vec1
+	printVector(vec2, "vector 2", "assign(vec1.begin + 1, vec1.begin + 6)");
+	
+	vec3.assign(vector.begin(), vector.end()); // [times] elements
+	if (times < INT_MAX / 100)
+		printVector(vec3, "vector 3", "assign(vector.begin, vector.end)");
+
+	assert(vec1.size() == 7);
+	assert(vec2.size() == 5);
+	assert(vec3.size() == times);
 }
 
 void test_vector() {
@@ -216,52 +259,45 @@ void test_vector() {
 	printHeader("testing vector");
 #endif
 
-	t_ivec				base_vec;
+	// constructor test
+	benchmarkFunction_stress(test_vec_constructors<t_ivec>, "fill/range/copy constructors");
 	
 	// push_back test
-	benchmarkFunction_multirun<t_ivec>(test_vec_pushback, base_vec, "push_back");
+	benchmarkFunction_stress(test_vec_pushback<t_ivec>, "push_back");
+
+	// pop_back test
+	benchmarkFunction_stress(test_vec_popback<t_ivec>, "pop_back");
 
 	// empty test
-	benchmarkFunction_multirun<t_ivec>(test_vec_empty, base_vec, "empty");
-	
-	// pop_back test
-	benchmarkFunction_multirun<t_ivec>(test_vec_popback, base_vec, "pop_back");
-
-	// fill constructor test
-	benchmarkFunction_multirun<t_ivec>(test_vec_constructors, base_vec,
-								"fill/range/copy constructors");
+	benchmarkFunction_stress(test_vec_empty<t_ivec>, "empty");
 
 	// clear test
-	t_ivec	copy_vec(base_vec);
-	benchmarkFunction_multirun<t_ivec>(test_vec_clear, copy_vec, "clear");
+	benchmarkFunction_stress(test_vec_clear<t_ivec>, "clear");
 	
 	// reserve test
-	benchmarkFunction_multirun<t_ivec>(test_vec_reserve, base_vec, "reserve");
-	
-	// insert test
-	benchmarkFunction_multirun<t_ivec>(test_vec_insert, base_vec, "insert");
+	benchmarkFunction_stress(test_vec_reserve<t_ivec>, "reserve");
 
 	// resize test
-	benchmarkFunction_multirun<t_ivec>(test_vec_resize, copy_vec, "resize");
+	benchmarkFunction_stress(test_vec_resize<t_ivec>, "resize");
+	
+	// insert test
+	benchmarkFunction_stress(test_vec_insert<t_ivec>, "insert");
 
 	// erase test
-	benchmarkFunction_multirun<t_ivec>(test_vec_erase, base_vec, "erase");
+	benchmarkFunction_stress(test_vec_erase<t_ivec>, "erase");
 
 	// assign test
-	benchmarkFunction_multirun<t_ivec>(test_vec_assign, copy_vec, "assign");
+	benchmarkFunction_stress(test_vec_assign<t_ivec>, "assign");
 
-	// swap test
-	benchmarkFunction_multirun<t_ivec>(test_vec_swap, copy_vec, "swap");
+	// // swap test
+	// benchmarkFunction_stress(test_vec_swap<t_ivec>, "swap");
 
-	// element access functions
-	benchmarkFunction_multirun<t_ivec>(test_vec_elementAccess, base_vec, 
-								"element access");
+	// // element access functions
+	// benchmarkFunction_stress(test_vec_elementAccess<t_ivec>, "element access");
 
-	// relational operators
-	benchmarkFunction_multirun<t_ivec>(test_vec_relationalOps, base_vec,
-								"relational operators");
+	// // relational operators
+	// benchmarkFunction_stress(test_vec_relationalOps<t_ivec>, "relational operators");
 
-	// iterators
-	benchmarkFunction_multirun<t_ivec>(test_vec_iterators, base_vec,
-								"iterators");
+	// // iterators
+	// benchmarkFunction_stress(test_vec_iterators<t_ivec>, "iterators");
 }
