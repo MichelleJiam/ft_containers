@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 21:36:32 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/30 18:03:02 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,21 +154,6 @@ typename myvector::const_reverse_iterator	myvector::rend(void) const {
 	return const_reverse_iterator(begin());
 }
 
-//	Destroys current elements and replaces with newly constructed ones.
-//	Automatically reallocates if new size > current capacity.
-//	Iterator invalidation: all
-template <class T, class Allocator>
-void	myvector::assign(size_type count, const T& value) {
-	_assign_fill(count, value);
-}
-
-template <class T, class Allocator>
-template <class InputIterator>
-void	myvector::assign(InputIterator first, InputIterator last,
-							typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*) {
-	_assign_range(first, last);
-}
-
 template <class T, class Allocator>
 typename myvector::allocator_type	myvector::get_allocator(void) const {
 	return this->_alloc;
@@ -264,6 +249,22 @@ void		myvector::reserve (size_type new_cap) {
 template <class T, class Allocator>
 typename myvector::size_type	myvector::capacity(void) const {
 	return this->_capacity;
+}
+
+// MODIFIERS
+//	Destroys current elements and replaces with newly constructed ones.
+//	Automatically reallocates if new size > current capacity.
+//	Iterator invalidation: all
+template <class T, class Allocator>
+void	myvector::assign(size_type count, const T& value) {
+	_assign_fill(count, value);
+}
+
+template <class T, class Allocator>
+template <class InputIterator>
+void	myvector::assign(InputIterator first, InputIterator last,
+							typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type*) {
+	_assign_range(first, last);
 }
 
 //	After this call, size() returns 0. Leaves capacity unchanged.
@@ -428,8 +429,11 @@ void	myvector::resize(size_type count, T value) {
 			"vector::resize - count exceeds vector max_size");
 	else if (count < this->size())
 		_destroy_until(_array + count, _array + _size);
-	else
-		this->insert(this->end(), count - this->_size, value);
+	else {
+		this->reserve(count);
+		while (count > this->size())
+			push_back(value);
+	}
 }
 
 //	Iterator invalidation: never
@@ -515,7 +519,8 @@ void	myvector::_assign_range(InputIterator first, InputIterator last) {
 	if (count == 0)
 		return ;
 	this->reserve(count);
-	this->insert(begin(), first, last);
+	for (; first != last; ++first)
+		push_back(*first);
 }
 
 //	Internal fn called by fill constructor and insert (fill version).
