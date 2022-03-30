@@ -6,14 +6,12 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 21:50:15 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/30 17:33:24 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
 
-#include "../utils/rb_tree.hpp" // TODO: remove
-#include <map>
 typedef ft::pair<int,std::string>	t_ispair;
 typedef IMPL::pair<char,int>		t_cipair;
 typedef std::pair<int,std::string>	t_ispair2;
@@ -365,6 +363,51 @@ void    printMap(T& base_map, std::string const cntr_name,
 // 	// TODO:
 // 	// - test map/tree op= for correct copying (of different types?) + memory leaks (from sentinel)
 // }
+
+
+// times a single execution of a function on the container
+// that's been passed as reference.
+// Prints the test name; optionally prints container contents
+// (toggled by boolean `print_at_end` param) and container name.
+void	benchmarkFunction(void (*testFunction)(unsigned long times),
+							std::string const test_name) {
+	printTest(test_name);
+	
+	clock_t start = clock();
+	testFunction(10);
+	clock_t	end = clock();
+	std::cout << "\nDuration of single operation:\t"
+		<< std::fixed << std::setprecision(4)
+		<< ((end - start) / (double)CLOCKS_PER_SEC) * 1000 << " milliseconds."
+		<< std::endl;
+	std::cout.unsetf(std::ios::fixed);	// restores cout to general format
+}
+
+// runs single-run benchmarking on referenced container, then runs function
+// 1000 times on a temporary copy of the container to show cumulative performance
+// without affecting the container passed.
+void	benchmarkFunction_stress(void (*testFunction)(unsigned long times),
+								std::string const test_name) {
+	benchmarkFunction(testFunction, test_name);
+	
+	// saving cout buffer for restoring later
+	std::streambuf	*orig_buf = std::cout.rdbuf();
+	// disconnecting cout buffer to silence output
+	std::cout.rdbuf(NULL);
+	
+	clock_t start = clock();
+	testFunction(STRESS_TIMES);
+	clock_t	end = clock();
+
+	// restoring cout buffer
+	std::cout.rdbuf(orig_buf);
+	
+	std::cout << "\nDuration of stress operation:\t"
+		<< std::fixed << std::setprecision(4)
+		<< ((end - start) / (double)CLOCKS_PER_SEC) * 1000 << " milliseconds."
+		<< std::endl;
+	std::cout.unsetf(std::ios::fixed);	// restores cout to general format
+}
 
 int main() {
 
