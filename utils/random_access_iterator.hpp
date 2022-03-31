@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/19 17:11:17 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/25 18:41:02 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/31 18:13:15 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,7 @@ template <class T>
 typename random_access_iterator<T>::difference_type operator-(
 		random_access_iterator<T> const& lhs,
 		random_access_iterator<T> const& rhs) {
-	return rhs.base() - lhs.base();
+	return lhs.base() - rhs.base();
 }
 
 template <class T>
@@ -126,7 +126,6 @@ typename random_access_iterator<T>::difference_type operator+(
 		random_access_iterator<T> const& i) {
 	return random_access_iterator<T>(i.base() + n);
 }
-
 
 // boolean comparison operators
 template <class T>
