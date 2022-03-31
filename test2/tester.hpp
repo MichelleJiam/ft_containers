@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/30 17:30:03 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/31 17:04:30 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@
 # define CYN "\e[0;36m"
 # define WHT "\e[0;37m"
 
-# define STRESS_TIMES (INT_MAX / 100)
+# define STRESS_SIZE (INT_MAX / 100)
 
 #ifndef IMPL
 # define IMPL ft
@@ -72,31 +72,20 @@ void	printTest(std::string const test_name);
 void	printTestCase(std::string const test_case);
 int		printResult(bool const passed);  // TODO: remove
 void	printPassing(int passed, int tests);
-template <typename T>
-void    printVector(T& base_vec, std::string const ctnr_name = std::string(),
-						std::string const test_case = std::string());
 bool	mycomp(char const c1, char const c2);
 
 // MAIN.CPP
-void	benchmarkFunction(void (*testFunction)(unsigned long times),
+void	benchmarkFunction(void (*testFunction)(size_t size),
 							std::string const test_name);
-void	benchmarkFunction_stress(void (*testFunction)(unsigned long times),
+void	benchmarkFunction_stress(void (*testFunction)(size_t size),
 								std::string const test_name);
-
-// used to print the contents of a container, e.g. after tests.
-template <typename T>
-void	printAtEnd(void (*printFunction)(T& container,
-										std::string const cntr_name,
-										std::string const test_case),
-					T& container, std::string const cntr_name,
-					std::string const test_case = std::string()) {
-	std::cout << "\nCurrent state of container: " << std::endl;
-	printFunction(container, cntr_name, test_case);
-}
 
 // container test units
 void	test_vector();
 void	test_utils();
 void	test_stack();
+void	test_map();
+
+#include "./test_print.hpp" // templated container print fns
 
 #endif

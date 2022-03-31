@@ -6,19 +6,20 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/03 20:21:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/30 17:03:59 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/03/31 16:58:00 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
-#include "../containers/stack.hpp"
-#include "../containers/vector.hpp"
 
 typedef IMPL::stack< int, IMPL::vector<int> >	t_istack;
 
+// Prints if stack is empty, stack size, stack top,
+// and optionally test-case and container name.
+// See printTestCase for test_case argument example.
 template <typename T>
-void    printStack(T& stack, std::string const cntr_name,
-					std::string const test_case) {
+void    printStack(T& stack, std::string const cntr_name = std::string(),
+					std::string const test_case = std::string()) {
 	if (!test_case.empty())
 		printTestCase(test_case);
 	if (!cntr_name.empty())
@@ -31,44 +32,60 @@ void    printStack(T& stack, std::string const cntr_name,
 }
 
 template <typename T>
-void    test_stack_pop(T& stack) {
-	// printTest("pop");
-	
-	// t_istack    stack;
+void    test_stack_constructors(size_t size) {
+	T	empty_stack;
+	printStack(empty_stack, "empty stack", "default constructor with no argument");
 
-	// for (int i = 1; i <= 10; i++)
-	// 	stack.push(i);
-	stack.pop();
-	printStack(stack, "stack", "pop()");
+	IMPL::vector<int>	vec(size, 42);
+	T					copy_stack(vec);
+	if (size < 100) {	// only print contents when not stress testing
+		printStack(copy_stack, "copy stack 1", "copy constructor with vector");
+		printVector<IMPL::vector<int> >(vec, "source vector");
+	}
+
+	T	copy_stack2(copy_stack);
+	if (size < 100)
+		printStack(copy_stack2, "copy stack 2", "copy constructor with another stack object");
+
+	empty_stack = copy_stack2;
+	if (size < 100)
+		printStack(empty_stack, "formerly-empty stack", "empty stack = copy stack 2");
+
+	assert(copy_stack.size() == vec.size()
+			&& copy_stack2.size() == copy_stack.size()
+			&& empty_stack.size() == copy_stack2.size());
 }
 
 template <typename T>
-void    test_stack_push(T& stack) {
-	// printTest("push");
+void    test_stack_push(size_t size) {
+	printTestCase("stack.push([1-size])");
 	
-	// t_istack    stack;
+	T	stack;
 
-	for (int i = 1; i <= 6; i++)
+	for (size_t i = 1; i <= size; i++)
 		stack.push(i);
-	printStack(stack, "stack", "push([1-5])");
+
+	assert(stack.size() == size);
+	
+	if (size < 100)
+		printStack(stack, "stack");
 }
 
 template <typename T>
-void    test_stack_constructors(T& stack) {
-	// printTest("default/copy constructors");
+void    test_stack_pop(size_t size) {
+	printTestCase("stack.pop() x size");
+	
+	T    stack;
 
-	printStack(stack, "empty stack", "default constructor with no argument");
+	for (size_t i = 1; i <= size; i++)
+		stack.push(i);
+	for (size_t i = 1; i <= size; i++)
+		stack.pop();
+	
+	assert(stack.size() == 0);
 
-	IMPL::vector<int>	vec(5, 42);
-	t_istack			stack2(vec);
-	printStack(stack2, "copy stack 1", "copy constructor with vector");
-	printVector(vec, "source vector");
-
-	t_istack			stack3(stack2);
-	printStack(stack2, "copy stack 2", "copy constructor with another stack object");
-
-	stack = stack3;
-	printStack(stack, "formerly-empty stack", "empty stack = copy stack 2");
+	if (size < 100)
+		printStack(stack, "stack");
 }
 
 void test_stack() {
@@ -76,13 +93,12 @@ void test_stack() {
 	printHeader("testing stack");
 #endif
 
-	t_istack	base_stack;
+	// constructor test
+	benchmarkFunction_stress(test_stack_constructors<t_istack>, "default/copy constructors");
 
-	// test_stack_constructors();
-	// benchmarkFunction_stress(test_stack_constructors<t_istack>, base_stack,
-	// 	base_stack, "default/copy constructors");
-	// // test_stack_push(base_stack);
-	// benchmarkFunction_stress(test_stack_push<t_istack>, base_stack, base_stack, "push");
-	// // test_stack_pop();
-	// benchmarkFunction_stress(test_stack_pop<t_istack>, base_stack, base_stack, "pop");
+	// push test
+	benchmarkFunction_stress(test_stack_push<t_istack>, "push");
+
+	// pop test
+	benchmarkFunction_stress(test_stack_pop<t_istack>, "pop");
 }
