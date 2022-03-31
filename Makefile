@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/02/03 21:19:04 by mjiam         ########   odam.nl          #
+#    Updated: 2022/03/31 16:36:50 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,10 @@ CC			= 	clang++
 
 FLAGS		= 	-Wall -Wextra -Werror -std=c++98
 
+ifdef QUICK
+FLAGS		+=	-D QUICK=1
+endif
+
 ifdef SIMPLE
 FLAGS		+=	-D SIMPLE=1
 endif
@@ -39,7 +43,7 @@ CONTAINERS	= 	$(addprefix $(CONT_DIR)/, vector.hpp vector.ipp \
 											stack.hpp)
 
 TEST_SRC	= 	main.cpp tester_helper.cpp test_stack.cpp test_vector.cpp \
-				test_utils.cpp
+				test_utils.cpp test_map.cpp
 
 COMPARE_SRC	=	$(addprefix $(TEST_DIR)/, compare.cpp)
 
@@ -63,12 +67,11 @@ RESET		= 	\033[0m
 
 all: $(NAME) std
 
+# clean is called so subsequent `make` calls recompile correct version.
 $(NAME): $(OBJ)
 	@$(CC) $(FLAGS) $(OBJ) -o $@
 	@echo "Executable $(CYAN)$@$(RESET) made"
 	@$(MAKE) quietclean
-
-# clean is called so subsequent `make` calls recompile correct version.
 
 ft:
 	@$(MAKE) ft_bin
@@ -88,12 +91,18 @@ std:
 # 	@echo "Executable $(CYAN)$(NAME)$(RESET) made"
 # 	@$(MAKE) quietclean
 
-# simple comparison using diff
+# compile without stress test for quick run
+quick:
+	@$(MAKE) QUICK=1
+	@echo "\n$(GREEN)Compiled without stress tests for quick run$(RESET)"
+
+# simple comparison of output using diff, ignoring only performance times
 run:
-	@$(MAKE)
+	@$(MAKE) QUICK=1
 	@echo "\nRunning simple $(GREEN)diff$(RESET) test on compiled binaries."
 	@echo "Run $(YELLOW)make compare$(RESET) for more detailed comparison."
-	@bash -c "diff <(./ft_bin) <(./std_bin)"
+	@bash -c "diff -I '^Duration.*' <(./ft_bin) <(./std_bin)"
+	@echo "If nothing was printed, ft and std binary outputs are identical."
 
 # detailed comparison that shows which test failed and expected vs. received output
 compare:
