@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/31 17:01:42 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/01 17:03:43 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,13 +23,6 @@ void	test_vec_constructors(size_t size) {
 	assert(fill_vec.size() == size
 			&& range_vec.size() == (size) - 2
 			&& copy_vec.size() == range_vec.size());
-	
-	T vct(5);
-	typename T::iterator it = vct.begin(), ite = vct.end();
-
-	std::cout << "len: " << (ite - it) << std::endl;
-	for (; it != ite; ++it)
-		*it = (ite - it);
 }
 
 template <typename T>
@@ -116,13 +109,15 @@ template <typename T>
 void	test_vec_insert(size_t size) {
 	T						vector(size, 42);
 	typename T::iterator	it = vector.end();
+	typename T::iterator	ret = vector.insert(it, 88);
 	
-	vector.insert(it, 88);
+	std::cout << "insert(it, 88) returns " << *ret << std::endl;
 	if (size < 100)
 		printVector(vector, "vector", "insert(end, 88)");
 
 	it = vector.end();
-	vector.insert(it - 1, 13);
+	ret = vector.insert(it - 1, 13);
+	std::cout << "insert(it - 1, 13) returns " << *ret << std::endl;
 	if (size < 100)
 		printVector(vector, "vector", "insert(end - 1, 13)");
 
@@ -133,13 +128,13 @@ void	test_vec_insert(size_t size) {
 
 	T	anothervector(3, 21);
 	it = vector.begin();
-	anothervector.insert(anothervector.begin() + 1,
-							it, it + 2);
+	anothervector.insert(anothervector.begin() + 1, it, it + 2);
 	if (size < 100)
 		printVector(anothervector, "anothervector", "insert(begin + 1, [42], [42])");
 
 	it = anothervector.begin();
-	anothervector.insert(it, 100);
+	ret = anothervector.insert(it, 100);
+	std::cout << "insert(it, 100) returns " << *ret << std::endl;
 	if (size < 100)
 		printVector(anothervector, "anothervector", "insert(begin, 100)");
 }
@@ -245,6 +240,28 @@ void	test_vec_relationalOps(size_t size) {
 }
 
 template <typename T>
+void	printSize(T const &vct, bool print_content = true)
+{
+	const typename T::size_type size = vct.size();
+	const typename T::size_type capacity = vct.capacity();
+	const std::string isCapacityOk = (capacity >= size) ? "OK" : "KO";
+	// Cannot limit capacity's max value because it's implementation dependent
+
+	std::cout << "size: " << size << std::endl;
+	std::cout << "capacity: " << isCapacityOk << std::endl;
+	std::cout << "max_size: " << vct.max_size() << std::endl;
+	if (print_content)
+	{
+		typename T::const_iterator it = vct.begin();
+		typename T::const_iterator ite = vct.end();
+		std::cout << std::endl << "Content is:" << std::endl;
+		for (; it != ite; ++it)
+			std::cout << "- " << *it << std::endl;
+	}
+	std::cout << "###############################################" << std::endl;
+}
+
+template <typename T>
 void	test_vec_iterators(size_t size) {
 	printTestCase("vector.begin - end - rbegin - rend");
 
@@ -259,6 +276,9 @@ void	test_vec_iterators(size_t size) {
 	std::cout << "rbegin: " << *vector.rbegin() << std::endl;
 	std::cout << "rbegin + 1: " << *(vector.rbegin() + 1) << std::endl;
 	std::cout << "rend - 1: " << *(vector.rend() - 1) << std::endl;
+
+	typename T::iterator it = vector.begin(), ite = vector.end();
+	std::cout << "len: " << (ite - it) << std::endl;
 	
 	if (size < 100) {
 		std::cout << "iterating from begin to end: ";
@@ -270,6 +290,13 @@ void	test_vec_iterators(size_t size) {
 		std::cout << std::endl << std::endl;
 		printVector(vector, "vector");
 	}
+
+	t_ivec vct(5);
+	t_ivec vct2;
+	const int cut = 3;
+
+	vct2.insert(vct2.begin(), vct.begin(), vct.begin() + cut);
+	printSize(vct2);
 }
 
 void test_vector() {
@@ -278,7 +305,7 @@ void test_vector() {
 #endif
 
 	// constructor test
-	benchmarkFunction_stress(test_vec_constructors<t_ivec>, "fill/range/copy constructors");
+	// benchmarkFunction_stress(test_vec_constructors<t_ivec>, "fill/range/copy constructors");
 	
 	// // push_back test
 	// benchmarkFunction_stress(test_vec_pushback<t_ivec>, "push_back");
@@ -299,7 +326,7 @@ void test_vector() {
 	// benchmarkFunction_stress(test_vec_resize<t_ivec>, "resize");
 	
 	// // insert test
-	// benchmarkFunction_stress(test_vec_insert<t_ivec>, "insert");
+	benchmarkFunction_stress(test_vec_insert<t_ivec>, "insert");
 
 	// // erase test
 	// benchmarkFunction_stress(test_vec_erase<t_ivec>, "erase");
@@ -317,5 +344,5 @@ void test_vector() {
 	// benchmarkFunction_stress(test_vec_relationalOps<t_ivec>, "relational operators");
 
 	// // iterators
-	// benchmarkFunction_stress(test_vec_iterators<t_ivec>, "iterators");
+	benchmarkFunction_stress(test_vec_iterators<t_ivec>, "iterators");
 }
