@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/01 16:51:25 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/01 16:57:49 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -285,8 +285,10 @@ void	myvector::clear(void) {
 //	Exceptions: strong guarantee if exception occurs.
 template <class T, class Allocator>
 typename myvector::iterator	myvector::insert(iterator pos, T const& value) {
+	difference_type	offset = ft::distance(this->begin(), pos);
+
 	this->insert(pos, 1, value);
-	return pos;
+	return (_array + offset);
 }
 
 template <class T, class Allocator>
