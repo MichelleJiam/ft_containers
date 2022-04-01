@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/30 18:03:02 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/01 16:51:25 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -295,8 +295,8 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 	difference_type	offset = ft::distance(this->begin(), pos);
 
 	try {
-		if (this->capacity() - this->size() < count)
-			_reallocate(this->size() ? this->size() * 2 : 1);
+		if (this->size() + count > this->capacity())
+			_reallocate(this->size() ? this->size() * 2 : count);
 		if (pos != end()) {
 			size_type	array_cap = capacity();
 			pointer		tmp = _alloc.allocate(capacity());
@@ -332,8 +332,8 @@ void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
 	difference_type	count = ft::distance(first, last);
 
 	try {
-		if (this->capacity() - this->size() < (size_t)count)
-			_reallocate(this->size() ? this->size() * 2 : 1);
+		if (this->size() + count > this->capacity())
+			_reallocate(this->size() ? this->size() * 2 : count);
 		if (pos != end()) {
 			size_type	array_cap = capacity();
 			pointer		tmp = _alloc.allocate(capacity());
