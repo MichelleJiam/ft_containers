@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/25 18:52:21 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/30 17:41:47 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/05 20:56:41 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,11 @@ int main() {
 		else if (std_line.find("stress operation") != std::string::npos
 					&& new_test == 1) // doesn't print times if test fails
 			compareTimes(std_line, ft_line);
+	}
+	if (std::getline(std_file, std_line) || std::getline(ft_file, ft_line)) {
+		std::cout << RED << "Difference found at end of file:" << WHT << std::endl;
+		std::cout << "std container:\t" << std_line << std::endl;
+		std::cout << "ft container:\t" << ft_line << std::endl;
 	}
 	printPassing(tests - failed, tests);
 	return status;
