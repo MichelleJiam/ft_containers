@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/26 21:11:29 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/05 21:58:11 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/05 22:15:25 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,53 +141,53 @@ bool	operator!=(reverse_iterator<TL> const& lhs,
 template <class T>
 bool	operator<(reverse_iterator<T> const& lhs,
 					reverse_iterator<T> const& rhs) {
-	return lhs.base() < rhs.base();
+	return rhs.base() < lhs.base();
 }
 
 // const iterator - non-const
 template <class TL, class TR>
 bool	operator<(reverse_iterator<TL> const& lhs,
 					reverse_iterator<TR> const& rhs) {
-	return lhs.base() < rhs.base();
+	return rhs.base() < lhs.base();
 }
 
 template <class T>
 bool	operator>(reverse_iterator<T> const& lhs,
 					reverse_iterator<T> const& rhs) {
-	return lhs.base() > rhs.base();
+	return rhs.base() > lhs.base();
 }
 
 // const iterator - non-const
 template <class TL, class TR>
 bool	operator>(reverse_iterator<TL> const& lhs,
 					reverse_iterator<TR> const& rhs) {
-	return lhs.base() > rhs.base();
+	return rhs.base() > lhs.base();
 }
 
 template <class T>
 bool	operator<=(reverse_iterator<T> const& lhs,
 					reverse_iterator<T> const& rhs) {
-	return lhs.base() <= rhs.base();
+	return (lhs.base() >= rhs.base());
 }
 
 // const iterator - non-const
 template <class TL, class TR>
 bool	operator<=(reverse_iterator<TL> const& lhs,
 					reverse_iterator<TR> const& rhs) {
-	return lhs.base() <= rhs.base();
+	return (lhs.base() >= rhs.base());
 }
 
 template <class T>
 bool	operator>=(reverse_iterator<T> const& lhs,
 					reverse_iterator<T> const& rhs) {
-	return lhs.base() >= rhs.base();
+	return (lhs.base() <= rhs.base());
 }
 
 // const iterator - non-const
 template <class TL, class TR>
 bool	operator>=(reverse_iterator<TL> const& lhs,
 					reverse_iterator<TR> const& rhs) {
-	return lhs.base() >= rhs.base();
+	return (lhs.base() <= rhs.base());
 }
 
 // returns distance in address between 2 iterators.
