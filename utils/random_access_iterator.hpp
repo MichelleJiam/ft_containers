@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/19 17:11:17 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/05 19:52:33 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/05 20:41:49 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ class random_access_iterator
 			if (this != &other)
 				this->_current = other._current;
 			return *this;
+
 		}
 		// destructor
 		~random_access_iterator(void) {}
@@ -66,8 +67,6 @@ class random_access_iterator
 		}
 
 		// user-defined conversion function for conversion to const iterator
-		// template <typename Iter>
-		// random_access_iterator(random_access_iterator<Iter>)
 		operator	random_access_iterator<T const>() const {
 			return random_access_iterator<T const>(_current);
 		}

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/26 21:11:29 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/25 18:47:47 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/05 21:47:30 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,9 +125,23 @@ bool	operator==(reverse_iterator<T> const& lhs,
 	return lhs.base() == rhs.base();
 }
 
+// for comparison between different typed iterators, i.e. const == non-const
+template <class TL, class TR>
+bool	operator==(reverse_iterator<TL> const& lhs,
+					reverse_iterator<TR> const& rhs) {
+	return lhs.base() == rhs.base();
+}
+
 template <class T>
 bool	operator!=(reverse_iterator<T> const& lhs,
 					reverse_iterator<T> const& rhs) {
+	return lhs.base() != rhs.base();
+}
+
+// const iterator - non-const
+template <class TL, class TR>
+bool	operator!=(reverse_iterator<TL> const& lhs,
+					reverse_iterator<TR> const& rhs) {
 	return lhs.base() != rhs.base();
 }
 
@@ -137,9 +151,23 @@ bool	operator<(reverse_iterator<T> const& lhs,
 	return lhs.base() < rhs.base();
 }
 
+// const iterator - non-const
+template <class TL, class TR>
+bool	operator<(reverse_iterator<TL> const& lhs,
+					reverse_iterator<TR> const& rhs) {
+	return lhs.base() < rhs.base();
+}
+
 template <class T>
 bool	operator>(reverse_iterator<T> const& lhs,
 					reverse_iterator<T> const& rhs) {
+	return lhs.base() > rhs.base();
+}
+
+// const iterator - non-const
+template <class TL, class TR>
+bool	operator>(reverse_iterator<TL> const& lhs,
+					reverse_iterator<TR> const& rhs) {
 	return lhs.base() > rhs.base();
 }
 
@@ -149,9 +177,23 @@ bool	operator<=(reverse_iterator<T> const& lhs,
 	return lhs.base() <= rhs.base();
 }
 
+// const iterator - non-const
+template <class TL, class TR>
+bool	operator<=(reverse_iterator<TL> const& lhs,
+					reverse_iterator<TR> const& rhs) {
+	return lhs.base() <= rhs.base();
+}
+
 template <class T>
 bool	operator>=(reverse_iterator<T> const& lhs,
 					reverse_iterator<T> const& rhs) {
+	return lhs.base() >= rhs.base();
+}
+
+// const iterator - non-const
+template <class TL, class TR>
+bool	operator>=(reverse_iterator<TL> const& lhs,
+					reverse_iterator<TR> const& rhs) {
 	return lhs.base() >= rhs.base();
 }
 
@@ -163,8 +205,16 @@ typename reverse_iterator<T>::difference_type operator-(
 	return rhs.base() - lhs.base();
 }
 
+// const iterator - non-const
+template <class TL, class TR>
+typename reverse_iterator<TL>::difference_type operator-(
+		reverse_iterator<TL> const& lhs,
+		reverse_iterator<TR> const& rhs) {
+	return rhs.base() - lhs.base();
+}
+
 template <class T>
-typename reverse_iterator<T>::difference_type operator+(
+reverse_iterator<T> operator+(
 		typename reverse_iterator<T>::difference_type n,
 		reverse_iterator<T> const& x) {
 	return reverse_iterator<T>(x.base() - n);
