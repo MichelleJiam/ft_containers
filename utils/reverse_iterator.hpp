@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/26 21:11:29 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/05 21:47:30 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/05 21:58:11 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,13 +41,6 @@ class reverse_iterator
 		template <class Iter>
 		reverse_iterator(reverse_iterator<Iter> const& other)
 			: _current(other.base()) {}
-		// assignment operator
-		template <class Iter>
-		reverse_iterator&	operator=(reverse_iterator<Iter> const& other) {
-			if (this != &other)
-				this->_current = other._current;
-			return *this;
-		}
 		// destructor
 		~reverse_iterator(void) {}
 
