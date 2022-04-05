@@ -6,15 +6,16 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/31 14:47:18 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/05 19:09:53 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-#include <memory> // allocator
+#include <algorithm> // max
 #include <cstddef> // ptrdiff_t, size_t
+#include <memory> // allocator
 #include "../utils/equal.hpp"
 #include "../utils/iterator_utils.hpp"
 #include "../utils/lexicographical_compare.hpp"

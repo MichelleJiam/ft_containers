@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/01 16:57:49 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/05 19:14:50 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,7 +298,7 @@ void	myvector::insert(iterator pos, size_type count, T const& value) {
 
 	try {
 		if (this->size() + count > this->capacity())
-			_reallocate(this->size() ? this->size() * 2 : count);
+			_reallocate(std::max(this->capacity() * 2, this->size() + count));
 		if (pos != end()) {
 			size_type	array_cap = capacity();
 			pointer		tmp = _alloc.allocate(capacity());
@@ -335,7 +335,7 @@ void	myvector::insert(iterator pos, InputIterator first, InputIterator last,
 
 	try {
 		if (this->size() + count > this->capacity())
-			_reallocate(this->size() ? this->size() * 2 : count);
+			_reallocate(std::max(this->capacity() * 2, this->size() + count));
 		if (pos != end()) {
 			size_type	array_cap = capacity();
 			pointer		tmp = _alloc.allocate(capacity());
