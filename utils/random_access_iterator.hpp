@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/11/19 17:11:17 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/01 16:43:19 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/05 19:52:33 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ class random_access_iterator
 		typedef typename _it_type::pointer			pointer;
 		typedef typename _it_type::reference		reference;
 
-		// CONSTRUCTORS & DESTRUCTORS
+	// CONSTRUCTORS & DESTRUCTORS
 		// default constructor
 		random_access_iterator(void) : _current(NULL) {}
 		// initialise constructor with a pointer
@@ -48,31 +48,41 @@ class random_access_iterator
 		pointer		base(void) const {
 			return _current;
 		}
+
+	// OPERATORS
 		// returns a reference to the value at _current (if dereferenceable).
 		reference	operator*(void) const {
 			return *_current;
 		}
+
 		// returns a pointer to the value at _current (if dereferenceable).
 		pointer		operator->(void) const {
 			return _current;
 		}
+
 		// returns value at _current + `n`
-		random_access_iterator&	operator[](difference_type n) const {
-			return *(*this + n);
+		reference	operator[](difference_type n) const {
+			return _current[n];
 		}
-		// user-defined conversion function for const iterator
+
+		// user-defined conversion function for conversion to const iterator
+		// template <typename Iter>
+		// random_access_iterator(random_access_iterator<Iter>)
 		operator	random_access_iterator<T const>() const {
-			return random_access_iterator<T const>(this->_current);
+			return random_access_iterator<T const>(_current);
 		}
+
 		// returns an iterator referring to _current + `n`.
 		random_access_iterator	operator+(difference_type n) const {
 			return random_access_iterator(_current + n);
 		}
+
 		// pre-increments underlying iterator and returns *this (e.g. ++a).
 		random_access_iterator&	operator++(void) {
 			++_current;
 			return *this;
 		}
+
 		// post-increments underlying iterator and
 		// returns iterator with previous value of *this (e.g. a++).
 		random_access_iterator	operator++(int) {
@@ -80,20 +90,24 @@ class random_access_iterator
 			++_current;
 			return tmp;
 		}
+
 		// moves underlying iterator forward `n` steps.
 		random_access_iterator&	operator+=(difference_type n) {
 			_current += n;
 			return *this;
 		}
+
 		// returns an iterator referring to _current - `n`.
 		random_access_iterator	operator-(difference_type n) const {
 			return random_access_iterator(_current - n);
 		}
+
 		// pre-decrements underlying iterator and returns *this (e.g. --a).
 		random_access_iterator&	operator--(void) {
 			--_current;
 			return *this;
 		}
+
 		// post-decrements underlying iterator and
 		// returns iterator with previous value of *this (e.g. a--).
 		random_access_iterator	operator--(int) {
@@ -101,6 +115,7 @@ class random_access_iterator
 			--_current;
 			return tmp;
 		}
+
 		// moves underlying iterator backward `n` steps.
 		random_access_iterator&	operator-=(difference_type n) {
 			_current -= n;
@@ -120,6 +135,14 @@ typename random_access_iterator<T>::difference_type operator-(
 	return lhs.base() - rhs.base();
 }
 
+// op- must support mixed const/non-const iterator params
+template <class TL, class TR>
+typename random_access_iterator<TL>::difference_type operator-(
+		random_access_iterator<TL> const& lhs,
+		random_access_iterator<TR> const& rhs) {
+	return lhs.base() - rhs.base();
+}
+
 template <class T>
 random_access_iterator<T> operator+(
 		typename random_access_iterator<T>::difference_type n,
@@ -134,9 +157,23 @@ bool	operator==(random_access_iterator<T> const& lhs,
 	return lhs.base() == rhs.base();
 }
 
+// for comparison between different typed iterators, i.e. const == non-const
+template <class TL, class TR>
+bool	operator==(random_access_iterator<TL> const& lhs,
+					random_access_iterator<TR> const& rhs) {
+	return lhs.base() == rhs.base();
+}
+
 template <class T>
 bool	operator!=(random_access_iterator<T> const& lhs,
 					random_access_iterator<T> const& rhs) {
+	return lhs.base() != rhs.base();
+}
+
+// for const iterator != non-const
+template <class TL, class TR>
+bool	operator!=(random_access_iterator<TL> const& lhs,
+					random_access_iterator<TR> const& rhs) {
 	return lhs.base() != rhs.base();
 }
 
@@ -146,9 +183,23 @@ bool	operator<(random_access_iterator<T> const& lhs,
 	return lhs.base() < rhs.base();
 }
 
+// for const iterator < non-const
+template <class TL, class TR>
+bool	operator<(random_access_iterator<TL> const& lhs,
+					random_access_iterator<TR> const& rhs) {
+	return lhs.base() < rhs.base();
+}
+
 template <class T>
 bool	operator>(random_access_iterator<T> const& lhs,
 					random_access_iterator<T> const& rhs) {
+	return lhs.base() > rhs.base();
+}
+
+// for const iterator > non-const
+template <class TL, class TR>
+bool	operator>(random_access_iterator<TL> const& lhs,
+					random_access_iterator<TR> const& rhs) {
 	return lhs.base() > rhs.base();
 }
 
@@ -158,9 +209,23 @@ bool	operator<=(random_access_iterator<T> const& lhs,
 	return lhs.base() <= rhs.base();
 }
 
+// for const iterator <= non-const
+template <class TL, class TR>
+bool	operator<=(random_access_iterator<TL> const& lhs,
+					random_access_iterator<TR> const& rhs) {
+	return lhs.base() <= rhs.base();
+}
+
 template <class T>
 bool	operator>=(random_access_iterator<T> const& lhs,
 					random_access_iterator<T> const& rhs) {
+	return lhs.base() >= rhs.base();
+}
+
+// for const iterator >= non-const
+template <class TL, class TR>
+bool	operator>=(random_access_iterator<TL> const& lhs,
+					random_access_iterator<TR> const& rhs) {
 	return lhs.base() >= rhs.base();
 }
 
