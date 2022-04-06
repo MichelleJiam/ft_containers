@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/02 14:30:57 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/22 21:58:25 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/06 17:31:00 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,15 @@ class stack {
 			c.pop_back();
 		}
 
+	// Friend declarations for accessing protected `c` container attribute.
+	template <class T1, class Container1>
+	friend bool operator==(stack<T1,Container1> const& lhs,
+							stack<T1,Container1> const& rhs);
+
+	template <class T1, class Container1>
+	friend bool operator<(stack<T1,Container1> const& lhs,
+							stack<T1,Container1> const& rhs);
+
 	protected:
 		Container			c;
 };
@@ -86,7 +95,7 @@ class stack {
 // Equality comparison
 template <class T, class Container>
 bool operator==(stack<T,Container> const& lhs, stack<T,Container> const& rhs) {
-	return lhs.c == rhs.c;
+	return (lhs.c == rhs.c);
 }
 
 template <class T, class Container>
@@ -96,7 +105,7 @@ bool operator!=(stack<T,Container> const& lhs, stack<T,Container> const& rhs) {
 
 template <class T, class Container>
 bool operator<(stack<T,Container> const& lhs, stack<T,Container> const& rhs) {
-	return lhs.x < rhs.x;
+	return (lhs.c < rhs.c);
 }
 
 template <class T, class Container>

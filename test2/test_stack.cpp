@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/03 20:21:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/31 16:58:00 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/06 17:38:05 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,11 @@ void    test_stack_constructors(size_t size) {
 	T	empty_stack;
 	printStack(empty_stack, "empty stack", "default constructor with no argument");
 
-	IMPL::vector<int>	vec(size, 42);
-	T					copy_stack(vec);
+	IMPL::vector<int>	stack(size, 42);
+	T					copy_stack(stack);
 	if (size < 100) {	// only print contents when not stress testing
 		printStack(copy_stack, "copy stack 1", "copy constructor with vector");
-		printVector<IMPL::vector<int> >(vec, "source vector");
+		printVector<IMPL::vector<int> >(stack, "source vector");
 	}
 
 	T	copy_stack2(copy_stack);
@@ -51,7 +51,7 @@ void    test_stack_constructors(size_t size) {
 	if (size < 100)
 		printStack(empty_stack, "formerly-empty stack", "empty stack = copy stack 2");
 
-	assert(copy_stack.size() == vec.size()
+	assert(copy_stack.size() == stack.size()
 			&& copy_stack2.size() == copy_stack.size()
 			&& empty_stack.size() == copy_stack2.size());
 }
@@ -88,6 +88,34 @@ void    test_stack_pop(size_t size) {
 		printStack(stack, "stack");
 }
 
+template <typename T>
+void    test_stack_relationalOps(size_t size) {
+	printTestCase("stack == != < <= > >=");
+	typename T::container_type	c;
+
+	for (size_t i = 0; i < size; i++)
+		c.push_back(i);
+
+	T	stack1(c);
+	T	stack2(c);
+
+	std::cout << std::boolalpha;
+	std::cout << "stack1 == stack2: " << (stack1 == stack2) << std::endl;
+	std::cout << "stack1 != stack2: " << (stack1 != stack2) << std::endl;
+	std::cout << "stack1 < stack2: " << (stack1 < stack2) << std::endl;
+	std::cout << "stack1 <= stack2: " << (stack1 <= stack2) << std::endl;
+	std::cout << "stack1 > stack2: " << (stack1 > stack2) << std::endl;
+	std::cout << "stack1 >= stack2: " << (stack1 >= stack2) << std::endl;
+
+	stack1.push(42);
+	std::cout << "stack1 == stack2: " << (stack1 == stack2) << std::endl;
+	std::cout << "stack1 != stack2: " << (stack1 != stack2) << std::endl;
+	std::cout << "stack1 < stack2: " << (stack1 < stack2) << std::endl;
+	std::cout << "stack1 <= stack2: " << (stack1 <= stack2) << std::endl;
+	std::cout << "stack1 > stack2: " << (stack1 > stack2) << std::endl;
+	std::cout << "stack1 >= stack2: " << (stack1 >= stack2) << std::endl;
+}
+
 void test_stack() {
 #ifndef SIMPLE
 	printHeader("testing stack");
@@ -101,4 +129,7 @@ void test_stack() {
 
 	// pop test
 	benchmarkFunction_stress(test_stack_pop<t_istack>, "pop");
+
+	// relational operators
+	benchmarkFunction_stress(test_stack_relationalOps<t_istack>, "relational operators");
 }
