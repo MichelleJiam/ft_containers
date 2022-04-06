@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/06 17:11:03 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/06 17:12:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -540,7 +540,7 @@ size_t	myvector::_fill_insert(pointer pos, size_type count, T const& value) {
 	}
 	catch (...) {
 		for (size_type i = 0; i < constructed; i++)
-			_alloc.destroy(&*(pos + i));
+			_alloc.destroy(pos + i);
 		throw;
 	}
 }
