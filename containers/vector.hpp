@@ -6,14 +6,14 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/05 19:09:53 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/06 16:46:10 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_HPP
 #define VECTOR_HPP
 
-#include <algorithm> // max
+#include <algorithm> // max, fill_n
 #include <cstddef> // ptrdiff_t, size_t
 #include <memory> // allocator
 #include "../utils/equal.hpp"
@@ -174,7 +174,7 @@ class vector {
 		void	_assign_fill(size_type count, T const& value);
 		template <class InputIterator>
 		void	_assign_range(InputIterator first, InputIterator last);
-		size_t	_fill_insert(iterator pos, size_type count, T const& value);
+		size_t	_fill_insert(pointer pos, size_type count, T const& value);
 		void	_destroy_until(iterator new_end, iterator old_end);
 		void	_reallocate(size_type new_size);
 };

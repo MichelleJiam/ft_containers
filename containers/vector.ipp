@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/05 19:14:50 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/06 17:11:03 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,10 @@ template <class T, class Allocator>
 myvector::vector(size_type count, T const& value, Allocator const& alloc)
 		:	_alloc(alloc),
 			_size(count),
-			_capacity(count),
-			_array(_alloc.allocate(count)) {
+			_capacity(count) {
 	try {
-		_fill_insert(this->begin(), count, value);
+		_array = _alloc.allocate(count);
+		_fill_insert(_array, count, value);
 	}
 	catch (...) {
 		_alloc.deallocate(_array, count);
@@ -463,7 +463,7 @@ void	myvector::_range_dispatch(Integer n, Integer value, ft::true_type) {
 	_array = _alloc.allocate(count);
 	_size = count;
 	_capacity = _size;
-	_fill_insert(this->begin(), count, value);
+	_fill_insert(_array, count, value);
 }
 
 //	Iterator specialization
@@ -529,14 +529,13 @@ void	myvector::_assign_range(InputIterator first, InputIterator last) {
 //	Inserts `count` elements with value `value` at `pos`. 
 //	Returns number of elements constructed.
 template <class T, class Allocator>
-size_t	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
+size_t	myvector::_fill_insert(pointer pos, size_type count, T const& value) {
 	size_type constructed = 0;
 	
 	try {
-		for (; constructed < count; constructed++) {
-			_alloc.construct(&*(pos + constructed), value);
-			if (DEBUG) std::cout << "fill_insert: constructed " << *(pos + constructed) << std::endl;
-		}
+		pointer start = pos;
+		for (; start != pos + count; constructed++, ++start)
+			_alloc.construct(start, value);
 		return constructed;
 	}
 	catch (...) {
@@ -552,9 +551,8 @@ size_t	myvector::_fill_insert(iterator pos, size_type count, T const& value) {
 template <class T, class Allocator>
 void	myvector::_destroy_until(iterator new_end, iterator old_end) {
 	if (old_end - new_end) {
-		while (old_end != new_end) {
-			_alloc.destroy(&*old_end);
-			old_end--;
+		for (; new_end != old_end; ++new_end) {
+			_alloc.destroy(&*new_end);
 			this->_size -= 1;
 		}
 	}
