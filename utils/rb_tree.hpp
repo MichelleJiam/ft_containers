@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 19:57:28 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 22:22:06 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define RB_TREE_HPP
 
 #include <cstddef> // ptrdiff_t, size_t
+#include <memory> // allocator
 #include <utility> // swap
 #include "rb_node.hpp"
 #include "rb_iterator.hpp"
@@ -50,9 +51,9 @@ class rb_tree {
 		typedef typename Alloc::template rebind<rb_node<Val> >::other
 				_node_type_alloc;
 		
+		allocator_type		_alloc;
 		_base_type_alloc	_b_alloc;
 		_node_type_alloc	_n_alloc;
-		allocator_type		_alloc;
 		base_ptr			_nil; // sentinel representing NULL
 		base_ptr			_root; // root node
 		size_type			_size;
@@ -61,7 +62,14 @@ class rb_tree {
 	public:
 	// Constructors & Destructor
 		rb_tree(Compare const& comp, Alloc const& alloc)
-			: _alloc(alloc), _size(0), _key_compare(comp) {
+			:	_alloc(alloc),
+				// _b_alloc(alloc),
+				// _n_alloc(alloc),
+				_size(0),
+				_key_compare(comp) {
+			std::cout << "default const: " << "alloc.maxsize = " << _alloc.max_size()
+				<< " n_alloc.maxsize = " << _n_alloc.max_size() << " b_alloc.maxsize = "
+				<< _b_alloc.max_size() << std::endl;
 			_nil = _create_nil();
 			_root = _nil;
 		}

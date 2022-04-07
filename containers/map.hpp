@@ -6,14 +6,13 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/09 16:27:08 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 18:19:44 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 22:22:10 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MAP_HPP
 #define MAP_HPP
 
-#include <cstddef> // ptrdiff_t, size_t
 #include <functional> // less, binary_function
 #include <memory> // allocator
 #include "../utils/pair.hpp"

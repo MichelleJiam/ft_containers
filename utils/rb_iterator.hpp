@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/17 15:56:42 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 19:08:36 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 21:19:38 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,17 +130,17 @@ class	rb_iterator : public ft::iterator<ft::bidirectional_iterator_tag, T>{
 		operator	rb_iterator<T const>() const {
 			return rb_iterator<T const>(this->_node);
 		}
+
+	// COMPARISON OPERATORS
+		friend bool	operator==(self const& x, self const& y) {
+			return x.base() == y.base();
+		}
+
+		friend bool	operator!=(self const& x, self const& y) {
+			return x.base() != y.base();
+		}
 };
 
-template <class T>
-bool	operator==(rb_iterator<T> const& x, rb_iterator<T> const& y) {
-	return x.base() == y.base();
-}
-
-template <class T>
-bool	operator!=(rb_iterator<T> const& x, rb_iterator<T> const& y) {
-	return x.base() != y.base();
-}
 
 } // namespace ft
 
