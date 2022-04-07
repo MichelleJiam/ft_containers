@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/31 17:00:20 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/31 17:04:41 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 17:24:04 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void    printVector(T& base_vec, std::string const cntr_name = std::string(),
 		std::cout << "[ " << cntr_name << " ]\n";
 	std::cout << "capacity: " << base_vec.capacity() << std::endl;
 	std::cout << "size:     " << base_vec.size() << std::endl;
+	std::cout << "max_size: " << base_vec.max_size() << std::endl;
 	std::cout << "contents: [";
 	for (unsigned i = 0; i < base_vec.size(); i++)
 		std::cout << ' ' << base_vec[i];
