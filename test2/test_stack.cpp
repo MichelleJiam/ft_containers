@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/03 20:21:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 16:54:15 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 17:40:48 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void    printStack(T& stack, std::string const cntr_name = std::string(),
 		std::cout << "[ " << cntr_name << " ]\n";
 	std::cout << "empty: " << std::boolalpha << stack.empty() << std::endl;
 	std::cout << "size: " << stack.size() << std::endl;
-	if (stack.empty() == false)
+	if (!stack.empty())
 		std::cout << "top: " << stack.top() << std::endl;
 	std::cout << std::endl;
 }
@@ -39,18 +39,15 @@ void    test_stack_constructors(size_t size) {
 
 	IMPL::vector<T1>	stack(size, 42);
 	T					copy_stack(stack);
-	if (size < 100) {	// only print contents when not stress testing
-		printStack(copy_stack, "copy stack 1", "copy constructor with vector");
-		printVector<IMPL::vector<T1> >(stack, "source vector");
-	}
+
+	printStack(copy_stack, "copy stack 1", "copy constructor with vector");
+	printVector<IMPL::vector<T1> >(stack, (size < 100), "source vector");
 
 	T	copy_stack2(copy_stack);
-	if (size < 100)
-		printStack(copy_stack2, "copy stack 2", "copy constructor with another stack object");
+	printStack(copy_stack2, "copy stack 2", "copy constructor with another stack object");
 
 	empty_stack = copy_stack2;
-	if (size < 100)
-		printStack(empty_stack, "formerly-empty stack", "empty stack = copy stack 2");
+	printStack(empty_stack, "formerly-empty stack", "empty stack = copy stack 2");
 
 	assert(copy_stack.size() == stack.size()
 			&& copy_stack2.size() == copy_stack.size()
@@ -67,9 +64,7 @@ void    test_stack_push(size_t size) {
 		stack.push(i);
 
 	assert(stack.size() == size);
-	
-	if (size < 100)
-		printStack(stack, "stack");
+	printStack(stack, "stack");
 }
 
 template <typename T>
@@ -84,9 +79,7 @@ void    test_stack_pop(size_t size) {
 		stack.pop();
 	
 	assert(stack.size() == 0);
-
-	if (size < 100)
-		printStack(stack, "stack");
+	printStack(stack, "stack");
 }
 
 template <typename T>

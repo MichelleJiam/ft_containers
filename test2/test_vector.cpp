@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 16:54:25 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 17:38:40 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,9 +36,7 @@ void	test_vec_pushback(size_t size) {
 		vector.push_back(i);
 
 	assert(vector.size() == size);
-
-	if (size < 100)	// only print vector contents when not stress testing
-		printVector(vector, "vector");
+	printVector(vector, (size < 100), "vector");
 }
 
 template <typename T>
@@ -51,9 +49,7 @@ void	test_vec_popback(size_t size) {
 		vector.pop_back();
 
 	assert(vector.size() == 0);
-
-	if (size < 100)
-		printVector(vector, "vector");
+	printVector(vector, (size < 100), "vector");
 }
 
 template <typename T>
@@ -73,10 +69,9 @@ void	test_vec_clear(size_t size) {
 	printTestCase("clear() on vector of [size] size");
 
 	T	vector(size, 42);
-	vector.clear();
 
-	if (size < 100)
-		printVector(vector, "vector");
+	vector.clear();
+	printVector(vector, (size < 100), "vector");
 }
 
 template <typename T>
@@ -89,9 +84,7 @@ void	test_vec_reserve(size_t size) {
 	vector.reserve(size);
 	std::cout << "vector capacity was " << oldcap
 		<< ", is now " << vector.capacity() << ".\n";
-	
-	if (size < 100)
-		printVector(vector, "vector");
+	printVector(vector, (size < 100), "vector");
 }
 
 template <typename T>
@@ -101,9 +94,7 @@ void	test_vec_resize(size_t size) {
 	T	vector(4, 20);
 
 	vector.resize(size, 42);
-
-	if (size < 100)
-		printVector(vector, "vector");
+	printVector(vector, (size < 100), "vector");
 }
 
 template <typename T>
@@ -113,31 +104,26 @@ void	test_vec_insert(size_t size) {
 	typename T::iterator	ret = vector.insert(it, 88);
 	
 	std::cout << "insert(it, 88) returns " << *ret << std::endl;
-	if (size < 100)
-		printVector(vector, "vector", "insert(end, 88)");
+	printVector(vector, (size < 100), "vector", "insert(end, 88)");
 
 	it = vector.end();
 	ret = vector.insert(it - 1, 13);
 	std::cout << "insert(it - 1, 13) returns " << *ret << std::endl;
-	if (size < 100)
-		printVector(vector, "vector", "insert(end - 1, 13)");
+	printVector(vector, (size < 100), "vector", "insert(end - 1, 13)");
 
 	it = vector.begin();
 	vector.insert(it + 2, 4, 7);
-	if (size < 100)
-		printVector(vector, "vector", "insert(begin + 2, 4, 7)");
+	printVector(vector, (size < 100), "vector", "insert(begin + 2, 4, 7)");
 
 	T	vector2;
 	it = vector2.begin();
 	ret = vector2.insert(it, 100);
 	std::cout << "insert(it, 100) returns " << *ret << std::endl;
-	if (size < 100)
-		printVector(vector2, "empty vector2", "insert(begin, 100)");
+	printVector(vector2, (size < 100), "empty vector2", "insert(begin, 100)");
 
 	it = vector.begin();
 	vector2.insert(vector2.begin(), it, it + 2);
-	if (size < 100)
-		printVector(vector2, "vector2", "insert(begin, [42], [42])");
+	printVector(vector2, (size < 100), "vector2", "insert(begin, [42], [42])");
 }
 
 template <typename T>
@@ -146,18 +132,15 @@ void	test_vec_erase(size_t size) {
 	typename T::iterator	it = vector.end();
 
 	vector.erase(it - 2);
-	if (size < 100)
-		printVector(vector, "vector", "erase(end - 2)");
+	printVector(vector, (size < 100), "vector", "erase(end - 2)");
 
 	it = vector.end();
 	vector.erase(it - 3, it - 1);
-	if (size < 100)
-		printVector(vector, "vector", "erase(end - 3, end - 1)");
+	printVector(vector, (size < 100), "vector", "erase(end - 3, end - 1)");
 
 	it = vector.begin();
 	vector.erase(it + 2, it + 4);
-	if (size < 100)
-		printVector(vector, "vector", "erase(begin + 1, begin + 3)");
+	printVector(vector, (size < 100), "vector", "erase(begin + 1, begin + 3)");
 }
 
 template <typename T>
@@ -166,17 +149,14 @@ void	test_vec_assign(size_t size) {
 	T	vec1, vec2, vec3;
 
 	vec1.assign(7, vector[0]); // 7 ints
-	if (size < 100)
-		printVector(vec1, "vector 1", "assign(7, [42])");
+	printVector(vec1, (size < 100), "vector 1", "assign(7, [42])");
 
 	typename T::iterator it = vec1.begin();
 	vec2.assign(it + 1, it + 6); // 5 central values from vec1
-	if (size < 100)
-		printVector(vec2, "vector 2", "assign(vec1.begin + 1, vec1.begin + 6)");
+	printVector(vec2, (size < 100), "vector 2", "assign(vec1.begin + 1, vec1.begin + 6)");
 	
 	vec3.assign(vector.begin(), vector.end()); // [size] elements
-	if (size < 100)
-		printVector(vec3, "vector 3", "assign(vector.begin, vector.end)");
+	printVector(vec3, (size < 100), "vector 3", "assign(vector.begin, vector.end)");
 
 	assert(vec1.size() == 7);
 	assert(vec2.size() == 5);
@@ -190,16 +170,13 @@ void	test_vec_swap(size_t size) {
 	T	vec1(size, 13);
 	T	vec2(size, 42);
 
-	if (size < 100) {
-		printVector(vec1, "vector 1 BEFORE swap");
-		printVector(vec2, "vector 2 BEFORE swap");
-	}
+	printVector(vec1, (size < 100), "vector 1 BEFORE swap");
+	printVector(vec2, (size < 100), "vector 2 BEFORE swap");
+
 	vec1.swap(vec2);
 	assert(vec1.size() == vec2.size());
-	if (size < 100) {
-		printVector(vec1, "vector 1 AFTER swap");
-		printVector(vec2, "vector 2 AFTER swap");
-	}
+	printVector(vec1, (size < 100), "vector 1 AFTER swap");
+	printVector(vec2, (size < 100), "vector 2 AFTER swap");
 }
 
 template <typename T>
@@ -215,9 +192,8 @@ void	test_vec_elementAccess(size_t size) {
 	std::cout << "vector.at(1): " << vector.at(1) << std::endl;
 	std::cout << "vector.front(): " << vector.front() << std::endl;
 	std::cout << "vector.back(): " << vector.back() << std::endl;
-	
-	if (size < 100)
-		printVector(vector, "vector");
+	std::cout << std::endl;
+	printVector(vector, (size < 100), "vector");
 }
 
 template <typename T>
@@ -227,10 +203,8 @@ void	test_vec_relationalOps(size_t size) {
 	T	vec1(size, 42);
 	T	vec2(size / 2, 13);
 
-	if (size < 100) {
-		printVector(vec1, "vector 1");
-		printVector(vec2, "vector 2");
-	}
+	printVector(vec1, (size < 100), "vector 1");
+	printVector(vec2, (size < 100), "vector 2");
 	std::cout << std::boolalpha;
 	std::cout << "vec1 == vec2: " << (vec1 == vec2) << std::endl;
 	std::cout << "vec1 != vec2: " << (vec1 != vec2) << std::endl;
@@ -238,51 +212,6 @@ void	test_vec_relationalOps(size_t size) {
 	std::cout << "vec1 <= vec2: " << (vec1 <= vec2) << std::endl;
 	std::cout << "vec1 > vec2: " << (vec1 > vec2) << std::endl;
 	std::cout << "vec1 >= vec2: " << (vec1 >= vec2) << std::endl;
-}
-
-template <typename T>
-void	printSize(T const &vct, bool print_content = true)
-{
-	const typename T::size_type size = vct.size();
-	const typename T::size_type capacity = vct.capacity();
-	const std::string isCapacityOk = (capacity >= size) ? "OK" : "KO";
-	// Cannot limit capacity's max value because it's implementation dependent
-
-	std::cout << "size: " << size << std::endl;
-	std::cout << "capacity: " << capacity << " " << isCapacityOk << std::endl;
-	std::cout << "max_size: " << vct.max_size() << std::endl;
-	if (print_content)
-	{
-		typename T::const_iterator it = vct.begin();
-		typename T::const_iterator ite = vct.end();
-		std::cout << std::endl << "Content is:" << std::endl;
-		for (; it != ite; ++it)
-			std::cout << "- " << *it << std::endl;
-	}
-	std::cout << "###############################################" << std::endl;
-}
-template <typename T>
-void	prepost_incdec(T &vct)
-{
-	typename T::iterator it = vct.begin();
-	typename T::iterator it_tmp;
-
-	std::cout << "Pre inc" << std::endl;
-	it_tmp = ++it;
-	std::cout << *it_tmp << " | " << *it << std::endl;
-
-	std::cout << "Pre dec" << std::endl;
-	it_tmp = --it;
-	std::cout << *it_tmp << " | " << *it << std::endl;
-
-	std::cout << "Post inc" << std::endl;
-	it_tmp = it++;
-	std::cout << *it_tmp << " | " << *it << std::endl;
-
-	std::cout << "Post dec" << std::endl;
-	it_tmp = it--;
-	std::cout << *it_tmp << " | " << *it << std::endl;
-	std::cout << "###############################################" << std::endl;
 }
 
 template <typename T>
@@ -336,7 +265,7 @@ void	test_vec_iterators(size_t size) {
 		for (t_vec::reverse_iterator rit = vector.rbegin(); rit != vector.rend(); ++rit)
 			std::cout << *rit << " ";
 		std::cout << std::endl << std::endl;
-		printVector(vector, "vector");
+		printVector(vector, (size < 100), "vector");
 	}
 }
 

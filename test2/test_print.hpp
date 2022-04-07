@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/31 17:00:20 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 17:24:04 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 17:34:47 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,12 @@ void	printAtEnd(void (*printFunction)(T& container,
 }
 
 // Prints vector capacity, size, and contents,
-// and optionally test case and container name.
+// and optionally a toggle for not printing contents when size is big,
+// + test case + container name.
 // See printTestCase for test_case argument example.
 template <typename T>
-void    printVector(T& base_vec, std::string const cntr_name = std::string(),
+void    printVector(T& base_vec, bool print_contents = true,
+						std::string const cntr_name = std::string(),
 						std::string const test_case = std::string()) {
 	if (!test_case.empty())
 		printTestCase(test_case);
@@ -39,10 +41,12 @@ void    printVector(T& base_vec, std::string const cntr_name = std::string(),
 	std::cout << "capacity: " << base_vec.capacity() << std::endl;
 	std::cout << "size:     " << base_vec.size() << std::endl;
 	std::cout << "max_size: " << base_vec.max_size() << std::endl;
-	std::cout << "contents: [";
-	for (unsigned i = 0; i < base_vec.size(); i++)
-		std::cout << ' ' << base_vec[i];
-	std::cout << " ]\n\n";
+	if (print_contents) {
+		std::cout << "contents: [";
+		for (unsigned i = 0; i < base_vec.size(); i++)
+			std::cout << ' ' << base_vec[i];
+		std::cout << " ]\n\n";
+	}
 }
 
 #endif

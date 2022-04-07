@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/31 16:51:38 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 17:40:53 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -424,7 +424,7 @@ int main() {
 	// std::cout << "version: " << IMPL::get_name() << std::endl;
 
 	// test_utils();
-	test_vector();
+	// test_vector();
 	test_stack();
 	// test_rb();
 	// test_map();
