@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 17:12:40 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 19:08:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,6 @@ class rb_tree {
 			if (position == end() || position.base() == NULL)
 				return ;
 			_delete_node(position.base());
-
 		}
 
 		// erase element with given key
@@ -640,7 +639,6 @@ class rb_tree {
 					node = _del_reb_right_child_case(node, node->parent);
 			}
 			node->colour = BLACK;
-			_nil->parent = _root;
 		}
 
 		// helper called by _delete_node if node_to_delete has 2 children
@@ -694,6 +692,7 @@ class rb_tree {
 			_drop_node(node_to_delete);
 			if (saved_colour == BLACK) // if y is BLACK, RB properties may have been violated
 				_delete_rebalance(x);
+			_nil->parent = _root;
 			return 1;
 		}
 };
