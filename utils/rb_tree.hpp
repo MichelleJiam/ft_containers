@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 20:31:38 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 17:12:40 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,11 +76,8 @@ class rb_tree {
 				if (!empty())
 					clear();
 				_key_compare = other._key_compare;
-				if (other._root != _nil) {
-					_root = other._root;
-					// need to reassign allocators too?
+				if (other._root != _nil)
 					insert(other.begin(), other.end());
-				}			
 			}
 			return *this;
 		}
@@ -196,7 +193,7 @@ class rb_tree {
 		}
 
 		bool	empty() const {
-			return _size == 0;
+			return (_size == 0);
 		}
 
 		size_type	size() const {
@@ -204,14 +201,13 @@ class rb_tree {
 		}
 
 		size_type	max_size() const {
-			return _alloc.max_size();
+			return _n_alloc.max_size();
 		}
 
 	// Modifiers
 		void	clear() {
 			_erase_from(_root);
 			_nullify_root();
-			// erase(begin(), end()); // TODO: remove
 		}
 
 		// single
@@ -328,14 +324,14 @@ class rb_tree {
 			return static_cast<node_ptr>(node)->val.first;
 		}
 
-		base_ptr	_find_min(base_ptr start) {
-			while (start->left != _nil)
+		base_ptr	_find_min(base_ptr start) const {
+			while (start != _nil && start->left != _nil)
 				start = start->left;
 			return start;
 		}
 
-		base_ptr	_find_max(base_ptr start) {
-			while (start->right != _nil)
+		base_ptr	_find_max(base_ptr start) const {
+			while (start != _nil && start->right != _nil)
 				start = start->right;
 			return start;
 		}

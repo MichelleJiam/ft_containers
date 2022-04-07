@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/09 16:27:08 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/29 20:15:17 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/06 17:50:39 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ class map {
 		// Returns a read-only iterator pointing to one past the last pair
 		// in the map. Iteration is done in ascending order according to the keys.
 		const_iterator	end() const {
-			return _tree.cend();
+			return _tree.end();
 		}
 
 		// Returns a read/write reverse iterator pointing to the last pair
