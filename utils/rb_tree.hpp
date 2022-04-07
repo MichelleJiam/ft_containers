@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 19:08:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 19:57:28 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,10 @@ class rb_tree {
 			_root = _nil;
 		}
 
-		rb_tree(rb_tree const& other) {
+		rb_tree(rb_tree const& other)
+			: _alloc(other._alloc), _key_compare(other._key_compare) {
 			_nil = _create_nil();
+			_root = _nil;
 			*this = other;
 		}
 
