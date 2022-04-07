@@ -6,13 +6,14 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/03 20:21:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/06 17:38:05 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 16:54:15 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
 
-typedef IMPL::stack< int, IMPL::vector<int> >	t_istack;
+#define T1 int
+typedef IMPL::stack< T1, IMPL::vector<T1> >	t_stack;
 
 // Prints if stack is empty, stack size, stack top,
 // and optionally test-case and container name.
@@ -36,11 +37,11 @@ void    test_stack_constructors(size_t size) {
 	T	empty_stack;
 	printStack(empty_stack, "empty stack", "default constructor with no argument");
 
-	IMPL::vector<int>	stack(size, 42);
+	IMPL::vector<T1>	stack(size, 42);
 	T					copy_stack(stack);
 	if (size < 100) {	// only print contents when not stress testing
 		printStack(copy_stack, "copy stack 1", "copy constructor with vector");
-		printVector<IMPL::vector<int> >(stack, "source vector");
+		printVector<IMPL::vector<T1> >(stack, "source vector");
 	}
 
 	T	copy_stack2(copy_stack);
@@ -122,14 +123,14 @@ void test_stack() {
 #endif
 
 	// constructor test
-	benchmarkFunction_stress(test_stack_constructors<t_istack>, "default/copy constructors");
+	benchmarkFunction_stress(test_stack_constructors<t_stack>, "default/copy constructors");
 
 	// push test
-	benchmarkFunction_stress(test_stack_push<t_istack>, "push");
+	benchmarkFunction_stress(test_stack_push<t_stack>, "push");
 
 	// pop test
-	benchmarkFunction_stress(test_stack_pop<t_istack>, "pop");
+	benchmarkFunction_stress(test_stack_pop<t_stack>, "pop");
 
 	// relational operators
-	benchmarkFunction_stress(test_stack_relationalOps<t_istack>, "relational operators");
+	benchmarkFunction_stress(test_stack_relationalOps<t_stack>, "relational operators");
 }

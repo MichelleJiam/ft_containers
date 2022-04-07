@@ -6,13 +6,14 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/06 17:10:13 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/07 16:54:25 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
 
-typedef IMPL::vector<int> t_ivec;
+#define T1 int
+typedef IMPL::vector<T1> t_vec;
 
 template <typename T>
 void	test_vec_constructors(size_t size) {
@@ -332,7 +333,7 @@ void	test_vec_iterators(size_t size) {
 		for (it = vector.begin(); it != vector.end(); ++it)
 			std::cout << *it << " ";
 		std::cout << "\niterating backwards from rbegin to rend: ";
-		for (t_ivec::reverse_iterator rit = vector.rbegin(); rit != vector.rend(); ++rit)
+		for (t_vec::reverse_iterator rit = vector.rbegin(); rit != vector.rend(); ++rit)
 			std::cout << *rit << " ";
 		std::cout << std::endl << std::endl;
 		printVector(vector, "vector");
@@ -345,44 +346,44 @@ void test_vector() {
 #endif
 
 	// constructor test
-	benchmarkFunction_stress(test_vec_constructors<t_ivec>, "fill/range/copy constructors");
+	benchmarkFunction_stress(test_vec_constructors<t_vec>, "fill/range/copy constructors");
 	
 	// push_back test
-	benchmarkFunction_stress(test_vec_pushback<t_ivec>, "push_back");
+	benchmarkFunction_stress(test_vec_pushback<t_vec>, "push_back");
 
 	// pop_back test
-	benchmarkFunction_stress(test_vec_popback<t_ivec>, "pop_back");
+	benchmarkFunction_stress(test_vec_popback<t_vec>, "pop_back");
 
 	// empty test
-	benchmarkFunction_stress(test_vec_empty<t_ivec>, "empty");
+	benchmarkFunction_stress(test_vec_empty<t_vec>, "empty");
 
 	// clear test
-	benchmarkFunction_stress(test_vec_clear<t_ivec>, "clear");
+	benchmarkFunction_stress(test_vec_clear<t_vec>, "clear");
 	
 	// reserve test
-	benchmarkFunction_stress(test_vec_reserve<t_ivec>, "reserve");
+	benchmarkFunction_stress(test_vec_reserve<t_vec>, "reserve");
 
 	// resize test
-	benchmarkFunction_stress(test_vec_resize<t_ivec>, "resize");
+	benchmarkFunction_stress(test_vec_resize<t_vec>, "resize");
 	
 	// insert test
-	benchmarkFunction_stress(test_vec_insert<t_ivec>, "insert");
+	benchmarkFunction_stress(test_vec_insert<t_vec>, "insert");
 
 	// erase test
-	benchmarkFunction_stress(test_vec_erase<t_ivec>, "erase");
+	benchmarkFunction_stress(test_vec_erase<t_vec>, "erase");
 
 	// assign test
-	benchmarkFunction_stress(test_vec_assign<t_ivec>, "assign");
+	benchmarkFunction_stress(test_vec_assign<t_vec>, "assign");
 
 	// swap test
-	benchmarkFunction_stress(test_vec_swap<t_ivec>, "swap");
+	benchmarkFunction_stress(test_vec_swap<t_vec>, "swap");
 
 	// element access functions
-	benchmarkFunction_stress(test_vec_elementAccess<t_ivec>, "element access");
+	benchmarkFunction_stress(test_vec_elementAccess<t_vec>, "element access");
 
 	// relational operators
-	benchmarkFunction_stress(test_vec_relationalOps<t_ivec>, "relational operators");
+	benchmarkFunction_stress(test_vec_relationalOps<t_vec>, "relational operators");
 
 	// iterators
-	benchmarkFunction_stress(test_vec_iterators<t_ivec>, "iterators");
+	benchmarkFunction_stress(test_vec_iterators<t_vec>, "iterators");
 }
