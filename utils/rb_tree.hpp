@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/08 14:47:16 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/08 17:05:47 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,7 @@ class rb_tree {
 		}
 
 		const_iterator	lower_bound(key_type const& key) const {
-			return const_iterator(*_lower_bound(key));
+			return _lower_bound(key);
 		}
 
 		iterator	upper_bound(key_type const& key) {
@@ -305,15 +305,14 @@ class rb_tree {
 		}
 
 		const_iterator	upper_bound(key_type const& key) const {
-			return const_iterator(*_upper_bound(key));
+			return _upper_bound(key);
 		}
 
 		pair<iterator, iterator>	equal_range(key_type const& key) {
-			iterator	lower = lower_bound(key);
-			iterator	upper = upper_bound(key);	// TODO: remove superfluous code to return?
-			return ft::make_pair<iterator, iterator>(lower, upper);
+			return ft::make_pair<iterator, iterator>(
+					lower_bound(key), upper_bound(key));
 		}
-		// TODO: check if const cast is working
+
 		pair<const_iterator, const_iterator>	equal_range(key_type const& key) const {
 			return ft::make_pair<const_iterator, const_iterator>(
 					lower_bound(key), upper_bound(key));
@@ -375,6 +374,21 @@ class rb_tree {
 			return iterator(node);
 		}
 
+		const_iterator	_lower_bound(key_type const& key) const {
+			base_ptr	tmp = _root;
+			base_ptr	node = _nil;
+
+			while (tmp != _nil) {
+				if (_key_compare(_get_key(tmp), key) == false) {
+					node = tmp;
+					tmp = tmp->left;
+				}
+				else
+					tmp = tmp->right;
+			}
+			return const_iterator(node);
+		}
+
 		iterator	_upper_bound(key_type const& key) {
 			base_ptr	tmp = _root;
 			base_ptr	node = _nil;
@@ -388,6 +402,21 @@ class rb_tree {
 					tmp = tmp->right;
 			}
 			return iterator(node);
+		}
+
+		const_iterator	_upper_bound(key_type const& key) const {
+			base_ptr	tmp = _root;
+			base_ptr	node = _nil;
+
+			while (tmp != _nil) {
+				if (_key_compare(key, _get_key(tmp)) == true) {
+					node = tmp;
+					tmp = tmp->left;
+				}
+				else
+					tmp = tmp->right;
+			}
+			return const_iterator(node);
 		}
 
 		// NODE MANAGEMENT
