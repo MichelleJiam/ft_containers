@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:22 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/30 17:35:26 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/08 17:42:15 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ void	alignedPrint(std::string str,
 		std::cout << "\n";
 }
 
-std::string	formatMiddle(int inner_width, std::string const lside,
-							std::string text, std::string const rside) {
+std::string	formatMiddle(int inner_width, std::string const& lside,
+							std::string text, std::string const& rside) {
 	if (text[0] == ' ')	// so leading spaces don't throw off banner alignment
 		text = text.substr(1);
 	std::string	spaces((inner_width - text.size()) / 2, ' ');
@@ -57,7 +57,7 @@ void	printHeader(std::string header_text) {
 	std::cout << WHT;
 }
 
-void	printTest(std::string const test_name) {
+void	printTest(std::string const& test_name) {
 #ifdef SIMPLE
 	std::cout << "\nTESTING: " << test_name << std::endl;
 #else
@@ -70,7 +70,7 @@ void	printTest(std::string const test_name) {
 
 // Example test_case argument: "insert(begin + 1, [1], [2])"
 //		where [n] denotes value at address for visual simplicity
-void	printTestCase(std::string const test_case) {
+void	printTestCase(std::string const& test_case) {
 #ifndef SIMPLE
 	std::cout << "\nTest case: " << GRN << test_case << WHT << "\n\n";
 #else

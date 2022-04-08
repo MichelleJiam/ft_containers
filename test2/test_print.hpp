@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/03/31 17:00:20 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 17:34:47 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/08 17:41:17 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@
 // used to print the contents of a container, e.g. after tests.
 template <typename T>
 void	printAtEnd(void (*printFunction)(T& container,
-										std::string const cntr_name,
-										std::string const test_case),
-					T& container, std::string const cntr_name,
-					std::string const test_case = std::string()) {
+					std::string const& cntr_name,
+					std::string const& test_case),
+					T& container, std::string const& cntr_name,
+					std::string const& test_case = std::string()) {
 	std::cout << "\nCurrent state of container: " << std::endl;
 	printFunction(container, cntr_name, test_case);
 }
@@ -32,8 +32,8 @@ void	printAtEnd(void (*printFunction)(T& container,
 // See printTestCase for test_case argument example.
 template <typename T>
 void    printVector(T& base_vec, bool print_contents = true,
-						std::string const cntr_name = std::string(),
-						std::string const test_case = std::string()) {
+						std::string const& cntr_name = std::string(),
+						std::string const& test_case = std::string()) {
 	if (!test_case.empty())
 		printTestCase(test_case);
 	if (!cntr_name.empty())

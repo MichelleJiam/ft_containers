@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/06 16:46:10 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/08 17:20:11 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,7 @@ class vector {
 };
 
 // NON-MEMBER FUNCTION OVERLOADS
+// RELATIONAL OPERATORS
 // Equality comparison.  It is linear in the size of the vectors.
 // Vectors are considered equivalent if their sizes are equal,
 // and if corresponding elements compare equal.

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/03/31 17:04:30 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/08 17:42:51 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,18 +67,18 @@
 // prints test unit header, taking unit name (e.g. "vector") as parameter
 void	printHeader(std::string unit_name);
 // prints test name and increments test_count
-void	printTest(std::string const test_name);
+void	printTest(std::string const& test_name);
 // prints test case. see pre-function comment for example use.
-void	printTestCase(std::string const test_case);
+void	printTestCase(std::string const& test_case);
 int		printResult(bool const passed);  // TODO: remove
 void	printPassing(int passed, int tests);
 bool	mycomp(char const c1, char const c2);
 
 // MAIN.CPP
 void	benchmarkFunction(void (*testFunction)(size_t size),
-							std::string const test_name);
+							std::string const& test_name);
 void	benchmarkFunction_stress(void (*testFunction)(size_t size),
-								std::string const test_name);
+								std::string const& test_name);
 
 // container test units
 void	test_vector();

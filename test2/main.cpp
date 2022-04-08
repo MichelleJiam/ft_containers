@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 17:40:53 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/08 17:43:06 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,7 +371,7 @@ void    printMap(T& base_map, std::string const cntr_name,
 // container of size 10. See `benchmarkFunction_stress` for larger size test.
 // Also prints the test name at the beginning.
 void	benchmarkFunction(void (*testFunction)(size_t size),
-							std::string const test_name) {
+							std::string const& test_name) {
 	printTest(test_name);
 	
 	clock_t start = clock();
@@ -394,7 +394,7 @@ void	benchmarkFunction(void (*testFunction)(size_t size),
 // container of `size` size (in this case, STRESS_SIZE which is defined in
 // tester.hpp as INT_MAX / 100).
 void	benchmarkFunction_stress(void (*testFunction)(size_t size),
-								std::string const test_name) {
+								std::string const& test_name) {
 	benchmarkFunction(testFunction, test_name);
 #ifdef QUICK
 	return ;
@@ -425,9 +425,9 @@ int main() {
 
 	// test_utils();
 	// test_vector();
-	test_stack();
+	// test_stack();
 	// test_rb();
-	// test_map();
+	test_map();
 	
 	// system("leaks ft_bin");
 	return 0;
