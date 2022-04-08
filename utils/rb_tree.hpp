@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 22:22:06 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/08 14:47:16 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,19 +63,19 @@ class rb_tree {
 	// Constructors & Destructor
 		rb_tree(Compare const& comp, Alloc const& alloc)
 			:	_alloc(alloc),
-				// _b_alloc(alloc),
-				// _n_alloc(alloc),
+				_b_alloc(alloc),
+				_n_alloc(alloc),
 				_size(0),
 				_key_compare(comp) {
-			std::cout << "default const: " << "alloc.maxsize = " << _alloc.max_size()
-				<< " n_alloc.maxsize = " << _n_alloc.max_size() << " b_alloc.maxsize = "
-				<< _b_alloc.max_size() << std::endl;
 			_nil = _create_nil();
 			_root = _nil;
 		}
 
 		rb_tree(rb_tree const& other)
-			: _alloc(other._alloc), _key_compare(other._key_compare) {
+			:	_alloc(other._alloc),
+				_b_alloc(other._alloc),
+				_n_alloc(other._alloc),
+				_key_compare(other._key_compare) {
 			_nil = _create_nil();
 			_root = _nil;
 			*this = other;
@@ -393,7 +393,7 @@ class rb_tree {
 		// NODE MANAGEMENT
 		base_ptr	_create_nil() {
 			base_ptr tmp = _b_alloc.allocate(1);
-			_b_alloc.construct(tmp, rb_node_base(BLACK));
+			_b_alloc.construct(tmp, rb_node_base());
 			return tmp;
 		}
 
@@ -401,10 +401,6 @@ class rb_tree {
 			rb_node<Val>	tmp(val, parent, _nil);
 			node_ptr		new_node = _n_alloc.allocate(1);
 			_n_alloc.construct(new_node, tmp);
-			// _n_alloc.construct(new_node, rb_node<Val>(val));
-			// tmp->parent = parent; // TODO: decide if want to change to declaring rb_node object on stack and using copy constructor through construct
-			// tmp->left = _nil;
-			// tmp->right = _nil;
 			return new_node;
 		}
 
