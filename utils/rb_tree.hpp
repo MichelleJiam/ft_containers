@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/08 17:05:47 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/08 17:49:04 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,10 @@
 #include <utility> // swap
 #include "rb_node.hpp"
 #include "rb_iterator.hpp"
+#include "equal.hpp"
+#include "lexicographical_compare.hpp"
+#include "reverse_iterator.hpp"
+#include "pair.hpp"
 
 namespace ft {
 template <class Key, class Val, class Compare,
@@ -316,6 +320,17 @@ class rb_tree {
 		pair<const_iterator, const_iterator>	equal_range(key_type const& key) const {
 			return ft::make_pair<const_iterator, const_iterator>(
 					lower_bound(key), upper_bound(key));
+		}
+
+	// Relational ops
+		friend bool operator==(rb_tree const& lhs, rb_tree const& rhs) {
+			return (lhs.size() == rhs.size()
+					&& ft::equal(lhs.begin(), lhs.end(), rhs.begin()));
+		}
+
+		friend bool operator<(rb_tree const& lhs, rb_tree const& rhs) {
+			return ft::lexicographical_compare(lhs.begin(), lhs.end(),
+												rhs.begin(), rhs.end());
 		}
 
 	private:
@@ -678,10 +693,8 @@ class rb_tree {
 
 		// helper called by _delete_node if node_to_delete has 2 children
 		base_ptr	_del_two_children(base_ptr x, base_ptr node_to_delete, rb_colour &saved_colour) {
-			base_ptr	y = node_to_delete;
-			
 			// assigning minimum of right subtree of node_to_delete to y
-			y = _find_min(node_to_delete->right);
+			base_ptr	y = _find_min(node_to_delete->right);
 			saved_colour = y->colour;
 			x = y->right;
 			if (y->parent == node_to_delete)

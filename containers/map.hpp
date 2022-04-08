@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/09 16:27:08 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 22:22:10 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/08 17:36:06 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,11 @@
 
 #include <functional> // less, binary_function
 #include <memory> // allocator
-#include "../utils/pair.hpp"
-#include "../utils/reverse_iterator.hpp"
 #include "../utils/rb_tree.hpp"
 
 namespace ft {
 template < class Key, class T, class Compare = std::less<Key>,
-			class Allocator = std::allocator< ft::pair<const Key, T> > >
+			class Alloc = std::allocator< ft::pair<const Key, T> > >
 class map {
 	public:
 		typedef Key						key_type;
@@ -30,13 +28,13 @@ class map {
 		typedef std::size_t				size_type;
 		typedef std::ptrdiff_t			difference_type;
 		typedef Compare					key_compare;
-		typedef Allocator				allocator_type;
+		typedef Alloc					allocator_type;
 
 		// nested class for comparing elements of type value_type
 		class	value_compare
 				: public std::binary_function<value_type, value_type, bool> {
 			// `friend` allows class to access private & protected members of map
-			friend class map<Key, T, Compare, Allocator>;
+			friend class map<Key, T, Compare, Alloc>;
 			protected:
 				Compare	comp;
 
@@ -55,10 +53,10 @@ class map {
 		_tree_type	_tree;
 
 	public:
-		typedef typename Allocator::reference			reference;
-		typedef typename Allocator::const_reference		const_reference;
-		typedef typename Allocator::pointer				pointer;
-		typedef typename Allocator::const_pointer		const_pointer;
+		typedef typename Alloc::reference				reference;
+		typedef typename Alloc::const_reference			const_reference;
+		typedef typename Alloc::pointer					pointer;
+		typedef typename Alloc::const_pointer			const_pointer;
 		typedef typename _tree_type::iterator			iterator;
 		typedef typename _tree_type::const_iterator		const_iterator;
 		typedef ft::reverse_iterator<iterator>			reverse_iterator;
@@ -286,7 +284,62 @@ class map {
 		allocator_type	get_allocator() const {
 			return _tree.get_allocator();
 		}
+	
+	// Friend declarations for accessing private tree structure
+	template <class Key1, class T1, class Compare1, class Alloc1>
+	friend bool operator==(map<Key1,T1,Compare1,Alloc1> const& lhs,
+							map<Key1,T1,Compare1,Alloc1> const& rhs);
+
+	template <class Key1, class T1, class Compare1, class Alloc1>
+	friend bool operator<(map<Key1,T1,Compare1,Alloc1> const& lhs,
+							map<Key1,T1,Compare1,Alloc1> const& rhs);
 };
+
+// NON-MEMBER FUNCTION OVERLOADS
+// Improves performance by exchanging references to the data without actually
+// performing any element copy or movement.
+template <class Key, class T, class Compare, class Alloc>
+void swap(map<Key,T,Compare,Alloc>& lhs, map<Key,T,Compare,Alloc>& rhs) {
+	lhs.swap(rhs);
+}
+
+// RELATIONAL OPERATORS
+template <class Key, class T, class Compare, class Alloc>
+bool operator==(map<Key,T,Compare,Alloc> const& lhs,
+				map<Key,T,Compare,Alloc> const& rhs) {
+	return lhs._tree == rhs._tree;
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool operator!=(map<Key,T,Compare,Alloc> const& lhs,
+				map<Key,T,Compare,Alloc> const& rhs) {
+	return !(lhs == rhs);
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool operator<(map<Key,T,Compare,Alloc> const& lhs,
+				map<Key,T,Compare,Alloc> const& rhs) {
+	return lhs._tree < rhs._tree;
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool operator<=(map<Key,T,Compare,Alloc> const& lhs,
+				map<Key,T,Compare,Alloc> const& rhs) {
+	return !(rhs < lhs);
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool operator>(map<Key,T,Compare,Alloc> const& lhs,
+				map<Key,T,Compare,Alloc> const& rhs) {
+	return rhs < lhs;
+}
+
+template <class Key, class T, class Compare, class Alloc>
+bool operator>=(map<Key,T,Compare,Alloc> const& lhs,
+				map<Key,T,Compare,Alloc> const& rhs) {
+	return !(lhs < rhs);
+}
+
 } // namespace ft
 
 #endif
