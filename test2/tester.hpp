@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/08 17:42:51 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 21:50:48 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,9 @@
 #include "../containers/stack.hpp"
 #include <map>
 #include "../containers/map.hpp"
+#include <set>
+#include "../containers/set.hpp"
+#include <list> // for testing map & set
 #include "../utils/pair.hpp"
 
 # define RED "\e[0;31m"
@@ -36,7 +39,7 @@
 # define CYN "\e[0;36m"
 # define WHT "\e[0;37m"
 
-# define STRESS_SIZE (INT_MAX / 100)
+# define STRESS_SIZE (INT_MAX / 1000)
 
 #ifndef IMPL
 # define IMPL ft
@@ -85,6 +88,7 @@ void	test_vector();
 void	test_utils();
 void	test_stack();
 void	test_map();
+void	test_set();
 
 #include "./test_print.hpp" // templated container print fns
 

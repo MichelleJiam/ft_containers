@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:00:58 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/19 18:38:59 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 18:42:12 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,8 +161,6 @@ class set {
 // MODIFIERS
 		// single element
 		ft::pair<iterator, bool>	insert(value_type const& val) {
-			// size_type	old_size = size();
-			// iterator	inserted = 
 			return _tree.insert(val);
 		}
 

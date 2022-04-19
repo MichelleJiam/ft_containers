@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/08 17:43:06 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 21:50:56 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -392,7 +392,7 @@ void	benchmarkFunction(void (*testFunction)(size_t size),
 // and skip the potentially slow stress test.
 // Accepts as param a `testFunction` that executes a container method on a
 // container of `size` size (in this case, STRESS_SIZE which is defined in
-// tester.hpp as INT_MAX / 100).
+// tester.hpp as INT_MAX / 1000).
 void	benchmarkFunction_stress(void (*testFunction)(size_t size),
 								std::string const& test_name) {
 	benchmarkFunction(testFunction, test_name);
@@ -427,7 +427,8 @@ int main() {
 	// test_vector();
 	// test_stack();
 	// test_rb();
-	test_map();
+	// test_map();
+	test_set();
 	
 	// system("leaks ft_bin");
 	return 0;

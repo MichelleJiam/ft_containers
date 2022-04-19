@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/03/31 16:36:50 by mjiam         ########   odam.nl          #
+#    Updated: 2022/04/19 15:55:10 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,10 +40,10 @@ FLAGS		+=	-fsanitize=address -fno-omit-frame-pointer -g
 endif
 
 CONTAINERS	= 	$(addprefix $(CONT_DIR)/, vector.hpp vector.ipp \
-											stack.hpp)
+											set.hpp stack.hpp)
 
 TEST_SRC	= 	main.cpp tester_helper.cpp test_stack.cpp test_vector.cpp \
-				test_utils.cpp test_map.cpp
+				test_utils.cpp test_map.cpp test_set.cpp
 
 COMPARE_SRC	=	$(addprefix $(TEST_DIR)/, compare.cpp)
 
