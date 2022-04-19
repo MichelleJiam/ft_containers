@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/09 16:27:08 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/19 17:53:09 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 18:40:11 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ class map {
 		typedef typename Alloc::const_pointer			const_pointer;
 		typedef typename _tree_type::iterator			iterator;
 		typedef typename _tree_type::const_iterator		const_iterator;
-		typedef ft::reverse_iterator<iterator>			reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef typename _tree_type::reverse_iterator	reverse_iterator;
+		typedef typename _tree_type::const_reverse_iterator	const_reverse_iterator;
 
 	// CONSTRUCTORS & ASSIGNMENT OPERATORS
 		// default: empty container

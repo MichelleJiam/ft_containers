@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:00:58 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/19 18:06:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 18:38:59 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ class set {
 		typedef typename Alloc::const_pointer			const_pointer;
 		typedef typename _tree_type::const_iterator		iterator;
 		typedef typename _tree_type::const_iterator		const_iterator;
-		typedef ft::reverse_iterator<const iterator>	reverse_iterator;
-		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
+		typedef typename _tree_type::const_reverse_iterator	reverse_iterator;
+		typedef typename _tree_type::const_reverse_iterator	const_reverse_iterator;
 
 	// CONSTRUCTORS & ASSIGNMENT OPERATORS
 		// default: empty container
@@ -270,43 +270,43 @@ class set {
 // NON-MEMBER FUNCTION OVERLOADS
 // Improves performance by exchanging references to the data without actually
 // performing any element copy or movement.
-template <class Key, class T, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 void swap(set<Key,Compare,Alloc>& lhs, set<Key,Compare,Alloc>& rhs) {
 	lhs.swap(rhs);
 }
 
 // RELATIONAL OPERATORS
-template <class Key, class T, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 bool operator==(set<Key,Compare,Alloc> const& lhs,
 				set<Key,Compare,Alloc> const& rhs) {
 	return lhs._tree == rhs._tree;
 }
 
-template <class Key, class T, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 bool operator!=(set<Key,Compare,Alloc> const& lhs,
 				set<Key,Compare,Alloc> const& rhs) {
 	return !(lhs == rhs);
 }
 
-template <class Key, class T, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 bool operator<(set<Key,Compare,Alloc> const& lhs,
 				set<Key,Compare,Alloc> const& rhs) {
 	return lhs._tree < rhs._tree;
 }
 
-template <class Key, class T, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 bool operator<=(set<Key,Compare,Alloc> const& lhs,
 				set<Key,Compare,Alloc> const& rhs) {
 	return !(rhs < lhs);
 }
 
-template <class Key, class T, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 bool operator>(set<Key,Compare,Alloc> const& lhs,
 				set<Key,Compare,Alloc> const& rhs) {
 	return rhs < lhs;
 }
 
-template <class Key, class T, class Compare, class Alloc>
+template <class Key, class Compare, class Alloc>
 bool operator>=(set<Key,Compare,Alloc> const& lhs,
 				set<Key,Compare,Alloc> const& rhs) {
 	return !(lhs < rhs);
