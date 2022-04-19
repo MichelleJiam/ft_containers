@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:00:58 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/19 17:53:27 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 18:06:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ class set {
 		typedef typename Alloc::const_reference			const_reference;
 		typedef typename Alloc::pointer					pointer;
 		typedef typename Alloc::const_pointer			const_pointer;
-		typedef typename _tree_type::iterator			iterator;
+		typedef typename _tree_type::const_iterator		iterator;
 		typedef typename _tree_type::const_iterator		const_iterator;
-		typedef ft::reverse_iterator<iterator>			reverse_iterator;
+		typedef ft::reverse_iterator<const iterator>	reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>	const_reverse_iterator;
 
 	// CONSTRUCTORS & ASSIGNMENT OPERATORS
