@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/08 17:49:04 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 16:20:39 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 #include "lexicographical_compare.hpp"
 #include "reverse_iterator.hpp"
 #include "pair.hpp"
+#include "type_traits.hpp" // enable_if
 
 namespace ft {
 template <class Key, class Val, class Compare,
@@ -225,26 +226,27 @@ class rb_tree {
 		}
 
 		// single
-		iterator	insert(value_type const& val) {
+		ft::pair<iterator, bool>	insert(value_type const& val) {
 			base_ptr search = _search_by_key(val.first);
 			if (search == _nil) {
 				base_ptr inserted = _insert_at(_nil, val);
 				_size += 1;
-				return iterator(inserted);
+				return ft::make_pair(iterator(inserted), true);
 			}
 			else
-				return iterator(search);
+				return ft::make_pair(iterator(search), false);
 		}
 
 		// with position hint
 		iterator	insert(iterator position, value_type const& val) {
 			(void)position;
-			return insert(val);
+			return insert(val).first;
 		}
 
 		// range
 		template <class InputIterator>
-		void	insert(InputIterator first, InputIterator last) {
+		void	insert(InputIterator first, InputIterator last,
+						typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type* = NULL) {
 			while (first != last) {
 				insert(*first);
 				++first;
@@ -746,4 +748,4 @@ class rb_tree {
 };
 } // namespace ft
 
-#endif
+#endif /* RB_TREE_HPP */

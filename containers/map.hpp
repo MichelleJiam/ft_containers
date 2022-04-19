@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/09 16:27:08 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/08 17:36:06 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 16:24:31 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,25 @@ class map {
 
 	// DESTRUCTOR
 		~map()  {}
+
+	
+	// OBSERVERS
+		// Returns key comparison object out of which map was constructed.
+		key_compare	key_comp() const {
+			return _tree.key_comp();
+		}
+
+		// Returns value comparison object built from key comparison object.
+		// Can be used to compare 2 elements to see if the first key goes
+		// before the second.
+		value_compare	value_comp() const {
+			return value_compare(_tree.key_comp());
+		}
+	
+	// ALLOCATOR
+		allocator_type	get_allocator() const {
+			return _tree.get_allocator();
+		}
 
 	// ITERATORS
 		// Returns a read/write iterator pointing to first pair in the map.
@@ -171,9 +190,7 @@ class map {
 	// MODIFIERS
 		// single
 		ft::pair<iterator, bool>	insert(value_type const& val) {
-			size_type	old_size = size();
-			iterator	inserted = _tree.insert(val);
-			return ft::make_pair(inserted, old_size != size());
+			return _tree.insert(val);
 		}
 
 		// with hint
@@ -212,19 +229,6 @@ class map {
 		// Erases all elements in a map.
 		void	clear() {
 			_tree.clear();
-		}
-
-	// OBSERVERS
-		// Returns key comparison object out of which map was constructed.
-		key_compare	key_comp() const {
-			return _tree.key_comp();
-		}
-
-		// Returns value comparison object built from key comparison object.
-		// Can be used to compare 2 elements to see if the first key goes
-		// before the second.
-		value_compare	value_comp() const {
-			return value_compare(_tree.key_comp());
 		}
 
 	// OPERATIONS
@@ -280,19 +284,14 @@ class map {
 			return _tree.equal_range(key);
 		}
 
-	// ALLOCATOR
-		allocator_type	get_allocator() const {
-			return _tree.get_allocator();
-		}
-	
-	// Friend declarations for accessing private tree structure
-	template <class Key1, class T1, class Compare1, class Alloc1>
-	friend bool operator==(map<Key1,T1,Compare1,Alloc1> const& lhs,
-							map<Key1,T1,Compare1,Alloc1> const& rhs);
+		// Friend declarations for accessing private tree structure
+		template <class Key1, class T1, class Compare1, class Alloc1>
+		friend bool operator==(map<Key1,T1,Compare1,Alloc1> const& lhs,
+								map<Key1,T1,Compare1,Alloc1> const& rhs);
 
-	template <class Key1, class T1, class Compare1, class Alloc1>
-	friend bool operator<(map<Key1,T1,Compare1,Alloc1> const& lhs,
-							map<Key1,T1,Compare1,Alloc1> const& rhs);
+		template <class Key1, class T1, class Compare1, class Alloc1>
+		friend bool operator<(map<Key1,T1,Compare1,Alloc1> const& lhs,
+								map<Key1,T1,Compare1,Alloc1> const& rhs);
 };
 
 // NON-MEMBER FUNCTION OVERLOADS
