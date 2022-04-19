@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/19 17:57:37 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 18:20:34 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,7 +238,7 @@ class rb_tree {
 		}
 
 		// with position hint
-		iterator	insert(iterator position, value_type const& val) {
+		iterator	insert(const_iterator position, value_type const& val) {
 			(void)position;
 			return insert(val).first;
 		}
@@ -260,6 +260,12 @@ class rb_tree {
 			_delete_node(position.base());
 		}
 
+		void	erase(const_iterator position) {
+			if (position == end() || position.base() == NULL)
+				return ;
+			_delete_node(position.base());
+		}
+
 		// erase element with given key
 		size_type	erase(key_type const& key) {
 			return _delete_node(_search_by_key(key));
@@ -267,6 +273,15 @@ class rb_tree {
 
 		// erase range
 		void	erase(iterator first, iterator last) {
+			if (first == begin() && last == end())
+				clear();
+			else {
+				while (first != last)
+					erase(first++);
+			}
+		}
+
+		void	erase(const_iterator first, const_iterator last) {
 			if (first == begin() && last == end())
 				clear();
 			else {
