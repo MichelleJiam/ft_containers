@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/19 16:20:39 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/04/19 17:57:37 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 #include "type_traits.hpp" // enable_if
 
 namespace ft {
-template <class Key, class Val, class Compare,
+template <class Key, class Val, class KeyOfValue, class Compare,
 			class Alloc = std::allocator<Val> >
 class rb_tree {
 	public:
@@ -227,7 +227,7 @@ class rb_tree {
 
 		// single
 		ft::pair<iterator, bool>	insert(value_type const& val) {
-			base_ptr search = _search_by_key(val.first);
+			base_ptr search = _search_by_key(KeyOfValue()(val));
 			if (search == _nil) {
 				base_ptr inserted = _insert_at(_nil, val);
 				_size += 1;
@@ -346,7 +346,7 @@ class rb_tree {
 		// does not check if node is _nil/NULL before casting.
 		// caller's responsibility to check before calling.
 		key_type const&	_get_key(base_ptr node) const {
-			return static_cast<node_ptr>(node)->val.first;
+			return KeyOfValue()(static_cast<node_ptr>(node)->val);
 		}
 
 		base_ptr	_find_min(base_ptr start) const {
