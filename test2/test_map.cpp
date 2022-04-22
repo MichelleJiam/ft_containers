@@ -76,8 +76,6 @@ template <typename T>
 void	test_map_constructors(size_t size) {
 	T	empty_map;
 
-
-
 	printMap(empty_map, (size < 100), "empty_map");
 }
 
