@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/25 18:52:21 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/05 21:29:53 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/26 17:24:27 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,17 +56,20 @@ int main() {
 	std::string std_line, ft_line;
 	std::string test_name;
 
+	if (std::getline(std_file, std_line) && std::getline(ft_file, ft_line)) // print container type header
+		printHeader(ft_line);
+
 	while (std_file && ft_file
 			&& std::getline(std_file, std_line)
 			&& std::getline(ft_file, ft_line)) {
-		if (std_line.find("TESTING") != std::string::npos) {
+		if (std_line.find("TESTING") != std::string::npos) { // printing test cases
 			test_name = std_line.substr(std_line.find(": ") + 2);
 			tests++;
 			new_test = 1;
 			std::cout << "\nTesting: " << GRN << test_name << WHT << std::endl;
 		}
 		else if (std_line.compare(ft_line) != 0
-			&& std_line.find("Duration") == std::string::npos) {
+			&& std_line.find("Duration") == std::string::npos) { // if different output is found
 			if (new_test) {
 				std::cout << RED << "TEST FAILED" << WHT << " | Diff: " << std::endl;
 				failed++;
@@ -76,9 +79,9 @@ int main() {
 			status = 1;
 			new_test = 0;
 		}
-		else if (std_line.find("single operation") != std::string::npos)
+		else if (std_line.find("single operation") != std::string::npos) // don't print single op timing
 			continue;
-		else if (std_line.find("stress operation") != std::string::npos
+		else if (std_line.find("stress operation") != std::string::npos // print only stress op comparison
 					&& new_test == 1) // doesn't print times if test fails
 			compareTimes(std_line, ft_line);
 	}

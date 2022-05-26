@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:52:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/19 21:51:06 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/26 17:25:20 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,9 @@ void	test_set_insert(size_t size) {
 
 void test_set() {
 #ifndef SIMPLE
-	printHeader("testing set");
+	printHeader("set");
+#else
+	std::cout << "SET\n";
 #endif
 
 	// constructor test

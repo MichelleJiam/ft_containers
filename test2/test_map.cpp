@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/19 19:58:15 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/26 17:25:42 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -235,7 +235,9 @@ void test() {
 
 void test_map() {
 #ifndef SIMPLE
-	printHeader("testing map");
+	printHeader("map");
+#else
+	std::cout << "MAP\n";
 #endif
 
 	// constructor test
