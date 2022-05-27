@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/26 17:25:42 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/27 16:10:16 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,6 +104,7 @@ void	test_map_empty(size_t size) {
 	printMap(map2, (size < 100), "map2");
 }
 
+
 template <typename T>
 class foo {
 	public:
@@ -181,56 +182,29 @@ class foo {
 // 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
 // }
 
-typedef IMPL::map<char, foo<float> > _map;
-typedef _map::const_iterator const_it;
-static unsigned int i = 0;
+template <typename T>
+void	test_map_compare(size_t size) {
+	T	map1, map2;
 
-void	ft_comp(const _map &mp, const const_it &it1, const const_it &it2)
-{
-	bool res[2];
+	map1['a'] = 13;
+	map1['b'] = 42;
+	map1['e'] = 0;
+	
+	map2['a'] = 31;
+	map2['c'] = 42;
+	map2['d'] = 100;
 
-	std::cout << "\t-- [" << ++i << "] --" << std::endl;
-	res[0] = mp.key_comp()(it1->first, it2->first);
-	res[1] = mp.value_comp()(*it1, *it2);
-	std::cout << "with [" << it1->first << " and " << it2->first << "]: ";
-	std::cout << "key_comp: " << res[0] << " | " << "value_comp: " << res[1] << std::endl;
-}
-
-void test() {
-	// std::list<T5> lst;
-	// unsigned int lst_size = 10;
-	// for (unsigned int i = 0; i < lst_size; ++i)
-	// 	lst.push_back(T5(i + 1, (i + 1) * 3));
-	// IMPL::map<T1, T4> mp(lst.begin(), lst.end());
-	// printMap(mp);
-
-	// ft_const_bound(mp, -10);
-	// ft_const_bound(mp, 1);
-	// ft_const_bound(mp, 5);
-	// ft_const_bound(mp, 10);
-	// ft_const_bound(mp, 50);
-
-	// printMap(mp);
-
-	// mp.lower_bound(3)->second = 404;
-	// mp.upper_bound(7)->second = 842;
-	// ft_bound(mp, 5);
-	// ft_bound(mp, 7);
-
-	// printMap(mp);
-	_map	mp;
-
-	mp['a'] = 2.3;
-	mp['b'] = 1.4;
-	mp['c'] = 0.3;
-	mp['d'] = 4.2;
-	printMap(mp);
-
-	for (const_it it1 = mp.begin(); it1 != mp.end(); ++it1)
-		for (const_it it2 = mp.begin(); it2 != mp.end(); ++it2)
-			ft_comp(mp, it1, it2);
-
-	printMap(mp);
+	typename T::iterator it1 = map1.begin(), it2 = map2.begin();
+	std::cout << std::boolalpha;
+	while (it1 != map1.end() && it2 != map2.end()) {
+		std::cout << "[" << it1->first << ", " << it1->second
+			<< "] vs [" << it2->first << ", " << it2->second << "]\n"
+			<< "key_comp: " << map1.key_comp()(it1->first, it2->first)
+			<< " | value_comp: " << map1.value_comp()(*it1, *it2)
+			<< "\n\n";
+		++it1, ++it2;
+	}
+	(void)size;
 }
 
 void test_map() {
@@ -245,7 +219,10 @@ void test_map() {
 	
 	// empty test
 	// benchmarkFunction_stress(test_map_empty<t_cimap>, "empty");
+
+	// key/value_comp test
+	// benchmarkFunction_stress(test_map_compare<t_cimap>, "key/value_comp");
 	
 	// test_map_erase();
-	test();
+	// test();
 }
