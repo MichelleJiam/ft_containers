@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/25 18:52:21 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/31 17:50:28 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/31 18:04:30 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <iterator> // istreambuf_iterator
 
 #include "tester.hpp"
+
+#define NOTFOUND std::string::npos
 
 void	resetTimesStream(std::stringstream& times) {
 	times.str(std::string());
@@ -68,10 +70,6 @@ int	printTestCase(std::string std_line, int &tests) {
 	return 1;
 }
 
-// void	printTimes(std::stringstream& times, std::string std_line) {
-	
-// }
-
 int main() {
 	std::ifstream   std_file, ft_file;
 	// binary mode makes sure newlines aren't translated
@@ -84,7 +82,7 @@ int main() {
 
 	printHeader("comparing std and ft containers");
 	int tests = 0, failed = 0;
-	int new_test = 0, line = 0;
+	int new_test = 0, line = 1;
 	std::string std_line, ft_line;
 	std::stringstream times;
 
@@ -93,30 +91,29 @@ int main() {
 		printHeader(ft_line);
 	while (std_file && ft_file && std::getline(std_file, std_line)
 			&& std::getline(ft_file, ft_line)) {
+		line++;
 		// skip empty lines
 		if (std_line.size() == 0 && ft_line.size() == 0)
 			continue;
 		// print buffered comparison times if filled and no stress duration to process
 		else if (times.tellp() != std::streampos(0)
-			&& std_line.find("Duration") == std::string::npos) {
-			// && new_test == 1) { // doesn't print times if test fails
+			&& std_line.find("Duration") == NOTFOUND) {
 			std::cout << times.str() << std::flush;
 			resetTimesStream(times);
 		}
 		// print test cases
-		if (std_line.find("TESTING") != std::string::npos)
+		if (std_line.find("TESTING") != NOTFOUND)
 			new_test = printTestCase(std_line, tests);
 		// if different output is found
 		else if (std_line.compare(ft_line) != 0
-			&& std_line.find("Duration") == std::string::npos) {
+			&& std_line.find("Duration") == NOTFOUND) {
 			new_test = printFailedTest(std_line, ft_line, new_test, failed, line);
-			resetTimesStream(times);
 		}
-		else if (std_line.find("Duration") != std::string::npos)
+		// does duration comparison, unless test failed
+		else if (std_line.find("Duration") != NOTFOUND && new_test != 0) 
 			compareTimes(times, std_line, ft_line);
-		line++;
 	}
-	// prints buffered time comparison at end
+	// prints buffered time comparison after EOF
 	if (times.tellp() != std::streampos(0))
 		std::cout << times.str() << std::flush;
 	printPassing(tests - failed, tests);
