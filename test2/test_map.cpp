@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/27 16:10:16 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/31 20:27:10 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ typedef IMPL::pair<const T1, T3>	t_ispair; // TODO: fix, won't compile unless ch
 typedef IMPL::pair<const T2, T1>	t_cipair;
 typedef IMPL::map<T1, T3>	t_ismap;
 typedef IMPL::map<T2, T1>	t_cimap;
+typedef IMPL::map<T1, T1>	t_iimap;
 
 template <typename T>
 void    printMap(T& base_map, bool print_contents = true,
@@ -77,14 +78,35 @@ void	test_map_constructors(size_t size) {
 	T	empty_map;
 
 	printMap(empty_map, (size < 100), "empty_map");
+
+	for (size_t i = 0; i < size; i++)
+		empty_map[i] = size - i;
+
+	T	copy_map(empty_map);
+	printMap(copy_map, (size < 100), "copy_map");
+	
+	typename T::iterator it = empty_map.begin(), ite = empty_map.end();
+
+	T	range_map(it, --(--ite));
+	printMap(range_map, (size < 100), "range_map");
+
+	T	assign_map;
+	assign_map = range_map;
+	printMap(assign_map, (size < 100), "assign_map");
+
+	assert(empty_map.size() == size
+			&& copy_map.size() == empty_map.size()
+			&& range_map.size() == empty_map.size() - 2
+			&& assign_map.size() == range_map.size());
 }
 
+// doesn't use `size` because complexity is constant
 template <typename T>
 void	test_map_empty(size_t size) {
-	printTestCase("empty()");
+	printTestCase("empty() on filled map, default constructed map, after assignment, and after clear");
 
 	T	map1;
-	for (size_t i = 0; i < size; i++)
+	for (size_t i = 0; i < 10; i++)
 		map1['a' + i] = i;
 
 	std::cout << std::boolalpha;
@@ -102,6 +124,50 @@ void	test_map_empty(size_t size) {
 	map2.clear();
 	std::cout << "is map2 empty: " << map2.empty() << std::endl;
 	printMap(map2, (size < 100), "map2");
+	(void)size;
+}
+
+// doesn't use `size` because complexity is constant
+template <typename T>
+void	test_map_compare(size_t size) {
+	printTestCase("key_comp & value_comp on identical keys, identical values, and larger key");
+
+	T	map1, map2;
+
+	map1['a'] = 13;
+	map1['b'] = 42;
+	map1['e'] = 0;
+	
+	map2['a'] = 31;
+	map2['c'] = 42;
+	map2['d'] = 100;
+
+	typename T::iterator it1 = map1.begin(), it2 = map2.begin();
+	std::cout << std::boolalpha;
+	while (it1 != map1.end() && it2 != map2.end()) {
+		std::cout << "[" << it1->first << ", " << it1->second
+			<< "] vs [" << it2->first << ", " << it2->second << "]\n"
+			<< "key_comp: " << map1.key_comp()(it1->first, it2->first)
+			<< " | value_comp: " << map1.value_comp()(*it1, *it2)
+			<< "\n\n";
+		++it1, ++it2;
+	}
+	(void)size;
+}
+
+template <typename T>
+void	test_map_operatorat(size_t size) {
+	printTestCase("Calling operator[] on nonexistant key");
+	
+	T map;
+
+	for (size_t i = 0; i < size; i++)
+		map[i] = size - i;
+
+	map[size];
+
+	printMap(map, (size < 100), "map");
+	assert(map.size() == size + 1);
 }
 
 
@@ -182,31 +248,6 @@ class foo {
 // 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
 // }
 
-template <typename T>
-void	test_map_compare(size_t size) {
-	T	map1, map2;
-
-	map1['a'] = 13;
-	map1['b'] = 42;
-	map1['e'] = 0;
-	
-	map2['a'] = 31;
-	map2['c'] = 42;
-	map2['d'] = 100;
-
-	typename T::iterator it1 = map1.begin(), it2 = map2.begin();
-	std::cout << std::boolalpha;
-	while (it1 != map1.end() && it2 != map2.end()) {
-		std::cout << "[" << it1->first << ", " << it1->second
-			<< "] vs [" << it2->first << ", " << it2->second << "]\n"
-			<< "key_comp: " << map1.key_comp()(it1->first, it2->first)
-			<< " | value_comp: " << map1.value_comp()(*it1, *it2)
-			<< "\n\n";
-		++it1, ++it2;
-	}
-	(void)size;
-}
-
 void test_map() {
 #ifndef SIMPLE
 	printHeader("map");
@@ -214,15 +255,17 @@ void test_map() {
 	std::cout << "MAP\n";
 #endif
 
-	// constructor test
-	// benchmarkFunction_stress(test_map_constructors<t_ismap>, "default/range/copy constructors");
+	// // constructor test
+	// benchmarkFunction_stress(test_map_constructors<t_iimap>, "default/range/copy constructors");
 	
-	// empty test
-	// benchmarkFunction_stress(test_map_empty<t_cimap>, "empty");
+	// // empty test
+	// benchmarkFunction(test_map_empty<t_cimap>, "empty");
 
-	// key/value_comp test
-	// benchmarkFunction_stress(test_map_compare<t_cimap>, "key/value_comp");
-	
+	// // key/value_comp test
+	// benchmarkFunction(test_map_compare<t_cimap>, "key/value_comp");
+
+	// operator[] test
+	benchmarkFunction_stress(test_map_operatorat<t_iimap>, "operator[]");
 	// test_map_erase();
 	// test();
 }
