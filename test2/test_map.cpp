@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/31 20:27:10 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/31 21:46:34 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,20 @@
 #define T1 int
 #define T2 char
 #define T3 std::string
-typedef IMPL::pair<const T1, T3>	t_ispair; // TODO: fix, won't compile unless changed to std::
-typedef IMPL::pair<const T2, T1>	t_cipair;
+typedef IMPL::map<T1, T3>::value_type	t_ispair;
+typedef IMPL::map<T2, T1>::value_type	t_cipair;
+typedef IMPL::map<T1, T1>::value_type	t_iipair;
 typedef IMPL::map<T1, T3>	t_ismap;
 typedef IMPL::map<T2, T1>	t_cimap;
 typedef IMPL::map<T1, T1>	t_iimap;
+
+template <typename T>
+std::string	printPair(T const& iterator, bool print_newline = true) {
+	std::cout << "[" << iterator->first << ", " << iterator->second << "]";
+	if (print_newline)
+		std::cout << std::endl;
+	return ("");
+}
 
 template <typename T>
 void    printMap(T& base_map, bool print_contents = true,
@@ -34,44 +43,10 @@ void    printMap(T& base_map, bool print_contents = true,
 	if (print_contents) {
 		std::cout << "contents:\n";
 		for (typename T::iterator it = base_map.begin(); it != base_map.end(); ++it)
-			std::cout << "\t" << it->first << " " << it->second << std::endl;
+			std::cout << "\t" << printPair(it);
 		std::cout << std::endl;
 	}
 }
-
-// void	test_map_erase() {
-// 	printTest("erase");
-
-// 	t_ismap	map;
-// 	map.insert(std::pair<int,std::string>(1, "one"));
-// 	map.insert(std::pair<int,std::string>(2, "two"));
-// 	std::cout << "map size: " << map.size() << std::endl;
-// 	try {
-// 		map.erase(42);
-// 	} catch (...) {
-// 		std::cerr << "erase failed\n";
-// 	}
-// 	std::cout << "map size: " << map.size() << std::endl;
-// 	map.erase(2);
-// 	std::cout << "map size: " << map.size() << std::endl;
-		
-// 	t_cimap map2;
-// 	map2.insert(t_cipair('a', 10));
-// 	map2.insert(t_cipair('b', 20));
-// 	map2.insert(t_cipair('c', 30));
-// 	map2.insert(t_cipair('d', 40));
-// 	map2.insert(t_cipair('e', 50));
-// 	map2.insert(t_cipair('f', 60));
-// 	// map2.print_tree();
-// 	typename t_cimap::iterator it = map2.find('b');
-// 	map2.erase (it);                   // erasing by iterator
-// 	// map2.print_tree();
-// 	map2.erase ('c');                  // erasing by key
-// 	// map2.print_tree();
-// 	it = map2.find ('e');
-// 	map2.erase (it, map2.end());
-// 	// map2.print_tree();
-// }
 
 template <typename T>
 void	test_map_constructors(size_t size) {
@@ -145,8 +120,8 @@ void	test_map_compare(size_t size) {
 	typename T::iterator it1 = map1.begin(), it2 = map2.begin();
 	std::cout << std::boolalpha;
 	while (it1 != map1.end() && it2 != map2.end()) {
-		std::cout << "[" << it1->first << ", " << it1->second
-			<< "] vs [" << it2->first << ", " << it2->second << "]\n"
+		std::cout << printPair(it1, false)
+			<< " vs "<< printPair(it2, false) << "\n"
 			<< "key_comp: " << map1.key_comp()(it1->first, it2->first)
 			<< " | value_comp: " << map1.value_comp()(*it1, *it2)
 			<< "\n\n";
@@ -168,6 +143,83 @@ void	test_map_operatorat(size_t size) {
 
 	printMap(map, (size < 100), "map");
 	assert(map.size() == size + 1);
+}
+
+template <typename T, typename P>
+static void	test_map_insert_helper(T &map, P param) {
+	IMPL::pair<typename T::iterator, bool> ret;
+
+	ret = map.insert(param);
+	std::cout << "insert " << printPair(&param);
+	if (ret.second == true)
+		std::cout << "success - " << printPair(ret.first, false) << " inserted\n\n";
+	else
+		std::cout << "failed - " << printPair(ret.first, false) << " already in map\n\n";
+}
+
+template <typename T>
+void	test_map_insert(size_t size) {
+	printTestCase("insert existing & non-existing keys");
+
+	T	map;
+	for (size_t i = 0; i < size; i++)
+		map[i] = size - i;
+
+	// insert single
+	test_map_insert_helper(map, t_iipair(size, size + 5));
+	test_map_insert_helper(map, t_iipair(1, 42));
+	
+	// insert with hint
+	typename T::iterator it = map.insert(map.begin(), t_iipair(size + 1, 42));
+
+	std::cout << "insert [" << size + 1 << ", 42]\n";
+	std::cout << "return: " << printPair(it, false) << std::endl << std::endl;
+
+	// insert range
+	std::list<t_iipair> list;
+	typename std::list<t_iipair>::iterator lit;
+	for (size_t i = size + 2; i < size + 12; i++)
+		list.push_back(t_iipair(i, i + 1));
+
+	std::cout << "list contents:\n";
+	for (lit = list.begin(); lit != list.end(); ++lit)
+		std::cout << "\t" << printPair(lit);
+	std::cout << std::endl;
+
+	map.insert(list.begin(), list.end());
+	printMap(map, (size < 100), "map");
+}
+
+template <typename T>
+void	test_map_erase(size_t size) {
+	T	map;
+	for (size_t i = 0; i < size; i++)
+		map[i] = size - i;
+
+	printMap(map, (size < 100), "map before erase");
+
+	std::cout << "erase(" << (size / 2) << ")\n";
+	std::cout << "map size before: " << map.size() << std::endl;
+	size_t ret = map.erase(size / 2);
+	std::cout << "elements erased: " << ret << std::endl;
+	std::cout << "map size after: " << map.size() << std::endl << std::endl;
+
+	std::cout << "erase(begin)\n";
+	std::cout << "map size before: " << map.size() << std::endl;
+	map.erase(map.begin());
+	std::cout << "map size after: " << map.size() << std::endl << std::endl;
+
+	std::cout << "erase([non-existant key])\n";
+	std::cout << "map size before: " << map.size() << std::endl;
+	map.erase(size + 1);
+	std::cout << "map size after: " << map.size() << std::endl << std::endl;
+
+	std::cout << "erase(begin, end)\n";
+	std::cout << "map size before: " << map.size() << std::endl;
+	map.erase(map.begin(), map.end());
+	std::cout << "map size after: " << map.size() << std::endl << std::endl;
+
+	printMap(map, (size < 100), "map after erase");
 }
 
 
@@ -264,8 +316,13 @@ void test_map() {
 	// // key/value_comp test
 	// benchmarkFunction(test_map_compare<t_cimap>, "key/value_comp");
 
-	// operator[] test
-	benchmarkFunction_stress(test_map_operatorat<t_iimap>, "operator[]");
-	// test_map_erase();
+	// // operator[] test
+	// benchmarkFunction_stress(test_map_operatorat<t_iimap>, "operator[]");
+
+	// // insert test
+	// benchmarkFunction_stress(test_map_insert<t_iimap>, "insert");
+	
+	// erase test
+	benchmarkFunction_stress(test_map_erase<t_iimap>, "erase");
 	// test();
 }
