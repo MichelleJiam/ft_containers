@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/31 21:46:34 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/31 21:59:40 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,6 +222,29 @@ void	test_map_erase(size_t size) {
 	printMap(map, (size < 100), "map after erase");
 }
 
+template <typename T>
+void	test_map_swap(size_t size) {
+	T	map1, map2;
+	for (size_t i = 0; i < size / 2; i++)
+		map1[i] = i * 2;
+	for (size_t i = size / 2; i < size; i++)
+		map2[i] = i * 2;
+
+	typename T::const_iterator it1 = map1.begin();
+	typename T::const_iterator it2 = map2.begin();
+	
+	printMap(map1, (size < 100), "map1 BEFORE swap");
+	printMap(map2, (size < 100), "map2 BEFORE swap");
+	map1.swap(map2);
+	printMap(map1, (size < 100), "map1 AFTER swap");
+	printMap(map2, (size < 100), "map2 AFTER swap");
+
+	std::cout << std::boolalpha;
+	std::cout << "it1 points to " << printPair(it1, false)
+		<< " & is equal to map2.begin(): " << (it1 == map2.begin()) << std::endl;
+	std::cout << "it2 points to " << printPair(it2, false)
+		<< " & is equal to map1.begin(): " << (it2 == map1.begin()) << std::endl;
+}
 
 template <typename T>
 class foo {
@@ -322,7 +345,12 @@ void test_map() {
 	// // insert test
 	// benchmarkFunction_stress(test_map_insert<t_iimap>, "insert");
 	
-	// erase test
-	benchmarkFunction_stress(test_map_erase<t_iimap>, "erase");
+	// // erase test
+	// benchmarkFunction_stress(test_map_erase<t_iimap>, "erase");
+
+	// // swap test
+	// benchmarkFunction_stress(test_map_swap<t_iimap>, "swap");
+
+	
 	// test();
 }
