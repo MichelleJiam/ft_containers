@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/19 18:20:34 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/31 20:15:27 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ class rb_tree {
 			:	_alloc(other._alloc),
 				_b_alloc(other._alloc),
 				_n_alloc(other._alloc),
+				_size(0),
 				_key_compare(other._key_compare) {
 			_nil = _create_nil();
 			_root = _nil;
