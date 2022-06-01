@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/31 21:59:40 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/01 17:53:54 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -224,6 +224,8 @@ void	test_map_erase(size_t size) {
 
 template <typename T>
 void	test_map_swap(size_t size) {
+	printTestCase("map1.swap(map2)");
+	
 	T	map1, map2;
 	for (size_t i = 0; i < size / 2; i++)
 		map1[i] = i * 2;
@@ -246,82 +248,181 @@ void	test_map_swap(size_t size) {
 		<< " & is equal to map1.begin(): " << (it2 == map1.begin()) << std::endl;
 }
 
+template <typename T, typename K>
+static void	test_map_find_helper(T &map, K k) {
+	typename T::iterator	ret;
+
+	ret = map.find(k);
+	std::cout << "find (" << k << ")\n";
+	if (ret != map.end())
+		std::cout << "success - found " << printPair(ret) << "\n";
+	else
+		std::cout << "failed - find() returned end\n\n";
+}
+
 template <typename T>
-class foo {
-	public:
-		typedef T	value_type;
+void	test_map_find(size_t size) {
+	T	map;
+	for (size_t i = 0; i < size; i++)
+		map[i] = size - i;
+	printMap(map, (size < 100), "map");
+	
+	test_map_find_helper(map, size / 2);
+	test_map_find_helper(map, size);
+	test_map_find_helper(map, size - 1);
+	test_map_find_helper(map, -1);
+}
 
-		foo(void) : value(), _verbose(false) { };
-		foo(value_type src, const bool verbose = false) : value(src), _verbose(verbose) { };
-		foo(foo const &src, const bool verbose = false) : value(src.value), _verbose(verbose) { };
-		~foo(void) { if (this->_verbose) std::cout << "~foo::foo()" << std::endl; };
-		void m(void) { std::cout << "foo::m called [" << this->value << "]" << std::endl; };
-		void m(void) const { std::cout << "foo::m const called [" << this->value << "]" << std::endl; };
-		foo &operator=(value_type src) { this->value = src; return *this; };
-		foo &operator=(foo const &src) {
-			if (this->_verbose || src._verbose)
-				std::cout << "foo::operator=(foo) CALLED" << std::endl;
-			this->value = src.value;
-			return *this;
-		};
-		value_type	getValue(void) const { return this->value; };
-		void		switchVerbose(void) { this->_verbose = !(this->_verbose); };
+template <typename T>
+void	test_map_count(size_t size) {
+	T	map;
+	for (size_t i = 0; i < size; i++)
+		map[i] = size - i;
+	printMap(map, (size < 100), "map");
 
-		operator value_type(void) const {
-			return value_type(this->value);
-		}
-	private:
-		value_type	value;
-		bool		_verbose;
-};
+	std::cout << "map.count(" << (size / 2) << ") returned " << map.count(size / 2) << std::endl;
+	std::cout << "map.count(" << size << ") returned " << map.count(size) << std::endl;
+	std::cout << "map.count(" << (size - 1) << ") returned " << map.count(size - 1) << std::endl;
+	std::cout << "map.count(" << -1 << ") returned " << map.count(-1) << std::endl;
+}
 
-// #include <list>
-// #define T4 foo<int>
-// #define _pair IMPL::pair
-// typedef IMPL::map<T1, T4>::value_type T5;
-// typedef IMPL::map<T1, T4>::iterator ft_iterator;
-// typedef IMPL::map<T1, T4>::const_iterator ft_const_iterator;
+template <typename T, typename K>
+static void	test_map_bounds_helper(T &map, K const& k) {
+	typename T::iterator	itlow, itup;
+	typename T::const_iterator	citlow, citup;
 
-// static int iter = 0;
+	itlow = map.lower_bound(k);
+	std::cout << "lower_bound (" << k  << ")\n";
+	if (itlow != map.end())
+		std::cout << "returned " << printPair(itlow) << "\n";
+	else
+		std::cout << "returned end\n\n";
 
-// template <typename T>
-// std::string	printPair(const T &iterator, bool nl = true, std::ostream &o = std::cout)
-// {
-// 	o << "key: " << iterator->first << " | value: " << iterator->second;
-// 	if (nl)
-// 		o << std::endl;
-// 	return ("");
-// }
+	itup = map.upper_bound(k);
+	std::cout << "upper_bound (" << k  << ")\n";
+	if (itup != map.end())
+		std::cout << "returned " << printPair(itup) << "\n";
+	else
+		std::cout << "returned end\n\n";
 
-// template <typename MAP>
-// void	ft_bound(MAP &mp, const T1 &param)
-// {
-// 	ft_iterator ite = mp.end(), it[2];
-// 	_pair<ft_iterator, ft_iterator> ft_range;
+	citlow = map.lower_bound(k);
+	std::cout << "const lower_bound (" << k  << ")\n";
+	if (citlow != map.end())
+		std::cout << "returned " << printPair(citlow) << "\n";
+	else
+		std::cout << "returned end\n\n";
 
-// 	std::cout << "\t-- [" << iter++ << "] --" << std::endl;
-// 	std::cout << "with key [" << param << "]:" << std::endl;
-// 	it[0] = mp.lower_bound(param); it[1] = mp.upper_bound(param);
-// 	ft_range = mp.equal_range(param);
-// 	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
-// 	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
-// 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
-// }
+	citup = map.upper_bound(k);
+	std::cout << "const upper_bound (" << k  << ")\n";
+	if (citup != map.end())
+		std::cout << "returned " << printPair(citup) << "\n";
+	else
+		std::cout << "returned end\n\n";
+}
 
-// template <typename MAP>
-// void	ft_const_bound(const MAP &mp, const T1 &param)
-// {
-// 	ft_const_iterator ite = mp.end(), it[2];
-// 	_pair<ft_const_iterator, ft_const_iterator> ft_range;
+template <typename T>
+void	test_map_bounds(size_t size) {
+	T	map;
+	for (size_t i = 0; i < size; i++)
+		map[i] = size - i;
+	printMap(map, (size < 100), "map");
 
-// 	std::cout << "\t-- [" << iter++ << "] (const) --" << std::endl;
-// 	std::cout << "with key [" << param << "]:" << std::endl;
-// 	it[0] = mp.lower_bound(param); it[1] = mp.upper_bound(param);
-// 	ft_range = mp.equal_range(param);
-// 	std::cout << "lower_bound: " << (it[0] == ite ? "end()" : printPair(it[0], false)) << std::endl;
-// 	std::cout << "upper_bound: " << (it[1] == ite ? "end()" : printPair(it[1], false)) << std::endl;
-// 	std::cout << "equal_range: " << (ft_range.first == it[0] && ft_range.second == it[1]) << std::endl;
-// }
+	test_map_bounds_helper(map, size / 2);
+	test_map_bounds_helper(map, size);
+	test_map_bounds_helper(map, size - 1);
+	test_map_bounds_helper(map, -1);
+}
+
+template <typename T, typename K>
+static void	test_map_eqrange_helper(T &map, K const& k) {
+	IMPL::pair<typename T::iterator, typename T::iterator>	ret;
+	
+	ret = map.equal_range(k);
+	std::cout << "equal_range (" << k << ")\n";
+	if (std::distance(ret.first, ret.second) == 0)
+		std::cout << "no match found, return points to "
+			<< (ret.first == map.end() ? "end\n" : printPair(ret.first))
+			<< std::endl;
+	else
+		std::cout << "match found between " << printPair(ret.first, false)
+			<< " and " << (ret.second == map.end() ? "end\n" : printPair(ret.second))
+			<< std::endl;
+}
+
+template <typename T>
+void	test_map_eqrange(size_t size) {
+	T	map;
+	for (size_t i = 0; i < size; i++)
+		map[i] = size - i;
+	printMap(map, (size < 100), "map");
+
+	test_map_eqrange_helper(map, size / 2);
+	test_map_eqrange_helper(map, size);
+	test_map_eqrange_helper(map, size - 1);
+	test_map_eqrange_helper(map, -1);
+}
+
+template <typename T>
+void	test_map_iterators(size_t size) {
+	printTestCase("map (const) iterator & (const) reverse it");
+
+	T	map;
+	for (size_t i = 0; i < size; i++)
+		map[i] = size - i;
+	printMap(map, (size < 100), "map");
+
+	typename T::iterator	it(map.begin());
+	typename T::const_iterator	cit(map.begin());
+	typename T::reverse_iterator	rit(map.rbegin());
+	typename T::const_reverse_iterator	crit(rit);
+
+	std::cout << "++begin: " << printPair(++it);
+	std::cout << "begin++: " << printPair(it++);
+	std::cout << "++rbegin: " << printPair(++rit);
+	std::cout << "rbegin++: " << printPair(rit++);
+	std::cout << "const ++begin: " << printPair(++cit);
+	std::cout << "const begin++: " << printPair(cit++);
+	std::cout << "const ++rbegin: " << printPair(++crit);
+	std::cout << "const rbegin++: " << printPair(crit++);
+
+	std::cout << "--begin: " << printPair(--it);
+	std::cout << "begin--: " << printPair(it--);
+	std::cout << "--rbegin: " << printPair(--rit);
+	std::cout << "rbegin--: " << printPair(rit--);
+	std::cout << "const --begin: " << printPair(--cit);
+	std::cout << "const begin--: " << printPair(cit--);
+	std::cout << "const --rbegin: " << printPair(--crit);
+	std::cout << "const rbegin--: " << printPair(crit--);
+
+	std::cout << "*it.first: " << (*it).first << std::endl;
+	std::cout << "*cit.first: " << (*cit).first << std::endl;
+	
+	std::cout << std::boolalpha;
+	std::cout << "it == cit: " << (it == cit) << std::endl;
+	std::cout << "it != cit: " << (it != cit) << std::endl;
+}
+
+template <typename T>
+void	test_map_relationalops(size_t size) {
+	printTestCase("map == != < <= > >=");
+
+	T	map1, map2;
+
+	for (size_t i = 0; i < size / 2; i++)
+		map1[i] = i * 2;
+	for (size_t i = size / 2; i < size; i++)
+		map2[i] = i * 2;
+	printMap(map1, (size < 100), "map1");
+	printMap(map2, (size < 100), "map2");
+	
+	std::cout << std::boolalpha;
+	std::cout << "map1 == map2: " << (map1 == map2) << std::endl;
+	std::cout << "map1 != map2: " << (map1 != map2) << std::endl;
+	std::cout << "map1 < map2: " << (map1 < map2) << std::endl;
+	std::cout << "map1 <= map2: " << (map1 <= map2) << std::endl;
+	std::cout << "map1 > map2: " << (map1 > map2) << std::endl;
+	std::cout << "map1 >= map2: " << (map1 >= map2) << std::endl;	
+}
 
 void test_map() {
 #ifndef SIMPLE
@@ -330,27 +431,42 @@ void test_map() {
 	std::cout << "MAP\n";
 #endif
 
-	// // constructor test
-	// benchmarkFunction_stress(test_map_constructors<t_iimap>, "default/range/copy constructors");
+	// constructor test
+	benchmarkFunction_stress(test_map_constructors<t_iimap>, "default/range/copy constructors");
 	
-	// // empty test
-	// benchmarkFunction(test_map_empty<t_cimap>, "empty");
+	// empty test
+	benchmarkFunction(test_map_empty<t_cimap>, "empty");
 
-	// // key/value_comp test
-	// benchmarkFunction(test_map_compare<t_cimap>, "key/value_comp");
+	// key/value_comp test
+	benchmarkFunction(test_map_compare<t_cimap>, "key/value_comp");
 
-	// // operator[] test
-	// benchmarkFunction_stress(test_map_operatorat<t_iimap>, "operator[]");
+	// operator[] test
+	benchmarkFunction_stress(test_map_operatorat<t_iimap>, "operator[]");
 
-	// // insert test
-	// benchmarkFunction_stress(test_map_insert<t_iimap>, "insert");
+	// insert test
+	benchmarkFunction_stress(test_map_insert<t_iimap>, "insert");
 	
-	// // erase test
-	// benchmarkFunction_stress(test_map_erase<t_iimap>, "erase");
+	// erase test
+	benchmarkFunction_stress(test_map_erase<t_iimap>, "erase");
 
-	// // swap test
-	// benchmarkFunction_stress(test_map_swap<t_iimap>, "swap");
+	// swap test
+	benchmarkFunction_stress(test_map_swap<t_iimap>, "swap");
 
-	
-	// test();
+	// find test
+	benchmarkFunction_stress(test_map_find<t_iimap>, "find");
+
+	// count test
+	benchmarkFunction_stress(test_map_count<t_iimap>, "count");
+
+	// lower/upper bound test
+	benchmarkFunction_stress(test_map_bounds<t_iimap>, "lower/upper bound");
+
+	// equal_range test
+	benchmarkFunction_stress(test_map_eqrange<t_iimap>, "equal_range");
+
+	// iterator test
+	benchmarkFunction_stress(test_map_iterators<t_iimap>, "iterators");
+
+	// relational operators test
+	benchmarkFunction_stress(test_map_relationalops<t_iimap>, "relational operators");
 }
