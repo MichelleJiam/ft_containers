@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/04/19 15:55:10 by mjiam         ########   odam.nl          #
+#    Updated: 2022/06/01 18:03:06 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,10 @@ endif
 
 ifdef SIMPLE
 FLAGS		+=	-D SIMPLE=1
+endif
+
+ifdef QS
+FLAGS		+=	-DSIMPLE=1 -DQUICK=1
 endif
 
 ifdef DEBUG
@@ -107,6 +111,15 @@ run:
 # detailed comparison that shows which test failed and expected vs. received output
 compare:
 	@$(MAKE) SIMPLE=1
+	@echo "\n$(GREEN)Saved output to txt files. Running comparison program$(RESET)"
+	@./ft_bin > $(word 1, $(SAVE_FILES))
+	@./std_bin > $(word 2, $(SAVE_FILES))
+	@$(CC) $(FLAGS) $(COMPARE_SRC) $(TEST_DIR)/tester_helper.cpp -o $(COMPARE_BIN)
+	@./$(COMPARE_BIN)
+
+# quick comparison for checking output without stress test wait
+qcompare:
+	@$(MAKE) QS=1
 	@echo "\n$(GREEN)Saved output to txt files. Running comparison program$(RESET)"
 	@./ft_bin > $(word 1, $(SAVE_FILES))
 	@./std_bin > $(word 2, $(SAVE_FILES))
