@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/25 18:52:21 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/31 18:04:30 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/07 13:42:52 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,11 @@ int main() {
 		// if different output is found
 		else if (std_line.compare(ft_line) != 0
 			&& std_line.find("Duration") == NOTFOUND) {
+			if (std_line.find("max_size") != NOTFOUND) {
+				std::cout << "Difference in max_size found but allowed" <<
+								" due to implementation differences\n";
+				continue;
+			}
 			new_test = printFailedTest(std_line, ft_line, new_test, failed, line);
 		}
 		// does duration comparison, unless test failed
