@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/26 16:42:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/08 18:43:07 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,11 +225,10 @@ typename myvector::size_type	myvector::size(void) const {
 }
 
 // The difference between vector start and end cannot exceed PTRDIFF_MAX,
-// and we can't store more than PTRDIFF_MAX/sizeof(T) even if alloc.max_size
-// says we can.
+// even if alloc.max_size says we can, so we return the lesser value.
 template <class T, class Allocator>
 typename myvector::size_type	myvector::max_size(void) const {
-	myvector::size_type	diffmax = PTRDIFF_MAX / sizeof(T);
+	myvector::size_type	diffmax = std::numeric_limits<ptrdiff_t>::max();
 	myvector::size_type	allocmax = _alloc.max_size();
 	return std::min(diffmax, allocmax);
 }
