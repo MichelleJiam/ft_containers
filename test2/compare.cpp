@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/25 18:52:21 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/07 13:42:52 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/08 19:08:35 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,23 @@ void    compareTimes(std::stringstream& times,
 
 int	printFailedTest(std::string std_line, std::string ft_line,
 					int new_test, int &failed, int line) {
-	if (new_test) {
-		std::cout << RED << "-- TEST FAILED --" << WHT << std::endl;
-		failed++;
+	if (std_line.find("max_size") != NOTFOUND) { // if difference is in max_size
+		std::cout << "Diff in max_size on line "
+			<< CYN << line << WHT << " but allowed\n";
+		std::cout << YEL << "\t[STD]\t" << std_line << std::endl;
+		std::cout << "\t[FT]\t" << ft_line << WHT << std::endl;
+		return 1;
 	}
-	std::cout << "Diff on line " << CYN << line << WHT << "\n";
-	std::cout << GRN << "\t[STD]\t" << std_line << std::endl;
-	std::cout << RED << "\t[FT]\t" << ft_line << WHT << std::endl;
-	return 0;
+	else {
+		if (new_test) {
+			std::cout << RED << "-- TEST FAILED --" << WHT << std::endl;
+			failed++;
+		}
+		std::cout << "Diff on line " << CYN << line << WHT << "\n";
+		std::cout << GRN << "\t[STD]\t" << std_line << std::endl;
+		std::cout << RED << "\t[FT]\t" << ft_line << WHT << std::endl;
+		return 0;
+	}
 }
 
 int	printTestCase(std::string std_line, int &tests) {
@@ -106,14 +115,8 @@ int main() {
 			new_test = printTestCase(std_line, tests);
 		// if different output is found
 		else if (std_line.compare(ft_line) != 0
-			&& std_line.find("Duration") == NOTFOUND) {
-			if (std_line.find("max_size") != NOTFOUND) {
-				std::cout << "Difference in max_size found but allowed" <<
-								" due to implementation differences\n";
-				continue;
-			}
+			&& std_line.find("Duration") == NOTFOUND)
 			new_test = printFailedTest(std_line, ft_line, new_test, failed, line);
-		}
 		// does duration comparison, unless test failed
 		else if (std_line.find("Duration") != NOTFOUND && new_test != 0) 
 			compareTimes(times, std_line, ft_line);

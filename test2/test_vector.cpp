@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/08 18:43:23 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/08 18:57:06 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,10 +97,11 @@ template <typename T>
 void	test_vec_resize(size_t size) {
 	printTestCase("vector.resize(size, 42)");
 
-	T	vector(4, 20);
+	T	vector(4, 'a');
 
-	vector.resize(size, 42);
-	printVector(vector, (size < 100), "vector");
+	printVector(vector, (size < 100), "vector before resize");
+	vector.resize(size, 'b');
+	printVector(vector, (size < 100), "vector after resize");
 }
 
 template <typename T>
@@ -283,7 +284,7 @@ void test_vector() {
 #endif
 
 	// constructor test
-	benchmarkFunction_stress(test_vec_constructors<t_ivec>, "fill/range/copy constructors");
+	// benchmarkFunction_stress(test_vec_constructors<t_ivec>, "fill/range/copy constructors");
 	
 	// push_back test
 	benchmarkFunction_stress(test_vec_pushback<t_ivec>, "push_back");
@@ -301,7 +302,7 @@ void test_vector() {
 	benchmarkFunction_stress(test_vec_reserve<t_cvec>, "reserve");
 
 	// resize test
-	benchmarkFunction_stress(test_vec_resize<t_ivec>, "resize");
+	benchmarkFunction_stress(test_vec_resize<t_cvec>, "resize");
 	
 	// insert test
 	benchmarkFunction_stress(test_vec_insert<t_ivec>, "insert");
