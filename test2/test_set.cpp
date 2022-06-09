@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:52:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/09 16:58:12 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/09 21:29:32 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,36 @@ void	test_set_insert(size_t size) {
 	printSet(set3, (size < 100), "set3", "insert with hint");
 }
 
+template <typename T>
+void	test_set_erase(size_t size) {
+	std::list<T1>	list(size, 42);
+	T				set(list.begin(), list.end());
+	printSet(set, (size < 100), "set before erase");
+
+	std::cout << "erase(" << (size / 2) << ")\n";
+	std::cout << "set size before: " << set.size() << std::endl;
+	size_t ret = set.erase(size / 2);
+	std::cout << "elements erased: " << ret << std::endl;
+	std::cout << "set size after: " << set.size() << std::endl << std::endl;
+
+	std::cout << "erase(begin)\n";
+	std::cout << "set size before: " << set.size() << std::endl;
+	set.erase(set.begin());
+	std::cout << "set size after: " << set.size() << std::endl << std::endl;
+
+	std::cout << "erase([non-existant key])\n";
+	std::cout << "set size before: " << set.size() << std::endl;
+	set.erase(120);
+	std::cout << "set size after: " << set.size() << std::endl << std::endl;
+
+	std::cout << "erase(begin, end)\n";
+	std::cout << "set size before: " << set.size() << std::endl;
+	set.erase(set.begin(), set.end());
+	std::cout << "set size after: " << set.size() << std::endl << std::endl;
+
+	printSet(set, (size < 100), "set after erase");
+}
+
 // doesn't use `size` because complexity is constant
 template <typename T>
 void	test_set_compare(size_t size) {
@@ -174,6 +204,9 @@ void test_set() {
 
 	// insert test
 	benchmarkFunction_stress(test_set_insert<t_sset>, "insert");
+		
+	// erase test
+	benchmarkFunction_stress(test_set_erase<t_iset>, "erase");
 
 	// key/value_comp test
 	benchmarkFunction(test_set_compare<t_cset>, "key/value_comp");
