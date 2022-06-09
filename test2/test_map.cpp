@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/01 17:53:54 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/09 16:45:07 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,27 +78,25 @@ void	test_map_constructors(size_t size) {
 // doesn't use `size` because complexity is constant
 template <typename T>
 void	test_map_empty(size_t size) {
-	printTestCase("empty() on filled map, default constructed map, after assignment, and after clear");
-
 	T	map1;
 	for (size_t i = 0; i < 10; i++)
 		map1['a' + i] = i;
 
 	std::cout << std::boolalpha;
 	std::cout << "is map1 empty: " << map1.empty() << std::endl;
-	printMap(map1, (size < 100), "map1");
+	printMap(map1, (size < 100), "map1", "empty on filled map");
 
 	T map2;
 	std::cout << "is map2 empty: " << map2.empty() << std::endl;
-	printMap(map2, (size < 100), "map2");
+	printMap(map2, (size < 100), "map2", "empty on default constructed map");
 
 	map2 = map1;
 	std::cout << "is map2 empty: " << map2.empty() << std::endl;
-	printMap(map2, (size < 100), "map2");
+	printMap(map2, (size < 100), "map2", "empty on copy assigned map");
 	
 	map2.clear();
 	std::cout << "is map2 empty: " << map2.empty() << std::endl;
-	printMap(map2, (size < 100), "map2");
+	printMap(map2, (size < 100), "map2", "empty after clear");
 	(void)size;
 }
 
