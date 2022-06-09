@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:52:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/26 17:25:20 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/09 16:46:12 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,16 +54,25 @@ void	test_set_constructors(size_t size) {
 
 template <typename T>
 void	test_set_empty(size_t size) {
-	T	set1;
-
-	std::cout << std::boolalpha;
-	std::cout << "set 1 is empty: " << set1.empty() << std::endl;
-	printSet(set1, (size < 100), "set1");
-
 	std::list<T1>	list(size, 42);
-	T				set2(list.begin(), list.end());
-	std::cout << "set 2 is empty: " << set2.empty() << std::endl;
-	printSet(set2, (size < 100), "set2");
+	T				set1(list.begin(), list.end());
+	
+	std::cout << std::boolalpha;
+	std::cout << "is set1 empty: " << set1.empty() << std::endl;
+	printSet(set1, (size < 100), "set1", "empty on filled set");
+
+	T set2;
+	std::cout << "is set2 empty: " << set2.empty() << std::endl;
+	printSet(set2, (size < 100), "set2", "empty on default constructed set");
+
+	set2 = set1;
+	std::cout << "is set2 empty: " << set2.empty() << std::endl;
+	printSet(set2, (size < 100), "set2", "empty on copy assigned set");
+	
+	set2.clear();
+	std::cout << "is set2 empty: " << set2.empty() << std::endl;
+	printSet(set2, (size < 100), "set2", "empty after clear");
+	(void)size;
 }
 
 template <typename T>
@@ -78,11 +87,16 @@ void	test_set_clear(size_t size) {
 	assert(set.size() == 0);
 }
 
-template <typename Pair>
-void	printInsertReturn(Pair ret, bool newline = false) {
-	std::cout << *(ret.first) << ", " << std::boolalpha << ret.second;
-	if (newline)
-		std::cout << "\n";
+template <typename T, typename P>
+static void	test_set_insert_helper(T &set, P param) {
+	IMPL::pair<typename T::iterator, bool> ret;
+
+	ret = set.insert(param);
+	std::cout << "insert [" << param << "]\n";
+	if (ret.second == true)
+		std::cout << "success - [" << *(ret.first) << "] inserted\n\n";
+	else
+		std::cout << "failed - [" << *(ret.first) << "] already in set\n\n";
 }
 
 template <typename T>
@@ -90,26 +104,21 @@ void	test_set_insert(size_t size) {
 	IMPL::pair<typename T::iterator, bool>	ret;
 	T	set1, set2;
 
-	ret = set1.insert("hello");
-	std::cout << "insert(hello) returns: "; printInsertReturn(ret, true);
-	ret = set1.insert("42");
-	std::cout << "insert(42) returns: "; printInsertReturn(ret, true);
-	ret = set1.insert("world");
-	std::cout << "insert(world) returns: "; printInsertReturn(ret, true);
-	ret = set1.insert("world");
-	std::cout << "insert(world) (2nd time) returns: "; printInsertReturn(ret, true);
-	std::cout << std::endl;
-	printSet(set1, (size < 100), "set1");
+	test_set_insert_helper(set1, "hello");
+	test_set_insert_helper(set1, "42");
+	test_set_insert_helper(set1, "world");
+	test_set_insert_helper(set1, "world");
+	printSet(set1, (size < 100), "set1", "single insert");
 
 	set2.insert(set1.begin(), set1.end());
-	printSet(set2, (size < 100), "set2");
+	printSet(set2, (size < 100), "set2", "range insert(set1.begin, set1.end)");
 
 	t_iset set3;
 
 	for (size_t i = 0; i < size; i++)
 		set3.insert(i + 1);
-	set3.insert(0);
-	printSet(set3, (size < 100), "set3");
+	set3.insert(set3.end(), 0);
+	printSet(set3, (size < 100), "set3", "insert with hint");
 }
 
 void test_set() {
@@ -123,10 +132,10 @@ void test_set() {
 	benchmarkFunction_stress(test_set_constructors<t_iset>, "default/range/copy constructors");
 	
 	// empty test
-	benchmarkFunction_stress(test_set_empty<t_iset>, "empty");
+	benchmarkFunction(test_set_empty<t_iset>, "empty");
 	
 	// clear test
-	benchmarkFunction_stress(test_set_clear<t_iset>, "insert");
+	benchmarkFunction_stress(test_set_clear<t_iset>, "clear");
 
 	// insert test
 	benchmarkFunction_stress(test_set_insert<t_sset>, "insert");
