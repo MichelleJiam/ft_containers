@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/25 18:52:21 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/08 19:08:35 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/09 22:09:35 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include <cstring> // strcmp
 #include <algorithm> // equal
 #include <iterator> // istreambuf_iterator
+#include <set>
 
 #include "tester.hpp"
 
@@ -79,6 +80,15 @@ int	printTestCase(std::string std_line, int &tests) {
 	return 1;
 }
 
+bool	isHeader(std::string std_line) {
+	if (std_line.find("SET") != NOTFOUND
+		|| std_line.find("MAP") != NOTFOUND
+		|| std_line.find("STACK") != NOTFOUND
+		|| std_line.find("VECTOR") != NOTFOUND)
+		return true;
+	return false;
+}
+
 int main() {
 	std::ifstream   std_file, ft_file;
 	// binary mode makes sure newlines aren't translated
@@ -94,10 +104,7 @@ int main() {
 	int new_test = 0, line = 1;
 	std::string std_line, ft_line;
 	std::stringstream times;
-
- 	// print container type header
-	if (std::getline(std_file, std_line) && std::getline(ft_file, ft_line))
-		printHeader(ft_line);
+ 	
 	while (std_file && ft_file && std::getline(std_file, std_line)
 			&& std::getline(ft_file, ft_line)) {
 		line++;
@@ -110,8 +117,11 @@ int main() {
 			std::cout << times.str() << std::flush;
 			resetTimesStream(times);
 		}
+		// print container type header
+		if (isHeader(std_line))
+			printHeader(ft_line);
 		// print test cases
-		if (std_line.find("TESTING") != NOTFOUND)
+		else if (std_line.find("TESTING") != NOTFOUND)
 			new_test = printTestCase(std_line, tests);
 		// if different output is found
 		else if (std_line.compare(ft_line) != 0
