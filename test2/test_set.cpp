@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:52:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/09 21:29:32 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/09 21:39:02 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,6 +159,32 @@ void	test_set_erase(size_t size) {
 	printSet(set, (size < 100), "set after erase");
 }
 
+template <typename T>
+void	test_set_swap(size_t size) {
+	printTestCase("set1.swap(set2)");
+
+	T	set1, set2;
+	for (size_t i = 0; i < size / 2; i++)
+		set1.insert(i * 2);
+	for (size_t i = size / 2; i < size; i++)
+		set2.insert(i * 2);
+
+	typename T::const_iterator it1 = set1.begin();
+	typename T::const_iterator it2 = set2.begin();
+	
+	printSet(set1, (size < 100), "set1 BEFORE swap");
+	printSet(set2, (size < 100), "set2 BEFORE swap");
+	set1.swap(set2);
+	printSet(set1, (size < 100), "set1 AFTER swap");
+	printSet(set2, (size < 100), "set2 AFTER swap");
+
+	std::cout << std::boolalpha;
+	std::cout << "it1 points to " << *it1 << " & is equal to set2.begin(): "
+		<< (it1 == set2.begin()) << std::endl;
+	std::cout << "it2 points to " << *it2 << " & is equal to set1.begin(): "
+		<< (it2 == set1.begin()) << std::endl;
+}
+
 // doesn't use `size` because complexity is constant
 template <typename T>
 void	test_set_compare(size_t size) {
@@ -207,6 +233,9 @@ void test_set() {
 		
 	// erase test
 	benchmarkFunction_stress(test_set_erase<t_iset>, "erase");
+
+	// swap test
+	benchmarkFunction_stress(test_set_swap<t_iset>, "swap");
 
 	// key/value_comp test
 	benchmarkFunction(test_set_compare<t_cset>, "key/value_comp");
