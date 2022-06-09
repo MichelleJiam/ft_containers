@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/09 16:45:07 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/09 16:55:12 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #define T1 int
 #define T2 char
 #define T3 std::string
+
 typedef IMPL::map<T1, T3>::value_type	t_ispair;
 typedef IMPL::map<T2, T1>::value_type	t_cipair;
 typedef IMPL::map<T1, T1>::value_type	t_iipair;
