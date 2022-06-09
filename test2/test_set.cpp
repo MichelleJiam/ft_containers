@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:52:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/09 16:46:12 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/09 16:58:12 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,11 @@
 
 #define T1 int
 #define T2 std::string
+#define T3 char
 
 typedef IMPL::set<T1>	t_iset;
 typedef IMPL::set<T2>	t_sset;
+typedef IMPL::set<T3>	t_cset;
 
 template <typename T>
 void    printSet(T& base_set, bool print_contents = true,
@@ -48,10 +50,16 @@ void	test_set_constructors(size_t size) {
 	T	copy_set(range_set);
 	printSet(copy_set, (size < 100), "copy_set");
 
+	T	assign_set;
+	assign_set = range_set;
+	printSet(assign_set, (size < 100), "assign_set");
+
 	assert(empty_set.size() == 0
-			&& range_set.size() == copy_set.size());
+			&& range_set.size() == copy_set.size()
+			&& assign_set.size() == range_set.size());
 }
 
+// doesn't use `size` because complexity is constant
 template <typename T>
 void	test_set_empty(size_t size) {
 	std::list<T1>	list(size, 42);
@@ -121,6 +129,33 @@ void	test_set_insert(size_t size) {
 	printSet(set3, (size < 100), "set3", "insert with hint");
 }
 
+// doesn't use `size` because complexity is constant
+template <typename T>
+void	test_set_compare(size_t size) {
+	printTestCase("key_comp & value_comp on identical and different keys");
+
+	T	set1, set2;
+
+	set1.insert('a');
+	set1.insert('b');
+	set1.insert('e');
+	
+	set2.insert('a');
+	set2.insert('c');
+	set2.insert('d');
+
+	typename T::iterator it1 = set1.begin(), it2 = set2.begin();
+	std::cout << std::boolalpha;
+	while (it1 != set1.end() && it2 != set2.end()) {
+		std::cout << *it1 << " vs "<< *it2 << "\n"
+			<< "key_comp: " << set1.key_comp()(*it1, *it2)
+			<< " | value_comp: " << set1.value_comp()(*it1, *it2)
+			<< "\n\n";
+		++it1, ++it2;
+	}
+	(void)size;
+}
+
 void test_set() {
 #ifndef SIMPLE
 	printHeader("set");
@@ -139,4 +174,7 @@ void test_set() {
 
 	// insert test
 	benchmarkFunction_stress(test_set_insert<t_sset>, "insert");
+
+	// key/value_comp test
+	benchmarkFunction(test_set_compare<t_cset>, "key/value_comp");
 }
