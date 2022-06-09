@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:52:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/09 21:39:02 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/09 22:19:55 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,9 @@ void	test_set_constructors(size_t size) {
 	T	empty_set;
 	printSet(empty_set, (size < 100), "empty_set");
 
-	std::list<T1> list(size, 42);
+	std::list<T1> list;
+	for (size_t i = 0; i < size; i++)
+		list.push_back(i + 1);
 	T	range_set(list.begin(), list.end());
 	printSet(range_set, (size < 100), "range_set");
 
@@ -62,8 +64,9 @@ void	test_set_constructors(size_t size) {
 // doesn't use `size` because complexity is constant
 template <typename T>
 void	test_set_empty(size_t size) {
-	std::list<T1>	list(size, 42);
-	T				set1(list.begin(), list.end());
+	T	set1;
+	for (size_t i = 0; i < size; i++)
+		set1.insert(i + 1);
 	
 	std::cout << std::boolalpha;
 	std::cout << "is set1 empty: " << set1.empty() << std::endl;
@@ -87,8 +90,10 @@ template <typename T>
 void	test_set_clear(size_t size) {
 	printTestCase("clear() on set of [size] size");
 
-	std::list<T1>	list(size, 42);
-	T				set(list.begin(), list.end());
+	T	set;
+	for (size_t i = 0; i < size; i++)
+		set.insert(i + 1);
+
 	set.clear();
 	printSet(set, (size < 100), "set");
 	
@@ -131,8 +136,9 @@ void	test_set_insert(size_t size) {
 
 template <typename T>
 void	test_set_erase(size_t size) {
-	std::list<T1>	list(size, 42);
-	T				set(list.begin(), list.end());
+	T	set;
+	for (size_t i = 0; i < size; i++)
+		set.insert(i + 1);
 	printSet(set, (size < 100), "set before erase");
 
 	std::cout << "erase(" << (size / 2) << ")\n";
@@ -212,6 +218,31 @@ void	test_set_compare(size_t size) {
 	(void)size;
 }
 
+template <typename T, typename K>
+static void	test_set_find_helper(T &set, K k) {
+	typename T::iterator	ret;
+
+	ret = set.find(k);
+	std::cout << "find (" << k << ")\n";
+	if (ret != set.end())
+		std::cout << "success - found " << *ret << "\n";
+	else
+		std::cout << "failed - find() returned end\n\n";
+}
+
+template <typename T>
+void	test_set_find(size_t size) {
+	T	set;
+	for (size_t i = 0; i < size; i++)
+		set.insert(i + 1);
+	printSet(set, (size < 100), "set");
+	
+	test_set_find_helper(set, size / 2);
+	test_set_find_helper(set, size);
+	test_set_find_helper(set, size - 1);
+	test_set_find_helper(set, -1);
+}
+
 void test_set() {
 #ifndef SIMPLE
 	printHeader("set");
@@ -239,4 +270,22 @@ void test_set() {
 
 	// key/value_comp test
 	benchmarkFunction(test_set_compare<t_cset>, "key/value_comp");
+
+	// find test
+	benchmarkFunction_stress(test_set_find<t_iset>, "find");
+
+	// // count test
+	// benchmarkFunction_stress(test_set_count<t_iset>, "count");
+
+	// // lower/upper bound test
+	// benchmarkFunction_stress(test_set_bounds<t_iset>, "lower/upper bound");
+
+	// // equal_range test
+	// benchmarkFunction_stress(test_set_eqrange<t_iset>, "equal_range");
+
+	// // iterator test
+	// benchmarkFunction_stress(test_set_iterators<t_iset>, "iterators");
+
+	// // relational operators test
+	// benchmarkFunction_stress(test_set_relationalops<t_iset>, "relational operators");
 }
