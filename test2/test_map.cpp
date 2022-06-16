@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/09 16:55:12 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/16 21:28:47 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,16 @@ std::string	printPair(T const& iterator, bool print_newline = true) {
 	if (print_newline)
 		std::cout << std::endl;
 	return ("");
+}
+
+template <typename Iterator>
+void	printEndorVal(Iterator it, Iterator end, bool print_newline = true) {
+	if (it == end)
+		std::cout << "end";
+	else
+		std::cout << printPair(it, false);
+	if (print_newline)
+		std::cout << "\n";
 }
 
 template <typename T>
@@ -291,32 +301,21 @@ static void	test_map_bounds_helper(T &map, K const& k) {
 	typename T::const_iterator	citlow, citup;
 
 	itlow = map.lower_bound(k);
-	std::cout << "lower_bound (" << k  << ")\n";
-	if (itlow != map.end())
-		std::cout << "returned " << printPair(itlow) << "\n";
-	else
-		std::cout << "returned end\n\n";
+	std::cout << "lower_bound (" << k  <<  ") returned ";
+	printEndorVal(itlow, map.end());
 
 	itup = map.upper_bound(k);
-	std::cout << "upper_bound (" << k  << ")\n";
-	if (itup != map.end())
-		std::cout << "returned " << printPair(itup) << "\n";
-	else
-		std::cout << "returned end\n\n";
+	std::cout << "upper_bound (" << k  <<  ") returned ";
+	printEndorVal(itup, map.end());
 
 	citlow = map.lower_bound(k);
-	std::cout << "const lower_bound (" << k  << ")\n";
-	if (citlow != map.end())
-		std::cout << "returned " << printPair(citlow) << "\n";
-	else
-		std::cout << "returned end\n\n";
+	std::cout << "const lower_bound (" << k  <<  ") returned ";
+	printEndorVal<typename T::const_iterator>(citlow, map.end());
 
 	citup = map.upper_bound(k);
-	std::cout << "const upper_bound (" << k  << ")\n";
-	if (citup != map.end())
-		std::cout << "returned " << printPair(citup) << "\n";
-	else
-		std::cout << "returned end\n\n";
+	std::cout << "const upper_bound (" << k  << ") returned ";
+	printEndorVal<typename T::const_iterator>(citup, map.end());
+	std::cout << std::endl;
 }
 
 template <typename T>
@@ -337,15 +336,16 @@ static void	test_map_eqrange_helper(T &map, K const& k) {
 	IMPL::pair<typename T::iterator, typename T::iterator>	ret;
 	
 	ret = map.equal_range(k);
-	std::cout << "equal_range (" << k << ")\n";
-	if (std::distance(ret.first, ret.second) == 0)
-		std::cout << "no match found, return points to "
-			<< (ret.first == map.end() ? "end\n" : printPair(ret.first))
-			<< std::endl;
-	else
+	std::cout << "equal_range (" << k << "): ";
+	if (std::distance(ret.first, ret.second) == 0) {
+		std::cout << "no match found, return points to ";
+		printEndorVal(ret.first, map.end());
+	}
+	else {
 		std::cout << "match found between " << printPair(ret.first, false)
-			<< " and " << (ret.second == map.end() ? "end\n" : printPair(ret.second))
-			<< std::endl;
+			<< " and ";
+			printEndorVal(ret.second, map.end());
+	}
 }
 
 template <typename T>
