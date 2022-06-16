@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/08 18:57:06 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/16 23:09:43 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -284,7 +284,7 @@ void test_vector() {
 #endif
 
 	// constructor test
-	// benchmarkFunction_stress(test_vec_constructors<t_ivec>, "fill/range/copy constructors");
+	benchmarkFunction_stress(test_vec_constructors<t_ivec>, "fill/range/copy constructors");
 	
 	// push_back test
 	benchmarkFunction_stress(test_vec_pushback<t_ivec>, "push_back");

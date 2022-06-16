@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/04/19 15:52:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/09 22:19:55 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/16 23:10:02 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,20 @@ void    printSet(T& base_set, bool print_contents = true,
 	}
 }
 
+template <typename Iterator>
+void	printEndorVal(Iterator it, Iterator end, bool print_newline = true) {
+	if (it == end)
+		std::cout << "end";
+	else
+		std::cout << *it;
+	if (print_newline)
+		std::cout << "\n";
+}
+
 template <typename T>
 void	test_set_constructors(size_t size) {
+	printTestCase("default/copy/range constructors & assignment op");
+	
 	T	empty_set;
 	printSet(empty_set, (size < 100), "empty_set");
 
@@ -69,20 +81,20 @@ void	test_set_empty(size_t size) {
 		set1.insert(i + 1);
 	
 	std::cout << std::boolalpha;
-	std::cout << "is set1 empty: " << set1.empty() << std::endl;
 	printSet(set1, (size < 100), "set1", "empty on filled set");
+	std::cout << "is set1 empty: " << set1.empty() << std::endl;
 
 	T set2;
-	std::cout << "is set2 empty: " << set2.empty() << std::endl;
 	printSet(set2, (size < 100), "set2", "empty on default constructed set");
+	std::cout << "is set2 empty: " << set2.empty() << std::endl;
 
 	set2 = set1;
-	std::cout << "is set2 empty: " << set2.empty() << std::endl;
 	printSet(set2, (size < 100), "set2", "empty on copy assigned set");
+	std::cout << "is set2 empty: " << set2.empty() << std::endl;
 	
 	set2.clear();
-	std::cout << "is set2 empty: " << set2.empty() << std::endl;
 	printSet(set2, (size < 100), "set2", "empty after clear");
+	std::cout << "is set2 empty: " << set2.empty() << std::endl;
 	(void)size;
 }
 
@@ -114,6 +126,8 @@ static void	test_set_insert_helper(T &set, P param) {
 
 template <typename T>
 void	test_set_insert(size_t size) {
+	printTestCase("insert new & existant values");
+
 	IMPL::pair<typename T::iterator, bool>	ret;
 	T	set1, set2;
 
@@ -136,6 +150,8 @@ void	test_set_insert(size_t size) {
 
 template <typename T>
 void	test_set_erase(size_t size) {
+	printTestCase("erase existant & non-existant values");
+
 	T	set;
 	for (size_t i = 0; i < size; i++)
 		set.insert(i + 1);
@@ -232,15 +248,163 @@ static void	test_set_find_helper(T &set, K k) {
 
 template <typename T>
 void	test_set_find(size_t size) {
+	printTestCase("find values within & not within set");
+
 	T	set;
 	for (size_t i = 0; i < size; i++)
-		set.insert(i + 1);
+		set.insert(size - 1);
 	printSet(set, (size < 100), "set");
 	
 	test_set_find_helper(set, size / 2);
 	test_set_find_helper(set, size);
 	test_set_find_helper(set, size - 1);
 	test_set_find_helper(set, -1);
+}
+
+template <typename T>
+void	test_set_count(size_t size) {
+	printTestCase("count values within & not within set");
+
+	T	set;
+	for (size_t i = 0; i < size; i++)
+		set.insert(size - 1);
+	printSet(set, (size < 100), "set");
+
+	std::cout << "set.count(" << (size / 2) << ") returned " << set.count(size / 2) << std::endl;
+	std::cout << "set.count(" << size << ") returned " << set.count(size) << std::endl;
+	std::cout << "set.count(" << (size - 1) << ") returned " << set.count(size - 1) << std::endl;
+	std::cout << "set.count(" << -1 << ") returned " << set.count(-1) << std::endl;
+}
+
+template <typename T, typename K>
+static void	test_set_bounds_helper(T &set, K const& k) {
+	typename T::iterator		itlow, itup;
+	typename T::const_iterator	citlow, citup;
+
+	itlow = set.lower_bound(k);
+	std::cout << "lower_bound (" << k  << ") returned ";
+	printEndorVal(itlow, set.end());
+
+	itup = set.upper_bound(k);
+	std::cout << "upper_bound (" << k  << ") returned ";
+	printEndorVal(itup, set.end());
+
+	citlow = set.lower_bound(k);
+	std::cout << "const lower_bound (" << k  << ") returned ";
+	printEndorVal(citlow, set.end());
+
+	citup = set.upper_bound(k);
+	std::cout << "const upper_bound (" << k  << ") returned ";
+	printEndorVal(citup, set.end());
+	std::cout << std::endl;
+}
+
+template <typename T>
+void	test_set_bounds(size_t size) {
+	printTestCase("upper/lower_bounds on values within, above & below set");
+
+	T	set;
+	for (size_t i = 0; i < size; i++)
+		set.insert(size - i);
+	printSet(set, (size < 100), "set");
+
+	test_set_bounds_helper(set, size / 2);
+	test_set_bounds_helper(set, size);
+	test_set_bounds_helper(set, size - 1);
+	test_set_bounds_helper(set, -1);
+}
+
+template <typename T, typename K>
+static void	test_set_eqrange_helper(T &set, K const& k) {
+	IMPL::pair<typename T::iterator, typename T::iterator>	ret;
+	
+	ret = set.equal_range(k);
+	std::cout << "equal_range (" << k << "): ";
+	if (std::distance(ret.first, ret.second) == 0) {
+		std::cout << "no match found, return points to ";
+		printEndorVal(ret.first, set.end());
+	}
+	else {
+		std::cout << "match found between " << *(ret.first) << " and ";
+		printEndorVal(ret.second, set.end());
+	}
+}
+
+template <typename T>
+void	test_set_eqrange(size_t size) {
+	printTestCase("equal_range on values within, above & below set");
+
+	T	set;
+	for (size_t i = 0; i < size; i++)
+		set.insert(size - i);
+	printSet(set, (size < 100), "set");
+
+	test_set_eqrange_helper(set, size / 2);
+	test_set_eqrange_helper(set, size);
+	test_set_eqrange_helper(set, size - 1);
+	test_set_eqrange_helper(set, -1);
+}
+
+template <typename T>
+void	test_set_iterators(size_t size) {
+	printTestCase("set (const) iterator & (const) reverse it");
+
+	T	set;
+	for (size_t i = 0; i < size; i++)
+		set.insert(size - i);
+	printSet(set, (size < 100), "set");
+
+	typename T::iterator	it(set.begin());
+	typename T::const_iterator	cit(set.begin());
+	typename T::reverse_iterator	rit(set.rbegin());
+	typename T::const_reverse_iterator	crit(rit);
+
+	std::cout << "++begin: " <<*(++it) << std::endl;
+	std::cout << "begin++: " << *(it++) << std::endl;
+	std::cout << "++rbegin: " << *(++rit) << std::endl;
+	std::cout << "rbegin++: " << *(rit++) << std::endl;
+	std::cout << "const ++begin: " << *(++cit) << std::endl;
+	std::cout << "const begin++: " << *(cit++) << std::endl;
+	std::cout << "const ++rbegin: " << *(++crit) << std::endl;
+	std::cout << "const rbegin++: " << *(crit++) << std::endl;
+
+	std::cout << "--begin: " << *(--it) << std::endl;
+	std::cout << "begin--: " << *(it--) << std::endl;
+	std::cout << "--rbegin: " << *(--rit) << std::endl;
+	std::cout << "rbegin--: " << *(rit--) << std::endl;
+	std::cout << "const --begin: " << *(--cit) << std::endl;
+	std::cout << "const begin--: " << *(cit--) << std::endl;
+	std::cout << "const --rbegin: " << *(--crit) << std::endl;
+	std::cout << "const rbegin--: " << *(crit--) << std::endl;
+
+	std::cout << "*it: " << *it << std::endl;
+	std::cout << "*cit: " << *cit << std::endl;
+	
+	std::cout << std::boolalpha;
+	std::cout << "it == cit: " << (it == cit) << std::endl;
+	std::cout << "it != cit: " << (it != cit) << std::endl;
+}
+
+template <typename T>
+void	test_set_relationalops(size_t size) {
+	printTestCase("set == != < <= > >=");
+
+	T	set1, set2;
+
+	for (size_t i = 0; i < size / 2; i++)
+		set1.insert(i * 2);
+	for (size_t i = size / 2; i < size; i++)
+		set2.insert(i * 2);
+	printSet(set1, (size < 100), "set1");
+	printSet(set2, (size < 100), "set2");
+	
+	std::cout << std::boolalpha;
+	std::cout << "set1 == set2: " << (set1 == set2) << std::endl;
+	std::cout << "set1 != set2: " << (set1 != set2) << std::endl;
+	std::cout << "set1 < set2: " << (set1 < set2) << std::endl;
+	std::cout << "set1 <= set2: " << (set1 <= set2) << std::endl;
+	std::cout << "set1 > set2: " << (set1 > set2) << std::endl;
+	std::cout << "set1 >= set2: " << (set1 >= set2) << std::endl;	
 }
 
 void test_set() {
@@ -274,18 +438,18 @@ void test_set() {
 	// find test
 	benchmarkFunction_stress(test_set_find<t_iset>, "find");
 
-	// // count test
-	// benchmarkFunction_stress(test_set_count<t_iset>, "count");
+	// count test
+	benchmarkFunction_stress(test_set_count<t_iset>, "count");
 
-	// // lower/upper bound test
-	// benchmarkFunction_stress(test_set_bounds<t_iset>, "lower/upper bound");
+	// lower/upper bound test
+	benchmarkFunction_stress(test_set_bounds<t_iset>, "lower/upper bound");
 
-	// // equal_range test
-	// benchmarkFunction_stress(test_set_eqrange<t_iset>, "equal_range");
+	// equal_range test
+	benchmarkFunction_stress(test_set_eqrange<t_iset>, "equal_range");
 
-	// // iterator test
-	// benchmarkFunction_stress(test_set_iterators<t_iset>, "iterators");
+	// iterator test
+	benchmarkFunction_stress(test_set_iterators<t_iset>, "iterators");
 
-	// // relational operators test
-	// benchmarkFunction_stress(test_set_relationalops<t_iset>, "relational operators");
+	// relational operators test
+	benchmarkFunction_stress(test_set_relationalops<t_iset>, "relational operators");
 }

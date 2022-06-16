@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/15 22:22:07 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/16 21:28:47 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/16 21:58:23 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,9 @@ void    printMap(T& base_map, bool print_contents = true,
 
 template <typename T>
 void	test_map_constructors(size_t size) {
-	T	empty_map;
+	printTestCase("default/copy/range constructors & assignment op");
 
+	T	empty_map;
 	printMap(empty_map, (size < 100), "empty_map");
 
 	for (size_t i = 0; i < size; i++)
@@ -94,20 +95,20 @@ void	test_map_empty(size_t size) {
 		map1['a' + i] = i;
 
 	std::cout << std::boolalpha;
-	std::cout << "is map1 empty: " << map1.empty() << std::endl;
 	printMap(map1, (size < 100), "map1", "empty on filled map");
+	std::cout << "is map1 empty: " << map1.empty() << std::endl;
 
 	T map2;
-	std::cout << "is map2 empty: " << map2.empty() << std::endl;
 	printMap(map2, (size < 100), "map2", "empty on default constructed map");
+	std::cout << "is map2 empty: " << map2.empty() << std::endl;
 
 	map2 = map1;
-	std::cout << "is map2 empty: " << map2.empty() << std::endl;
 	printMap(map2, (size < 100), "map2", "empty on copy assigned map");
+	std::cout << "is map2 empty: " << map2.empty() << std::endl;
 	
 	map2.clear();
-	std::cout << "is map2 empty: " << map2.empty() << std::endl;
 	printMap(map2, (size < 100), "map2", "empty after clear");
+	std::cout << "is map2 empty: " << map2.empty() << std::endl;
 	(void)size;
 }
 
@@ -168,7 +169,7 @@ static void	test_map_insert_helper(T &map, P param) {
 
 template <typename T>
 void	test_map_insert(size_t size) {
-	printTestCase("insert existing & non-existing keys");
+	printTestCase("insert new & existant keys");
 
 	T	map;
 	for (size_t i = 0; i < size; i++)
@@ -201,6 +202,8 @@ void	test_map_insert(size_t size) {
 
 template <typename T>
 void	test_map_erase(size_t size) {
+	printTestCase("erase existant & non-existant values");
+	
 	T	map;
 	for (size_t i = 0; i < size; i++)
 		map[i] = size - i;
@@ -271,6 +274,8 @@ static void	test_map_find_helper(T &map, K k) {
 
 template <typename T>
 void	test_map_find(size_t size) {
+	printTestCase("find values within & not within set");
+	
 	T	map;
 	for (size_t i = 0; i < size; i++)
 		map[i] = size - i;
@@ -284,6 +289,8 @@ void	test_map_find(size_t size) {
 
 template <typename T>
 void	test_map_count(size_t size) {
+	printTestCase("count values within & not within set");
+
 	T	map;
 	for (size_t i = 0; i < size; i++)
 		map[i] = size - i;
@@ -320,6 +327,8 @@ static void	test_map_bounds_helper(T &map, K const& k) {
 
 template <typename T>
 void	test_map_bounds(size_t size) {
+	printTestCase("upper/lower_bounds on values within, above & below set");
+	
 	T	map;
 	for (size_t i = 0; i < size; i++)
 		map[i] = size - i;
@@ -350,6 +359,8 @@ static void	test_map_eqrange_helper(T &map, K const& k) {
 
 template <typename T>
 void	test_map_eqrange(size_t size) {
+	printTestCase("equal_range on values within, above & below set");
+
 	T	map;
 	for (size_t i = 0; i < size; i++)
 		map[i] = size - i;
