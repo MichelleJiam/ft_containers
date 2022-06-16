@@ -6,20 +6,19 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:22 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/08 17:42:15 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/06/16 23:08:06 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tester.hpp"
 
 #define header_width 42
+#define ISEVENLEN(String) (String.length() % 2 == 0 ? true : false)
 
 // helper function for centering output
 void	alignedPrint(std::string str,
-						int linelength, bool newline = true)
-{
+						int linelength, bool newline = true) {
 	int spaces = (linelength - str.size()) / 2;
-	
 	if (spaces > 0)
 		std::cout << std::string(spaces, ' ');
 	std::cout << str;
@@ -29,13 +28,27 @@ void	alignedPrint(std::string str,
 		std::cout << "\n";
 }
 
+// aligns header text by adding spaces to left & right sides
+std::string	spaceHeaderText(int num_spaces, std::string const& text) {
+	std::string	spaces(num_spaces, ' ');
+	
+	if (ISEVENLEN(text)) // if text len is even
+		return (spaces + text + spaces.substr(1)); // print uneven number of spaces
+	else
+		return (spaces + text + spaces);
+}
+
 std::string	formatMiddle(int inner_width, std::string const& lside,
 							std::string text, std::string const& rside) {
 	if (text[0] == ' ')	// so leading spaces don't throw off banner alignment
 		text = text.substr(1);
-	std::string	spaces((inner_width - text.size()) / 2, ' ');
-
-	return (lside + spaces + text + spaces + rside);
+	int num_spaces = (inner_width - text.length()) / 2;
+	std::string	spacedText;
+	if (text.length() % 2 == 0) // if text len is even
+		spacedText = spaceHeaderText(num_spaces + 1, text);
+	else
+		spacedText = spaceHeaderText(num_spaces, text);
+	return (lside + spacedText + rside);
 }
 
 void	printHeader(std::string header_text) {
@@ -50,7 +63,7 @@ void	printHeader(std::string header_text) {
 	alignedPrint(header, header_width);
 	// loop for printing longer header text in multiple lines
 	for (size_t i = 0; i < header_text.length(); i += 20) {
-		std::string middle = formatMiddle(23, " |", header_text.substr(i, 20), " |");
+		std::string middle = formatMiddle(23, "  |", header_text.substr(i, 20), "|");
 		alignedPrint(middle, header_width);
 	}
 	alignedPrint(footer, header_width);
