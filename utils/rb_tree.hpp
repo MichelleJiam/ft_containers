@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/08 16:47:52 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/31 20:15:27 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/07 00:14:02 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,68 +102,6 @@ class rb_tree {
 			if (_size > 0)
 				clear();
 			_drop_node(_nil);
-		}
-
-	// DEBUGGING - REMOVE
-		void	debug_empty() {
-			std::cout << "nil colour is: " << (_nil->colour == RED ? "red" : "black") << std::endl;
-			std::cout << "size is: " << size() << std::endl;
-			std::cout << "empty? " << std::boolalpha << empty() << std::endl;
-		}
-
-		void	debug_single() {
-			std::cout << "size is: " << size() << std::endl;
-			std::cout << "empty? " << std::boolalpha << empty() << std::endl;
-			std::cout << "root colour is: " << (_root->colour == RED ? "red" : "black") << std::endl;
-			if (_root != _nil)
-				std::cout << "root value: " << _get_val(_root).first << ", " << _get_val(_root).second << std::endl;
-			std::cout << "root parent colour is " << (_root->parent->colour ? "black" : "red") << std::endl;
-			std::cout << "root leftC colour is " << (_root->left->colour ? "black" : "red") << std::endl;
-			std::cout << "root rightC colour is " << (_root->right->colour ? "black" : "red") << std::endl;
-		}
-
-		void	print_tree_helper(base_ptr root, std::string indent, bool last) {
-			
-			std::cout << indent;
-			if (last) {
-				std::cout << "R----";
-				indent += "   ";
-			}
-			else {
-				std::cout << "L----";
-				indent += "|  ";
-			}
-			std::string sColour = root->colour ? "BLACK" : "RED";
-			if (root != _nil) {
-				std::cout << "[" << _get_val(root).first << ", "
-					<< _get_val(root).second << "] " << "(" << sColour << ")";
-				if (root->parent != _nil)
-					std::cout << " | Parent is [" << _get_val(root->parent).first
-						<< ", " << _get_val(root->parent).second << "]\n";
-				else
-					std::cout << " | Parent is NIL\n";
-				print_tree_helper(root->left, indent, false);
-				print_tree_helper(root->right, indent, true);
-			}
-			else {
-				std::cout << "NIL" << " (" << sColour << ") ";
-				std::cout << "Parent is ";
-				if (root->parent == NULL) std::cout << "NULL";
-				else if (root->parent == _nil) std::cout << "NIL";
-				else std::cout << _get_val(root->parent).first
-						<< ", " << _get_val(root->parent).second;
-				std::cout << " | LChild is ";
-				if (root->left == NULL) std::cout << "NULL\n";
-				else if (root->left == _nil) std::cout << "NIL\n";
-				else std::cout << _get_val(root->left).first
-						<< ", " << _get_val(root->left).second << "\n";
-			}
-		}
-
-		void	print_tree() {
-			std::cout << "Tree size: " << size() << std::endl;
-			print_tree_helper(_root, "", true);
-			std::cout << std::endl;
 		}
 
 	// Allocator
@@ -352,7 +290,7 @@ class rb_tree {
 		}
 
 	private:
-		// UTILITIES
+	// UTILITIES
 		// does not check if node is _nil/NULL before casting.
 		// caller's responsibility to check before calling.
 		reference	_get_val(base_ptr node) const {
@@ -452,7 +390,7 @@ class rb_tree {
 			return const_iterator(node);
 		}
 
-		// NODE MANAGEMENT
+	// NODE MANAGEMENT
 		base_ptr	_create_nil() {
 			base_ptr tmp = _b_alloc.allocate(1);
 			_b_alloc.construct(tmp, rb_node_base());
@@ -466,8 +404,6 @@ class rb_tree {
 			return new_node;
 		}
 
-		// template <class T, class Alloc_T>
-		// void	_drop_node(T& node_type, Alloc_T& alloc) { // templated version for passing base/node allocators
 		void	_drop_node(base_ptr node) {
 			_b_alloc.destroy(node);
 			_b_alloc.deallocate(node, 1);
@@ -490,7 +426,7 @@ class rb_tree {
 			}
 		}
 
-		// INSERTION & ROTATIONS
+	// INSERTION & ROTATIONS
 		// called by _insert_at
 		base_ptr	_find_insert_pos(base_ptr new_node) {
 			base_ptr parent = _nil;
@@ -616,7 +552,7 @@ class rb_tree {
 			_nil->parent = _root;
 		}
 
-		// DELETION
+	// DELETION
 		// called by _delete_node
 		// Allows moving subtrees around RB tree by replacing one subtree
 		// with another, i.e. node_a's parent becomes node_b's and vice versa.
@@ -760,6 +696,51 @@ class rb_tree {
 				_delete_rebalance(x);
 			_nil->parent = _root;
 			return 1;
+		}
+
+	// DEBUGGING
+		void	_print_tree_helper(base_ptr root, std::string indent, bool last) {
+			
+			std::cout << indent;
+			if (last) {
+				std::cout << "R----";
+				indent += "   ";
+			}
+			else {
+				std::cout << "L----";
+				indent += "|  ";
+			}
+			std::string sColour = root->colour ? "BLACK" : "RED";
+			if (root != _nil) {
+				std::cout << "[" << _get_val(root).first << ", "
+					<< _get_val(root).second << "] " << "(" << sColour << ")";
+				if (root->parent != _nil)
+					std::cout << " | Parent is [" << _get_val(root->parent).first
+						<< ", " << _get_val(root->parent).second << "]\n";
+				else
+					std::cout << " | Parent is NIL\n";
+				_print_tree_helper(root->left, indent, false);
+				_print_tree_helper(root->right, indent, true);
+			}
+			else {
+				std::cout << "NIL" << " (" << sColour << ") ";
+				std::cout << "Parent is ";
+				if (root->parent == NULL) std::cout << "NULL";
+				else if (root->parent == _nil) std::cout << "NIL";
+				else std::cout << _get_val(root->parent).first
+						<< ", " << _get_val(root->parent).second;
+				std::cout << " | LChild is ";
+				if (root->left == NULL) std::cout << "NULL\n";
+				else if (root->left == _nil) std::cout << "NIL\n";
+				else std::cout << _get_val(root->left).first
+						<< ", " << _get_val(root->left).second << "\n";
+			}
+		}
+
+		void	_print_tree() {
+			std::cout << "Tree size: " << size() << std::endl;
+			_print_tree_helper(_root, "", true);
+			std::cout << std::endl;
 		}
 };
 } // namespace ft

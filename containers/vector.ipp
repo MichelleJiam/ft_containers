@@ -6,14 +6,13 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/12 19:09:49 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/08 18:43:07 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/07 00:10:53 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef VECTOR_IPP
 #define VECTOR_IPP
 
-#define DEBUG 0 // TODO: remove and all debug messages
 #define myvector ft::vector<T,Allocator>
 
 //	DEFAULT CONSTRUCTOR
@@ -245,7 +244,6 @@ void		myvector::reserve (size_type new_cap) {
 		throw std::length_error(
 			"vector::reserve - new_cap exceeds vector max_size");
 	if (new_cap > this->capacity()) {
-		if (DEBUG) std::cout << "reserve: reallocating more memory\n";
 		_reallocate(new_cap);
 	}
 }
@@ -408,7 +406,6 @@ typename myvector::iterator	myvector::erase(
 //				May throw length_error if reallocation exceeds max_size.
 template <class T, class Allocator>
 void	myvector::push_back(T const& value) {
-	if (DEBUG) std::cout << "push_back: calling insert with (" << 0 + _size << ", " << value << ")\n";
 	if (this->capacity() == this->size())
 		_reallocate(this->size() ? this->size() * 2 : 1);
 	_alloc.construct(_array + _size, value);
@@ -495,8 +492,6 @@ size_t	myvector::_range_copy_forward(iterator pos, InputIterator first, InputIte
 	size_type		copied = 0;
 	
 	while (first != last) {
-		if (DEBUG) std::cout << "range_copy_for: constructing " << *(first) << " at "
-			<< ft::distance(this->begin(), pos) << std::endl;
 		_alloc.construct(&*pos, *first);
 		++pos;
 		++first;
