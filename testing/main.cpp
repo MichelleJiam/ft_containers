@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/16 23:10:31 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/07 00:40:31 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,7 @@ void	benchmarkFunction_stress(void (*testFunction)(size_t size),
 }
 
 int main() {
-
-	// std::cout << "version: " << IMPL::get_name() << std::endl;
-
-	// test_utils();
+	test_utils();
 	test_vector();
 	test_stack();
 	test_map();

@@ -6,11 +6,9 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/07/06 23:58:35 by mjiam         ########   odam.nl          #
+#    Updated: 2022/07/07 00:35:11 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
-
-# NAME		= 	ft_test std_test
 
 NAME		=	ft_bin
 
@@ -43,11 +41,18 @@ ifdef DEBUG
 FLAGS		+=	-fsanitize=address -fno-omit-frame-pointer -g
 endif
 
-CONTAINERS	= 	$(addprefix $(CONT_DIR)/, vector.hpp vector.ipp \
-											set.hpp stack.hpp)
+CONTAINERS	= 	$(addprefix $(CONT_DIR)/,	vector.hpp \
+											vector.ipp \
+											set.hpp \
+											stack.hpp)
 
-TEST_SRC	= 	main.cpp tester_helper.cpp test_stack.cpp test_vector.cpp \
-				test_utils.cpp test_map.cpp test_set.cpp
+TEST_SRC	= 	main.cpp \
+				tester_helper.cpp \
+				test_stack.cpp \
+				test_vector.cpp \
+				test_utils.cpp \
+				test_map.cpp \
+				test_set.cpp 
 
 COMPARE_SRC	=	$(addprefix $(TEST_DIR)/, compare.cpp)
 
@@ -56,7 +61,7 @@ OBJ			= 	$(addprefix $(OBJ_DIR)/, $(TEST_SRC:.cpp=.o))
 SAVE_FILES	=	ft_output.txt std_output.txt
 
 # DIRECTORIES
-TEST_DIR	=	test2
+TEST_DIR	=	testing
 CONT_DIR	=	containers
 UTILS_DIR	=	utils
 OBJ_DIR		=	obj
@@ -83,17 +88,6 @@ ft:
 std:
 	@$(MAKE) quietclean
 	@$(MAKE) std_bin STD=1
-
-# $(NAME): $(OBJ)
-# 	@$(CC) $(FLAGS) $(OBJ) -o $(word 1, $(NAME))
-# 	@echo "Executable $(CYAN)$(word 1, $(NAME))$(RESET) made"
-# 	@$(CC) $(FLAGS)  $(OBJ) -o $(word 2, $(NAME))
-# 	@echo "Executable $(CYAN)$(word 2, $(NAME))$(RESET) made"
-
-# compile_std: $(OBJ)
-# 	@$(CC) $(FLAGS) $(OBJ) -o $@
-# 	@echo "Executable $(CYAN)$(NAME)$(RESET) made"
-# 	@$(MAKE) quietclean
 
 # compile without stress test for quick run
 quick:

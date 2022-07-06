@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/07/06 23:34:52 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/07 00:27:36 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,36 +47,15 @@
 # define IMPL ft
 #endif
 
-// template <typename T>
-// struct	typeHelper {
-// 	typedef IMPL::vector<T>	vector;
-// };
-
-// typedef	void (IMPL::vector<int>::*vecVoidFn)(void);
-// typedef void (*testFn)(IMPL::vector<int> &vector);
-
-// #define CALL_MEMBER_FN(object, ptrToMemberFn)	((object).*(ptrToMemberFn))
-
-// template <typename T>
-// void	benchmarkFunction(T &object, vecVoidFn fn) {
-// 	clock_t start = clock();
-
-// 	CALL_MEMBER_FN(object, fn)();
-// 	std::cout << "Duration of operation: " << std::fixed
-// 		<< ((clock() - start) / (double)CLOCKS_PER_SEC) << "seconds."
-// 		<< std::endl;
-// 	std::cout.unsetf(std::ios::fixed);	// restores cout to general format
-// }
-
 // TESTER_HELPER.CPP
 // prints test unit header, taking unit name (e.g. "vector") as parameter
-void	printHeader(std::string unit_name);
+void	printHeader(std::string header_text);
 // prints test name and increments test_count
 void	printTest(std::string const& test_name);
 // prints test case. see pre-function comment for example use.
 void	printTestCase(std::string const& test_case);
 int		printResult(bool const passed);  // TODO: remove
-void	printPassing(int passed, int tests);
+void	printPassing(int const passed, int const tests);
 bool	mycomp(char const c1, char const c2);
 
 // MAIN.CPP
