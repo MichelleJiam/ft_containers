@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/18 21:47:38 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/01/20 16:13:07 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/06 23:49:55 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,28 @@ struct  enable_if<true, T> {
     typedef T   type;
 };
 
+// C++11
+// Template designed to provide compile-time constants as types.
+// Used as the base class for trait types.
+// `T` is type of integral constant, `v` is the value.
+template <class T, T v>
+struct	integral_constant {
+	static const T					value = v;
+	typedef T						value_type;
+	typedef integral_constant<T, v>	type;
+
+	operator T() {
+		return v;
+	}
+};
+
 // `is_integral` inherits the following from `integral_constant`:
 //  - member constant `value`,
 //  - member functions operator bool & operator(),
 //  - member types `value_type` and `type`.
-typedef std::integral_constant<bool, true> true_type;
-typedef std::integral_constant<bool, false> false_type;
+typedef integral_constant<bool, true> true_type;
+typedef integral_constant<bool, false> false_type;
 
-// C++11
 // Checks whether T is an integral type.
 // Provides member constant `value` which is equal to true if `T` is
 // an integral type, or a cv-qualified form of one of those types, 

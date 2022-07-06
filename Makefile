@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/06/01 18:03:06 by mjiam         ########   odam.nl          #
+#    Updated: 2022/07/06 23:58:35 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -25,7 +25,7 @@ COMPARE_BIN	=	compare
 
 CC			= 	clang++
 
-FLAGS		= 	-Wall -Wextra -Werror -std=c++98
+FLAGS		= 	-Wall -Wextra -Werror -Wno-deprecated
 
 ifdef QUICK
 FLAGS		+=	-D QUICK=1

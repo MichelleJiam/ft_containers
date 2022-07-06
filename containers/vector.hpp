@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2021/10/11 17:42:12 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/05/26 16:38:36 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/06 23:29:40 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 #include <algorithm> // max, min, fill_n
 #include <cstddef> // ptrdiff_t, size_t
+#include <limits> // numeric_limits
 #include <memory> // allocator
 #include "../utils/equal.hpp"
 #include "../utils/iterator_utils.hpp"

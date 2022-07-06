@@ -6,10 +6,11 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:54 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/02/03 16:14:52 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/06 23:52:10 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <type_traits> // is_integral
 #include "tester.hpp"
 #include "vector.hpp"
 #include "../utils/pair.hpp"
