@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/03 20:21:37 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 17:40:48 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/05/26 17:25:30 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,9 @@ void    test_stack_relationalOps(size_t size) {
 
 void test_stack() {
 #ifndef SIMPLE
-	printHeader("testing stack");
+	printHeader("stack");
+#else
+	std::cout << "STACK\n";
 #endif
 
 	// constructor test

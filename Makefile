@@ -6,7 +6,7 @@
 #    By: mjiam <mjiam@student.codam.nl>               +#+                      #
 #                                                    +#+                       #
 #    Created: 2021/10/12 15:11:16 by mjiam         #+#    #+#                  #
-#    Updated: 2022/03/31 16:36:50 by mjiam         ########   odam.nl          #
+#    Updated: 2022/06/01 18:03:06 by mjiam         ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,15 +35,19 @@ ifdef SIMPLE
 FLAGS		+=	-D SIMPLE=1
 endif
 
+ifdef QS
+FLAGS		+=	-DSIMPLE=1 -DQUICK=1
+endif
+
 ifdef DEBUG
 FLAGS		+=	-fsanitize=address -fno-omit-frame-pointer -g
 endif
 
 CONTAINERS	= 	$(addprefix $(CONT_DIR)/, vector.hpp vector.ipp \
-											stack.hpp)
+											set.hpp stack.hpp)
 
 TEST_SRC	= 	main.cpp tester_helper.cpp test_stack.cpp test_vector.cpp \
-				test_utils.cpp test_map.cpp
+				test_utils.cpp test_map.cpp test_set.cpp
 
 COMPARE_SRC	=	$(addprefix $(TEST_DIR)/, compare.cpp)
 
@@ -107,6 +111,15 @@ run:
 # detailed comparison that shows which test failed and expected vs. received output
 compare:
 	@$(MAKE) SIMPLE=1
+	@echo "\n$(GREEN)Saved output to txt files. Running comparison program$(RESET)"
+	@./ft_bin > $(word 1, $(SAVE_FILES))
+	@./std_bin > $(word 2, $(SAVE_FILES))
+	@$(CC) $(FLAGS) $(COMPARE_SRC) $(TEST_DIR)/tester_helper.cpp -o $(COMPARE_BIN)
+	@./$(COMPARE_BIN)
+
+# quick comparison for checking output without stress test wait
+qcompare:
+	@$(MAKE) QS=1
 	@echo "\n$(GREEN)Saved output to txt files. Running comparison program$(RESET)"
 	@./ft_bin > $(word 1, $(SAVE_FILES))
 	@./std_bin > $(word 2, $(SAVE_FILES))
