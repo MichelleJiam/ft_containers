@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/07/07 15:37:14 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/07 17:43:43 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 # define CYN "\e[0;36m"
 # define WHT "\e[0;37m"
 
-# define STRESS_SIZE (INT_MAX / 1000)
+# define STRESS_SIZE (INT_MAX / 2000)
 
 #ifndef IMPL
 # define IMPL ft

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:45:04 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/07/07 00:40:31 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/07 17:43:50 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,14 @@ void	benchmarkFunction(void (*testFunction)(size_t size),
 }
 
 // Runs single-run benchmarking, then runs stress test using a container
-// of INT_MAX / 100 size to more visibly demonstrate slowdown
+// of INT_MAX / 2000 size to more visibly demonstrate slowdown
 // that comes with large sizes.
 // Exits after only single-run benchmarking if QUICK macro has been passed during
 // compilation (by running `make quick`), if user desires to only compare outputs
 // and skip the potentially slow stress test.
 // Accepts as param a `testFunction` that executes a container method on a
 // container of `size` size (in this case, STRESS_SIZE which is defined in
-// tester.hpp as INT_MAX / 1000).
+// tester.hpp as INT_MAX / 2000).
 void	benchmarkFunction_stress(void (*testFunction)(size_t size),
 								std::string const& test_name) {
 	benchmarkFunction(testFunction, test_name);
