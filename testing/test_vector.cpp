@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/20 16:54:47 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/06/16 23:09:43 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/07 15:46:48 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,29 @@
 typedef IMPL::vector<T1> t_ivec;
 typedef IMPL::vector<T2> t_cvec;
 typedef IMPL::vector<T3> t_svec;
+
+// Prints vector capacity, size, and contents,
+// and optionally a toggle for not printing contents when size is big,
+// + test case + container name.
+// See printTestCase for test_case argument example.
+template <typename T>
+void    printVector(T& base_vec, bool print_contents,
+						std::string const& cntr_name,
+						std::string const& test_case) {
+	if (!test_case.empty())
+		printTestCase(test_case);
+	if (!cntr_name.empty())
+		std::cout << "[ " << cntr_name << " ]\n";
+	std::cout << "capacity: " << base_vec.capacity() << std::endl;
+	std::cout << "size:     " << base_vec.size() << std::endl;
+	std::cout << "max_size: " << base_vec.max_size() << std::endl;
+	if (print_contents) {
+		std::cout << "contents: [";
+		for (unsigned i = 0; i < base_vec.size(); i++)
+			std::cout << ' ' << base_vec[i];
+		std::cout << " ]\n\n";
+	}
+}
 
 template <typename T>
 void	test_vec_constructors(size_t size) {

@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/01/12 17:46:50 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/07/07 00:27:36 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/07 15:37:14 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,12 @@ int		printResult(bool const passed);  // TODO: remove
 void	printPassing(int const passed, int const tests);
 bool	mycomp(char const c1, char const c2);
 
+// TEST_VECTOR.CPP
+template <typename T>
+void    printVector(T& base_vec, bool print_contents = true,
+						std::string const& cntr_name = std::string(),
+						std::string const& test_case = std::string());
+
 // MAIN.CPP
 void	benchmarkFunction(void (*testFunction)(size_t size),
 							std::string const& test_name);
@@ -70,7 +76,5 @@ void	test_utils();
 void	test_stack();
 void	test_map();
 void	test_set();
-
-#include "./test_print.hpp" // templated container print fns
 
 #endif
