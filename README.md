@@ -61,7 +61,7 @@ Red-Black Tree:
 - [Chapter 13 of Introduction to Algorithms, 3rd edition](https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf)
 
 Sentinel nodes in binary search trees:
-- Introduction to Algorithms, page 309
+- [Introduction to Algorithms, page 309](https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf)
 
 Rebind:
 - [What does template rebind do](https://stackoverflow.com/questions/14148756/what-does-template-rebind-do)
