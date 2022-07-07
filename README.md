@@ -40,6 +40,10 @@ make compare    # detailed comparison program that shows output and performance 
 make qcompare    # same as above but without stress test, faster
 ```
 
+Output of binary compiled by `make`             |  Output of `make qcompare`
+:-------------------------:|:-------------------------:
+![](https://i.imgur.com/763Gaju.png?2)  |  ![](https://i.imgur.com/kOgLZWb.png?2)
+
 ## Resources
 General:
 - [C++ Primer](https://github.com/yanshengjia/cpp-playground/blob/master/cpp-primer/resource/C%2B%2B%20Primer%20(5th%20Edition).pdf)  
@@ -57,7 +61,7 @@ Red-Black Tree:
 - [Chapter 13 of Introduction to Algorithms, 3rd edition](https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf)
 
 Sentinel nodes in binary search trees:
-- Introduction to Algorithms, page 309
+- [Introduction to Algorithms, page 309](https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf)
 
 Rebind:
 - [What does template rebind do](https://stackoverflow.com/questions/14148756/what-does-template-rebind-do)
