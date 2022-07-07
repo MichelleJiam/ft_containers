@@ -6,7 +6,7 @@
 /*   By: mjiam <mjiam@student.codam.nl>               +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2022/02/17 15:56:42 by mjiam         #+#    #+#                 */
-/*   Updated: 2022/04/07 21:19:38 by mjiam         ########   odam.nl         */
+/*   Updated: 2022/07/07 15:57:42 by mjiam         ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,7 @@ class	rb_iterator : public ft::iterator<ft::bidirectional_iterator_tag, T>{
 					x = y;
 					y = y->parent;
 				}
-				// if (x->right != y) // moving upwards
-					x = y;
+				x = y;
 			}
 			return x;
 		}
