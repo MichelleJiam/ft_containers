@@ -59,6 +59,7 @@ Red-Black Tree:
 - [Explanation of Insertion with Diagrams](https://www.geeksforgeeks.org/red-black-tree-set-2-insert)
 - [Breakdown of insert/delete/rebalance algorithms](https://www.programiz.com/dsa/red-black-tree)
 - [Chapter 13 of Introduction to Algorithms, 3rd edition](https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf)
+- [RB iterator in/decrement source code](https://gcc.gnu.org/onlinedocs/libstdc++/libstdc++-html-USERS-3.4/tree_8cc-source.html)  
 
 Sentinel nodes in binary search trees:
 - [Introduction to Algorithms, page 309](https://edutechlearners.com/download/Introduction_to_algorithms-3rd%20Edition.pdf)
